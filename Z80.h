@@ -18,18 +18,18 @@ typedef union
   uint16_t M;
 } reg16bit;
 
-class Z80
+typedef struct
 {
-	public:
-		Z80();
-		virtual ~Z80();
-		void reset(); //            -> resets the CPU core
-		void execute(int nclyces);//   -> the core executes n cycles
-		//getcontext(); //      -> returns the CPU context
-		//setcontext(); //   -> sets the CPU context
-		void interrupt();  //      -> sends an interrupt signal
-	private:
 		reg16bit AF,BC,DE,HL,SP,PC;
-};
+		int cyclecounter;
+		uint8_t * memorymap;
+}Z80;
+
+void reset(); //            -> resets the CPU core
+int execute(int nclyces);//   -> the core executes n cycles
+Z80 getcontext(); //      -> returns the CPU context
+void setcontext(Z80 * context); //   -> sets the CPU context
+void interrupt();  //      -> sends an interrupt signal
+uint8_t readOpcode(uint16_t address);
 
 #endif /* Z80_H_ */
