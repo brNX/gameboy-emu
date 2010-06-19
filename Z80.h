@@ -10,26 +10,39 @@
 
 #include <stdint.h>
 
-
-//union para registo 16bit com accesso 8bit
-typedef union
+#ifdef __cplusplus
+extern "C"
 {
-  struct { uint8_t h,l; } S;
-  uint16_t M;
-} reg16bit;
+#endif
 
-typedef struct
-{
-		reg16bit AF,BC,DE,HL,SP,PC;
-		int cyclecounter;
-		uint8_t * memorymap;
-}Z80;
+	//union para registo 16bit com accesso 8bit
+	typedef union
+	{
+			struct
+			{
+					uint8_t h, l;
+			} S;
+			uint16_t M;
+	} reg16bit;
 
-void reset(); //            -> resets the CPU core
-int execute(int nclyces);//   -> the core executes n cycles
-Z80 getcontext(); //      -> returns the CPU context
-void setcontext(Z80 * context); //   -> sets the CPU context
-void interrupt();  //      -> sends an interrupt signal
-uint8_t readOpcode(uint16_t address);
+	typedef struct
+	{
+			reg16bit AF, BC, DE, HL, SP, PC;
+			int cyclecounter;
+			uint8_t * memorymap;
+			int pause;
+			int halt;
+	} Z80;
+
+	void reset(Z80 * cpu); //            -> resets the CPU core
+	int execute(Z80 * cpu,int nclyces);//   -> the core executes n cycles
+	/*Z80 getcontext(); //      -> returns the CPU context
+	void setcontext(Z80 * cpu); //   -> sets the CPU context*/
+	void interrupt(Z80 * cpu); //      -> sends an interrupt signal
+	uint8_t readOpcode(uint16_t address);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* Z80_H_ */

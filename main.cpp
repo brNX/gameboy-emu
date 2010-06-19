@@ -3,5 +3,10 @@
 
 int main (){
 
+	Z80 gbcpu;
+
+	reset(&gbcpu);
+
+
 	return 0;
 }

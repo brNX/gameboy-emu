@@ -10,9 +10,20 @@
 
 #include <stdint.h>
 
-uint8_t gb_memory[0x10000];
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
-static inline uint8_t ReadMemory(uint16_t address);
-static inline void WriteMemory(uint16_t address, uint8_t value);
+
+
+	uint8_t gb_memory[0x10000];
+
+	inline uint8_t ReadMemory(uint16_t address);
+	inline void WriteMemory(uint16_t address, uint8_t value);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* MEMORY_H_ */
