@@ -6,6 +6,7 @@
  */
 
 #include "Z80.h"
+int Cycles[]={4,4,6,4,7};
 
 	void reset(Z80 * cpu){
 		  cpu->pause = 1;
@@ -21,20 +22,23 @@
 		  cpu->SP.M=0xFFFE;
 	}
 
-	int execute(Z80 * cpu,int nclyces){
-		/*Counter=InterruptPeriod;
-		PC=InitialPC;
+	int execute(Z80 * cpu,int ncycles){
+		int Counter=ncycles;
+		uint8_t PC=cpu->PC.M;
 
 		for(;;)
 		{
-		  OpCode=Memory[PC++];
+		  uint8_t OpCode=readOpcode(PC++);
 		  Counter-=Cycles[OpCode];
 
 		  switch(OpCode)
 		  {
-		    case OpCode1:
-		    case OpCode2:
-		    ...
+		    case 0x00:
+		    	break;
+		    case 0x01:
+		    	break;
+		    default:
+		    	break;
 		  }
 
 		  if(Counter<=0)
@@ -42,10 +46,10 @@
 		    //Check for interrupts and do other
 		    // cyclic tasks here
 
-		    Counter+=InterruptPeriod;
-		    if(ExitRequired) break;
+		    Counter+=ncycles;
+		    //if(ExitRequired) break;
 		  }
-		}*/
+		}
 		return 0;
 	}
 
@@ -61,7 +65,7 @@
 
 	}
 
-	uint8_t readOpcode(uint16_t address){
+	inline uint8_t readOpcode(uint16_t address){
 		//TODO: para ja
 		return 0;
 	}

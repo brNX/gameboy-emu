@@ -14,7 +14,6 @@
 extern "C"
 {
 #endif
-
 	//union para registo 16bit com accesso 8bit
 	typedef union
 	{
@@ -39,7 +38,7 @@ extern "C"
 	/*Z80 getcontext(); //      -> returns the CPU context
 	void setcontext(Z80 * cpu); //   -> sets the CPU context*/
 	void interrupt(Z80 * cpu); //      -> sends an interrupt signal
-	uint8_t readOpcode(uint16_t address);
+	inline uint8_t readOpcode(uint16_t address);
 
 #ifdef __cplusplus
 }
