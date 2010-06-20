@@ -18,6 +18,7 @@
 		  cpu->SP.M=0xFFFE;
 		  cpu->HL.M=0x014D;
 		  cpu->cyclecounter=0;
+		  cpu->SP.M=0xFFFE;
 	}
 
 	int execute(Z80 * cpu,int nclyces){
