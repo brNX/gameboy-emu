@@ -33,6 +33,7 @@ int Cycles[]={4,4,6,4,7};
 
 		  switch(OpCode)
 		  {
+			 //nop
 		    case 0x00:
 		    	break;
 		    case 0x01:
