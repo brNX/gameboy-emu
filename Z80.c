@@ -54,7 +54,7 @@ int execute(int ncycles)
 		case 0x7F:
 			break;
 
-		/*LD 8 bit*/
+		/**********************8 bit Loads*****************/
 
 		/*LD r,r'*/
 		case 0x41://LD B,C
@@ -227,8 +227,6 @@ int execute(int ncycles)
 			A = readMem(HL);
 			break;
 
-		/*gameboy sem instrucoes DD e FD (registo IX e IY) */
-
 		/*LD (HL),r*/
 		case 0x70: //LD (HL),B
 			writeMem(HL, B);
@@ -252,14 +250,10 @@ int execute(int ncycles)
 			writeMem(HL, A);
 			break;
 
-		/*gameboy sem instrucoes DD e FD (registo IX e IY) */
-
 		/*LD (HL), n*/
 		case 0x36:
 			writeMem(HL, readMem(pc++));
 			break;
-
-		/*gameboy sem instrucoes DD e FD (registo IX e IY) */
 
 		/*LD A,(BC)*/
 		case 0x0A:
@@ -278,8 +272,6 @@ int execute(int ncycles)
 		case 0x12:
 			writeMem(DE, A);
 			break;
-
-		/*gameboy sem instrucoes DD e FD (registo IX e IY) */
 
 		/*instrucoes especificas gameboy*/
 
@@ -303,18 +295,22 @@ int execute(int ncycles)
 		/* EA      JP   PE,nn      LD   (nn),A*/
 		/*ld   (nn),A      EA        16 ----*/
 		case 0xEA:
-			address= readMem(pc++);
-			address= address | (readMem(pc++)<<8);
+			address = readMem(pc+1);
+			address = address << 8;
+			address = address | readMem(pc);
 			writeMem(address,A);
+			pc+=2;
 			break;
 
 		/*opcode      Z80             GMB    */
 		/*FA      JP   M,nn       LD   A,(nn)*/
 		/*ld   A,(nn)      FA        16 ----*/
 		case 0xFA:
-			address= readMem(pc++);
-			address=address | (readMem(pc++)<<8);
+			address = readMem(pc+1);
+			address = address << 8;
+			address=address | readMem(pc);
 			A=readMem(address);
+			pc+=2;
 			break;
 
 		/*opcode      Z80             GMB    */
@@ -359,6 +355,83 @@ int execute(int ncycles)
 		case 0x2A:
 			A=readMem(HL);
 			HL++;
+			break;
+
+		/**********************16 bit Loads*****************/
+
+		/*LD rr,nn*/
+		case 0x01 ://LD BC,nn
+			C=readMem(pc++);
+			B=readMem(pc++);
+			break;
+		case 0x11 : //LD DE,nn
+			E=readMem(pc++);
+			D=readMem(pc++);
+			break;
+		case 0x21: //LD HL,nn
+			L=readMem(pc++);
+			H=readMem(pc++);
+			break;
+		case 0x31: //LD SP,nn
+			gbcpu.sp.Byte.l = readMem(pc++);
+			gbcpu.sp.Byte.h = readMem(pc++);
+			break;
+
+		/*  ld   SP,HL */
+		case 0xF9:
+			SP=HL;
+			break;
+		/*LD (nn),SP */
+		case 0x08:
+			address = readMem(pc+1);
+			address = address << 8;
+			address=address | readMem(pc);
+			writeMem(address,gbcpu.sp.Byte.l);
+			writeMem(address+1,gbcpu.sp.Byte.h);
+			break;
+
+		/*push rr*/
+		case 0xF5 ://PUSH AF
+			writeMem(SP-2,F);
+			writeMem(SP-1,A);
+			SP-=2;
+			break;
+		case 0xC5 ://PUSH BC
+			writeMem(SP-2,C);
+			writeMem(SP-1,B);
+			SP-=2;
+			break;
+		case 0xD5 ://PUSH DE
+			writeMem(SP-2,E);
+			writeMem(SP-1,D);
+			SP-=2;
+			break;
+		case 0xE5 ://PUSH HL
+			writeMem(SP-2,L);
+			writeMem(SP-1,H);
+			SP-=2;
+			break;
+
+		/*pop  rr*/
+		case 0xF1: //POP AF
+			F=readMem(SP);
+			A=readMem(SP+1);
+			SP+=2;
+			break;
+		case 0xC1: //POP BC
+			C=readMem(SP);
+			B=readMem(SP+1);
+			SP+=2;
+			break;
+		case 0xD1: //POP DE
+			E=readMem(SP);
+			D=readMem(SP+1);
+			SP+=2;
+			break;
+		case 0xE1: //POP HL
+			L=readMem(SP);
+			H=readMem(SP+1);
+			SP+=2;
 			break;
 
 
