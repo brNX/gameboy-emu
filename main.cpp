@@ -1,12 +1,10 @@
 #include "Z80.h"
 #include "memory.h"
+#include <cstdio>
 
-int main (){
+int main()
+{
 
-	Z80 gbcpu;
-
-	reset(&gbcpu);
-
-
+	resetZ80();
 	return 0;
 }
