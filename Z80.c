@@ -51,6 +51,32 @@ int execute(int ncycles)
 			break;
 
 		/*LD 8 bit*/
+
+		/*LD r,(HL)*/
+		case 0x46: // LD B,(HL)
+			B=readMem(HL);
+			break;
+		case 0x4E: // LD C,(HL)
+			C=readMem(HL);
+			break;
+		case 0x56: // LD D,(HL)
+			D=readMem(HL);
+			break;
+		case 0x5E: // LD E,(HL)
+			E=readMem(HL);
+			break;
+		case 0x66: // LD H,(HL)
+			H=readMem(HL);
+			break;
+		case 0x6E: // LD L,(HL)
+			L=readMem(HL);
+			break;
+		case 0x7E: // LD A,(HL)
+			A=readMem(HL);
+			break;
+
+
+		/*LD r,n*/
 		case 0x06: //LD B,n
 			B=readMem(pc++);
 			break;
@@ -73,6 +99,7 @@ int execute(int ncycles)
 			A=readMem(pc++);
 			break;
 
+		/*LD r,r'*/
 		case 0x41://LD B,C
 			B=C;
 			break;
@@ -106,8 +133,6 @@ int execute(int ncycles)
 		case 0x4D: // LD C,L
 			C=L;
 			break;
-		case 0x4E: // LD C,(HL)
-			break;
 		case 0x4F: // LD C,A
 			C=A;
 			break;
@@ -125,8 +150,6 @@ int execute(int ncycles)
 			break;
 		case 0x55: // LD D,L
 			D=L;
-			break;
-		case 0x56: // LD D,(HL)
 			break;
 		case 0x57: // LD D,A
 			D=A;
@@ -146,8 +169,6 @@ int execute(int ncycles)
 		case 0x5D: // LD E,L
 			E=L;
 			break;
-		case 0x5E: // LD E,(HL)
-			break;
 		case 0x5F: // LD E,A
 			E=A;
 			break;
@@ -165,8 +186,6 @@ int execute(int ncycles)
 			break;
 		case 0x65: // LD H,L
 			H=L;
-			break;
-		case 0x66: // LD H,(HL)
 			break;
 		case 0x67: // LD H,A
 			H=A;
