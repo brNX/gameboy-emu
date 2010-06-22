@@ -19,8 +19,8 @@ extern "C"
 
 	uint8_t gb_memory[0x10000];
 
-	inline uint8_t ReadMemory(uint16_t address);
-	inline void WriteMemory(uint16_t address, uint8_t value);
+	inline uint8_t readMem(uint16_t address);
+	inline void writeMem(uint16_t address, uint8_t value);
 
 #ifdef __cplusplus
 }

@@ -68,7 +68,6 @@ extern "C"
 	{
 			reg16bit af, bc, de, hl, sp, pc;
 			int cyclecounter;
-			uint8_t * memorymap;
 			int pause;
 			int halt;
 	} Z80;
@@ -79,7 +78,6 @@ extern "C"
 	/*Z80 getcontext(); //      -> returns the CPU context
 	 void setcontext(Z80 * cpu); //   -> sets the CPU context*/
 	void interruptZ80(); //      -> sends an interrupt signal
-	inline uint8_t readOpcode(uint16_t address);
 
 #ifdef __cplusplus
 }

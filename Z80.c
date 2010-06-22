@@ -6,6 +6,7 @@
  */
 
 #include "Z80.h"
+#include "memory.h"
 
 Z80 gbcpu;
 
@@ -31,7 +32,7 @@ int execute(int ncycles)
 
 	for (;;)
 	{
-		uint8_t OpCode = readOpcode(pc++);
+		uint8_t OpCode = readMem(pc++);
 		Counter -= Cycles[OpCode];
 		gbcpu.cyclecounter += Cycles[OpCode];
 
@@ -50,6 +51,28 @@ int execute(int ncycles)
 			break;
 
 		/*LD 8 bit*/
+		case 0x06: //LD B,n
+			B=readMem(pc++);
+			break;
+		case 0x0E: //LD C,n
+			C=readMem(pc++);
+			break;
+		case 0x16: //LD D,n
+			D=readMem(pc++);
+			break;
+		case 0x1E: //LD E,n
+			E=readMem(pc++);
+			break;
+		case 0x26: //LD H,n
+			H=readMem(pc++);
+			break;
+		case 0x2E: //LD L,n
+			L=readMem(pc++);
+			break;
+		case 0x3E: //LD A,n
+			A=readMem(pc++);
+			break;
+
 		case 0x41://LD B,C
 			B=C;
 			break;
@@ -178,6 +201,9 @@ int execute(int ncycles)
 		case 0x7C://LD A,H
 			A=H;
 			break;
+		case 0x7D://LD A,L
+			A=L;
+			break;
 		default:
 			break;
 		}
@@ -205,10 +231,4 @@ int execute(int ncycles)
 void interruptZ80()
 {
 
-}
-
-inline uint8_t readOpcode(uint16_t address)
-{
-	//TODO: para ja
-	return 0;
 }
