@@ -7,10 +7,12 @@
 
 #include "Z80.h"
 #include "memory.h"
+#include <stdint.h>
 
 Z80 gbcpu;
 
-void resetZ80() {
+void resetZ80()
+{
 	gbcpu.pause = 1;
 	gbcpu.halt = 0;
 	A = 0x01; // 0x01->GB/SGB; 0xFF->GBP; 0x11->GBC
@@ -24,16 +26,22 @@ void resetZ80() {
 	SP = 0xFFFE;
 }
 
-int execute(int ncycles) {
+int execute(int ncycles)
+{
 	int Counter = ncycles;
 	uint8_t pc = PC;
 
-	for (;;) {
+	for (;;)
+	{
+		uint16_t address;
 		uint8_t OpCode = readMem(pc++);
 		Counter -= Cycles[OpCode];
 		gbcpu.cyclecounter += Cycles[OpCode];
 
-		switch (OpCode) {
+		switch (OpCode)
+		{
+
+		/*Ordem opcodes do livro "Z80 Family CPU User Manual" */
 
 		/*nop*/
 		case 0x00:
@@ -223,25 +231,134 @@ int execute(int ncycles) {
 
 		/*LD (HL),r*/
 		case 0x70: //LD (HL),B
-			writeMem(HL,B);
+			writeMem(HL, B);
 			break;
 		case 0x71://LD (HL),C
-			writeMem(HL,C);
+			writeMem(HL, C);
 			break;
 		case 0x72://LD (HL),D
-			writeMem(HL,D);
+			writeMem(HL, D);
 			break;
 		case 0x73://LD (HL),E
-			writeMem(HL,E);
+			writeMem(HL, E);
 			break;
 		case 0x74://LD (HL),H
-			writeMem(HL,H);
+			writeMem(HL, H);
 			break;
 		case 0x75://LD (HL),L
-			writeMem(HL,L);
+			writeMem(HL, L);
 			break;
 		case 0x77://LD (HL),A
+			writeMem(HL, A);
+			break;
+
+		/*gameboy sem instrucoes DD e FD (registo IX e IY) */
+
+		/*LD (HL), n*/
+		case 0x36:
+			writeMem(HL, readMem(pc++));
+			break;
+
+		/*gameboy sem instrucoes DD e FD (registo IX e IY) */
+
+		/*LD A,(BC)*/
+		case 0x0A:
+			A = readMem(BC);
+			break;
+		/*LD A,(DE)*/
+		case 0x1A:
+			A = readMem(DE);
+			break;
+
+		/*LD(BC),A*/
+		case 0x02:
+			writeMem(BC, A);
+			break;
+		/*LD(DE),A*/
+		case 0x12:
+			writeMem(DE, A);
+			break;
+
+		/*gameboy sem instrucoes DD e FD (registo IX e IY) */
+
+		/*instrucoes especificas gameboy*/
+
+		/*opcode      Z80             GMB    */
+		/*3A      LD   A,(nn)     LDD  A,(HL)*/
+		/*ldd  A,(HL)      3A         8 ---- A=(HL), HL=HL-1*/
+		case 0x3A://LDD A,(HL)
+			A = readMem(HL);
+			HL--;
+			break;
+
+		/*opcode      Z80             GMB    */
+		/*32      LD   (nn),A     LDD  (HL),A*/
+		/*ldd  (HL),A      32         8 ---- (HL)=A, HL=HL-1*/
+		case 0x32:
+			writeMem(HL, A);
+			HL--;
+			break;
+
+		/*opcode      Z80             GMB    */
+		/* EA      JP   PE,nn      LD   (nn),A*/
+		/*ld   (nn),A      EA        16 ----*/
+		case 0xEA:
+			address= readMem(pc++);
+			address= address | (readMem(pc++)<<8);
+			writeMem(address,A);
+			break;
+
+		/*opcode      Z80             GMB    */
+		/*FA      JP   M,nn       LD   A,(nn)*/
+		/*ld   A,(nn)      FA        16 ----*/
+		case 0xFA:
+			address= readMem(pc++);
+			address=address | (readMem(pc++)<<8);
+			A=readMem(address);
+			break;
+
+		/*opcode      Z80             GMB    */
+		/*E0      RET  PO         LD   (FF00+n),A*/
+		/*ld   (FF00+n),A  E0 nn     12 ---- write to io-port n (memory FF00+n)*/
+		case 0xE0:
+			writeMem(0xFF00+readMem(pc++),A);
+			break;
+
+		/*opcode      Z80             GMB    */
+		/*F0      RET  P          LD   A,(FF00+n)*/
+		/*ld   A,(FF00+n)  F0 nn     12 ---- read from io-port n (memory FF00+n)*/
+		case 0xF0:
+			A=readMem(0xFF00+readMem(pc++));
+			break;
+
+		/*opcode      Z80             GMB    */
+		/*E2      JP   PO,nn      LD   (FF00+C),A*/
+		/*ld   (FF00+C),A  E2         8 ---- write to io-port C (memory FF00+C)*/
+		case 0xE2:
+			writeMem(0xFF00+C,A);
+			break;
+
+		/*opcode      Z80             GMB    */
+		/*F2      JP   P,nn       LD   A,(FF00+C*/
+		/*ld   A,(FF00+C)  F2         8 ---- read from io-port C (memory FF00+C)*/
+		case 0xF2:
+			A=readMem(0xFF00+C);
+			break;
+
+		/*opcode      Z80             GMB    */
+		/*22      LD   (nn),HL    LDI  (HL),A*/
+		/*ldi  (HL),A      22         8 ---- (HL)=A, HL=HL+1*/
+		case 0x22:
 			writeMem(HL,A);
+			HL++;
+			break;
+
+		/*opcode      Z80             GMB    */
+		/*2A      LD   HL,(nn)    LDI  A,(HL)*/
+		/*ldi  A,(HL)      2A         8 ---- A=(HL), HL=HL+1*/
+		case 0x2A:
+			A=readMem(HL);
+			HL++;
 			break;
 
 
@@ -249,7 +366,8 @@ int execute(int ncycles) {
 			break;
 		}
 
-		if (Counter <= 0) {
+		if (Counter <= 0)
+		{
 			//Check for interrupts and do other
 			// cyclic tasks here
 
@@ -268,6 +386,7 @@ int execute(int ncycles) {
 
  }*/
 
-void interruptZ80() {
+void interruptZ80()
+{
 
 }
