@@ -24,6 +24,22 @@
 #define SP gbcpu.sp.Word
 #define PC gbcpu.pc.Word
 
+#define Z_FLAG	 0x80	/* Zero				Bit 7 */
+#define N_FLAG   0x40	/* Add/Substract	Bit 6 */
+#define H_FLAG	 0x20	/* Half Carry		Bit 5 */
+#define C_FLAG	 0x10	/* Carry			Bit 4 */
+
+#define ADD_A(val) \
+		A+=val;\
+		F = A==0 ? F|Z_FLAG : F & ~Z_FLAG;\
+		F = F & ~N_FLAG;\
+		F = (((signed int)A)>0xff || ((signed int)A)<0x00) ? F | C_FLAG : F & ~C_FLAG; \
+		if ((A ^ A ^ val) & 0x10) |  \
+			(((val ^ _A ^ 0x80) & (val ^ result) & 0x80) >> 5)  \
+			F |= H_FLAG; \
+		else \
+			F &= ~AC_FLAG
+
 #include <stdint.h>
 
 #ifdef __cplusplus
