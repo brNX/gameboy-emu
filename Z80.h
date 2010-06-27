@@ -29,16 +29,28 @@
 #define H_FLAG	 0x20	/* Half Carry		Bit 5 */
 #define C_FLAG	 0x10	/* Carry			Bit 4 */
 
+//é 0 ?
+//com branch
+#define CHECK_Z(val)  F = val ? F & ~Z_FLAG : F|Z_FLAG;
+
+//com lookup
+#define CHECK_ZL(val)  F = ZeroLookup[val];
+
+//se houve halfcarry
+#define CHECK_H_ADD(val) F |= (H_FLAG & ((A ^ (val) ^ opAux.Byte.l) << 1));
+
+//se houve carry (0001 no opAux.Byte.h , logo 0001 << 4 = 0001 0000 = 0x10 = C_FLAG)
+#define CHECK_C_ADD(val) F |= (opAux.Byte.h << 4);
+
 #define ADD_A(val) \
-		A+=val;\
-		F = A==0 ? F|Z_FLAG : F & ~Z_FLAG;\
-		F = F & ~N_FLAG;\
-		F = (((signed int)A)>0xff || ((signed int)A)<0x00) ? F | C_FLAG : F & ~C_FLAG; \
-		if ((A ^ A ^ val) & 0x10) |  \
-			(((val ^ _A ^ 0x80) & (val ^ result) & 0x80) >> 5)  \
-			F |= H_FLAG; \
-		else \
-			F &= ~AC_FLAG
+	opAux.Word = (uint16_t) A + (uint16_t)val;\
+	CHECK_Z(opAux.Byte.l)\
+	F &= ~N_FLAG;\
+	CHECK_H_ADD(opAux.Byte.l)\
+	CHECK_C_ADD(val)\
+	A=opAux.Byte.l
+
+
 
 #include <stdint.h>
 
@@ -65,6 +77,20 @@ extern "C"
 			12, 16, 0, 24, 16, 8, 16, 20, 16, 16, 0, 24, 0, 8, 16, 12, 12, 8,
 			0, 0, 16, 8, 16, 16, 4, 16, 0, 0, 0, 8, 16, 12, 12, 8, 4, 0, 16, 8,
 			16, 12, 8, 16, 4, 0, 0, 8, 16, };
+
+	//ZeroLookupTable
+	const static int ZeroLookup[256] =
+	{ Z_FLAG, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	};
 
 	//union para registo 16bit com accesso 8bit
 	typedef union

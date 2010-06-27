@@ -31,6 +31,8 @@ int execute(int ncycles)
 	int Counter = ncycles;
 	uint8_t pc = PC;
 
+	reg16bit opAux; //registo temporario para operacoes(não existe no processador)
+
 	for (;;)
 	{
 		uint16_t address;
@@ -436,33 +438,31 @@ int execute(int ncycles)
 
 		/*****************GMB 8bit-Arithmetic/logical Commands*********************/
 
+
+
+
 		/*add  A,r*/
 		case 0x80: //ADD A,B
-			A+=B;
-			F = A==0 ? F|Z_FLAG : F & ~Z_FLAG;
-			F = F & ~N_FLAG;
-
-			/*F = (((signed int)A)>0xff || ((signed int)A)<0x00) ? F | C_FLAG : F & ~C_FLAG;
-			if ((A ^ A ^ B) & 0x10) |
-				(((B ^ _A ^ 0x80) & (B ^ result) & 0x80) >> 5)
-				F |= H_FLAG;
-			else
-				F &= ~AC_FLAG;*/
-
+			ADD_A(B);
 			break;
 		case 0x81: // ADD A,C
+			ADD_A(C);
 			break;
 		case 0x82: // ADD A,D
+			ADD_A(D);
 			break;
 		case 0x83: // ADD A,E
+			ADD_A(E);
 			break;
 		case 0x84: // ADD A,H
+			ADD_A(H);
 			break;
 		case 0x85: // ADD A,L
+			ADD_A(L);
 			break;
 		case 0x87: // ADD A,A
+			ADD_A(A);
 			break;
-		//0x86 ADD A,(HL)
 
 
 		default:
