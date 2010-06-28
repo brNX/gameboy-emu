@@ -36,6 +36,7 @@ int execute(int ncycles)
 	for (;;)
 	{
 		uint16_t address;
+		uint8_t tempbyte;
 		uint8_t OpCode = readMem(pc++);
 		Counter -= Cycles[OpCode];
 		gbcpu.cyclecounter += Cycles[OpCode];
@@ -693,6 +694,36 @@ int execute(int ncycles)
 		/*CP A,n*/
 		case 0xFE:
 			CP_A(readMem(pc++));
+			break;
+
+		/*INC r */
+		case 0x04: //INC B
+			INC(B);
+			break;
+		case 0x0C: //INC C
+			INC(C);
+			break;
+		case 0x14: //INC D
+			INC(D);
+			break;
+		case 0x1C: //INC E
+			INC(E);
+			break;
+		case 0x24: //INC H
+			INC(H);
+			break;
+		case 0x2C: //INC L
+			INC(L);
+			break;
+		case 0x3C: //INC A
+			INC(A);
+			break;
+
+		/*INC (HL) */
+		case 0x34:
+			tempbyte=readMem(HL);
+			INC(tempbyte);
+			writeMem(HL,tempbyte);
 			break;
 
 

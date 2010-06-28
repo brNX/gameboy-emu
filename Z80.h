@@ -101,6 +101,13 @@
 	CHECK_H(opAux.Byte.l)\
 	CHECK_C_SUB(val)
 
+#define INC(val) \
+	opAux.Word = (uint16_t)val + 1 ;\
+	CHECK_Z(opAux.Byte.l)\
+	F &= ~N_FLAG;\
+	CHECK_H(opAux.Byte.l)\
+	val=opAux.Byte.l
+
 #include <stdint.h>
 
 #ifdef __cplusplus
