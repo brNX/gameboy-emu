@@ -115,6 +115,18 @@
 	CHECK_H(opAux.Byte.l)\
 	val=opAux.Byte.l
 
+/*tmp := a,
+if nf then
+ if hf or [a AND 0x0f > 9] then tmp -= 0x06
+ if cf or [a > 0x99] then tmp -= 0x60
+else
+ if hf or [a AND 0x0f > 9] then tmp += 0x06
+ if cf or [a > 0x99] then tmp += 0x60
+endif,
+tmp => flags, cf := cf OR [a > 0x99],
+hf := a.4 XOR tmp.4, a := tmp
+*/
+
 #include <stdint.h>
 
 #ifdef __cplusplus

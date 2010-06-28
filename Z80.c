@@ -756,6 +756,24 @@ int execute(int ncycles)
 			writeMem(HL,tempbyte);
 			break;
 
+		/*DAA */
+		case 0x27:
+			opAux.Word=A;
+			if ((F&N_FLAG) == N_FLAG){
+				if (((F&H_FLAG) == H_FLAG) || ((A & 0x0f) >9))
+					opAux.Word -= 0x06;
+				if (((F&C_FLAG) == C_FLAG) || (A  >0x99))
+					opAux.Word -= 0x60;
+			}else{
+				if (((F&H_FLAG) == H_FLAG) || ((A & 0x0f) >9))
+					opAux.Word += 0x06;
+				if (((F&C_FLAG) == C_FLAG) || (A  >0x99))
+					opAux.Word += 0x60;
+
+			}
+
+			break;
+
 
 		default:
 			break;
