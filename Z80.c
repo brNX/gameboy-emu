@@ -631,6 +631,70 @@ int execute(int ncycles)
 			XOR_A(readMem(pc++));
 			break;
 
+		/*OR A,r */
+		case 0xB0: //OR B
+			OR_A(B);
+			break;
+		case 0xB1: //OR C
+			OR_A(C);
+			break;
+		case 0xB2: //OR D
+			OR_A(D);
+			break;
+		case 0xB3: //OR E
+			OR_A(E);
+			break;
+		case 0xB4: //OR H
+			OR_A(H);
+			break;
+		case 0xB5: //OR L
+			OR_A(L);
+			break;
+		case 0xB7: //OR A
+			OR_A(A);
+			break;
+
+		/*OR A,(HL) */
+		case 0xB6:
+			OR_A(readMem(HL));
+			break;
+		/*OR A,n*/
+		case 0xF6:
+			OR_A(readMem(pc++));
+			break;
+
+		/*CP A,r */
+		case 0xB8: //CP B
+			CP_A(B);
+			break;
+		case 0xB9: //CP C
+			CP_A(C);
+			break;
+		case 0xBA: //CP D
+			CP_A(D);
+			break;
+		case 0xBB: //CP E
+			CP_A(E);
+			break;
+		case 0xBC: //CP H
+			CP_A(H);
+			break;
+		case 0xBD: //CP L
+			CP_A(L);
+			break;
+		case 0xBF: //CP A
+			CP_A(A);
+			break;
+
+		/*CP A,(HL) */
+		case 0xBE:
+			CP_A(readMem(HL));
+			break;
+		/*CP A,n*/
+		case 0xFE:
+			CP_A(readMem(pc++));
+			break;
+
 
 		default:
 			break;

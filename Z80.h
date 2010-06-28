@@ -89,6 +89,17 @@
 	/*00000000 = 0x0 ;  10000000 = Z_FLAG*/ \
 	F = val ? 0x0 : Z_FLAG
 
+#define OR_A(val) \
+	A |= val ;\
+	/*00000000 = 0x0 ;  10000000 = Z_FLAG*/ \
+	F = val ? 0x0 : Z_FLAG
+
+#define CP_A(val) \
+	opAux.Word = (uint16_t) A - (uint16_t)val;\
+	CHECK_Z(opAux.Byte.l)\
+	F |= N_FLAG;\
+	CHECK_H(opAux.Byte.l)\
+	CHECK_C_SUB(val)
 
 #include <stdint.h>
 
