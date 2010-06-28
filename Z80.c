@@ -567,6 +567,70 @@ int execute(int ncycles)
 			SBC_A(readMem(pc++));
 			break;
 
+		/*AND A,r */
+		case 0xA0: //AND B
+			AND_A(B);
+			break;
+		case 0xA1: //AND C
+			AND_A(C);
+			break;
+		case 0xA2: //AND D
+			AND_A(D);
+			break;
+		case 0xA3: //AND E
+			AND_A(E);
+			break;
+		case 0xA4: //AND H
+			AND_A(H);
+			break;
+		case 0xA5: //AND L
+			AND_A(L);
+			break;
+		case 0xA7: //AND A
+			AND_A(A);
+			break;
+
+		/*AND A,(HL) */
+		case 0xA6:
+			AND_A(readMem(HL));
+			break;
+		/*AND A,n*/
+		case 0xE6:
+			AND_A(readMem(pc++));
+			break;
+
+		/*XOR A,r */
+		case 0xA8: //XOR B
+			XOR_A(B);
+			break;
+		case 0xA9: //XOR C
+			XOR_A(C);
+			break;
+		case 0xAA: //XOR D
+			XOR_A(D);
+			break;
+		case 0xAB: //XOR E
+			XOR_A(E);
+			break;
+		case 0xAC: //XOR H
+			XOR_A(H);
+			break;
+		case 0xAD: //XOR L
+			XOR_A(L);
+			break;
+		case 0xAF: //XOR A
+			XOR_A(A);
+			break;
+
+		/*XOR A,(HL) */
+		case 0xAE:
+			XOR_A(readMem(HL));
+			break;
+		/*XOR A,n*/
+		case 0xEE:
+			XOR_A(readMem(pc++));
+			break;
+
 
 		default:
 			break;

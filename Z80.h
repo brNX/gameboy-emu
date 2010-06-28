@@ -79,6 +79,16 @@
 	CHECK_C_SUB(val)\
 	A=opAux.Byte.l
 
+#define AND_A(val) \
+	A &= val ;\
+	/*00100000 = 0x20 ;  10100000 = 0xA0*/ \
+	F = val ? 0x20 : 0xA0
+
+#define XOR_A(val) \
+	A ^= val ;\
+	/*00000000 = 0x0 ;  10000000 = Z_FLAG*/ \
+	F = val ? 0x0 : Z_FLAG
+
 
 #include <stdint.h>
 
