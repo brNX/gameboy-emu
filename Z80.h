@@ -108,6 +108,13 @@
 	CHECK_H(opAux.Byte.l)\
 	val=opAux.Byte.l
 
+#define DEC(val) \
+	opAux.Word = (uint16_t)val - 1 ;\
+	CHECK_Z(opAux.Byte.l)\
+	F |= N_FLAG;\
+	CHECK_H(opAux.Byte.l)\
+	val=opAux.Byte.l
+
 #include <stdint.h>
 
 #ifdef __cplusplus

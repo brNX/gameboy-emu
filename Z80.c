@@ -726,6 +726,36 @@ int execute(int ncycles)
 			writeMem(HL,tempbyte);
 			break;
 
+		/*DEC r */
+		case 0x05: //DEC B
+			DEC(B);
+			break;
+		case 0x0D: //DEC C
+			DEC(C);
+			break;
+		case 0x15: //DEC D
+			DEC(D);
+			break;
+		case 0x1D: //DEC E
+			DEC(E);
+			break;
+		case 0x25: //DEC H
+			DEC(H);
+			break;
+		case 0x2D: //DEC L
+			DEC(L);
+			break;
+		case 0x3D: //DEC A
+			DEC(A);
+			break;
+
+		/*DEC (HL) */
+		case 0x35:
+			tempbyte=readMem(HL);
+			DEC(tempbyte);
+			writeMem(HL,tempbyte);
+			break;
+
 
 		default:
 			break;
