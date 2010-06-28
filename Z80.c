@@ -526,6 +526,47 @@ int execute(int ncycles)
 			SUB_A(A);
 			break;
 
+		/*SUB A,(HL) */
+		case 0x96:
+			SUB_A(readMem(HL));
+			break;
+		/*SUB A,n*/
+		case 0xD6:
+			SUB_A(readMem(pc++));
+			break;
+
+		/*SBC A,r*/
+		case 0x98: //SBC B
+			SBC_A(B);
+			break;
+		case 0x99: //SBC C
+			SBC_A(C);
+			break;
+		case 0x9A: //SBC D
+			SBC_A(D);
+			break;
+		case 0x9B: //SBC E
+			SBC_A(E);
+			break;
+		case 0x9C: //SBC H
+			SBC_A(H);
+			break;
+		case 0x9D: //SBC L
+			SBC_A(L);
+			break;
+		case 0x9F: //SBC A
+			SBC_A(A);
+			break;
+
+		/*SBC A,(HL) */
+		case 0x9E:
+			SBC_A(readMem(HL));
+			break;
+		/*SBC A,n*/
+		case 0xDE:
+			SBC_A(readMem(pc++));
+			break;
+
 
 		default:
 			break;

@@ -71,6 +71,14 @@
 	CHECK_C_SUB(val)\
 	A=opAux.Byte.l
 
+#define SBC_A(val) \
+	opAux.Word = (uint16_t) A - (uint16_t)val - ((uint16_t)(F & C_FLAG) >> 4) ;\
+	CHECK_Z(opAux.Byte.l)\
+	F |= N_FLAG;\
+	CHECK_H(opAux.Byte.l)\
+	CHECK_C_SUB(val)\
+	A=opAux.Byte.l
+
 
 #include <stdint.h>
 
