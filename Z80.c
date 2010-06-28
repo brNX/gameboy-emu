@@ -438,9 +438,6 @@ int execute(int ncycles)
 
 		/*****************GMB 8bit-Arithmetic/logical Commands*********************/
 
-
-
-
 		/*add  A,r*/
 		case 0x80: //ADD A,B
 			ADD_A(B);
@@ -462,6 +459,71 @@ int execute(int ncycles)
 			break;
 		case 0x87: // ADD A,A
 			ADD_A(A);
+			break;
+
+		/*add A,n*/
+		case 0xC6:
+			ADD_A(readMem(pc++));
+			break;
+		/*add A,(HL)*/
+		case 0x86:
+			ADD_A(readMem(HL));
+			break;
+
+		/*ADC A,r*/
+		case 0x8F: //ADC A,A
+			ADC_A(A);
+			break;
+		case 0x88: //ADC A,B
+			ADC_A(B);
+			break;
+		case 0x89: //ADC A,C
+			ADC_A(C);
+			break;
+		case 0x8A: //ADC A,D
+			ADC_A(D);
+			break;
+		case 0x8B: //ADC A,E
+			ADC_A(E);
+			break;
+		case 0x8C: //ADC A,H
+			ADC_A(H);
+			break;
+		case 0x8D: //ADC A,L
+			ADC_A(L);
+			break;
+
+		/*ADC A,n*/
+		case 0xCE:
+			ADC_A(readMem(pc++));
+			break;
+
+		/*ADC A,(HL)*/
+		case 0x8E:
+			ADC_A(readMem(HL));
+			break;
+
+		/*SUB A,r */
+		case 0x90: //SUB B
+			SUB_A(B);
+			break;
+		case 0x91: //SUB C
+			SUB_A(C);
+			break;
+		case 0x92: //SUB D
+			SUB_A(D);
+			break;
+		case 0x93: //SUB E
+			SUB_A(E);
+			break;
+		case 0x94: //SUB H
+			SUB_A(H);
+			break;
+		case 0x95: //SUB L
+			SUB_A(L);
+			break;
+		case 0x97: //SUB A
+			SUB_A(A);
 			break;
 
 

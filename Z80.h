@@ -37,19 +37,39 @@
 #define CHECK_ZL(val)  F = ZeroLookup[val];
 
 //se houve halfcarry
-#define CHECK_H_ADD(val) F |= (H_FLAG & ((A ^ (val) ^ opAux.Byte.l) << 1));
+#define CHECK_H(val) F |= (H_FLAG & ((A ^ (val) ^ opAux.Byte.l) << 1));
 
 //se houve carry (0001 no opAux.Byte.h , logo 0001 << 4 = 0001 0000 = 0x10 = C_FLAG)
 #define CHECK_C_ADD(val) F |= (opAux.Byte.h << 4);
+
+//Set if no borrow (0001 no opAux.Byte.h , logo 0001 << 4 = 0001 0000 = 0x10 = C_FLAG)
+#define CHECK_C_SUB(val) F |= ((uint8_t) (-(int8_t)opAux.Byte.h) << 4);
+
 
 #define ADD_A(val) \
 	opAux.Word = (uint16_t) A + (uint16_t)val;\
 	CHECK_Z(opAux.Byte.l)\
 	F &= ~N_FLAG;\
-	CHECK_H_ADD(opAux.Byte.l)\
+	CHECK_H(opAux.Byte.l)\
 	CHECK_C_ADD(val)\
 	A=opAux.Byte.l
 
+#define ADC_A(val) \
+	opAux.Word = (uint16_t) A + (uint16_t)val + ((uint16_t)(F & C_FLAG) >> 4) ;\
+	CHECK_Z(opAux.Byte.l)\
+	F &= ~N_FLAG;\
+	CHECK_H(opAux.Byte.l)\
+	CHECK_C_ADD(val)\
+	A=opAux.Byte.l
+
+
+#define SUB_A(val) \
+	opAux.Word = (uint16_t) A - (uint16_t)val;\
+	CHECK_Z(opAux.Byte.l)\
+	F |= N_FLAG;\
+	CHECK_H(opAux.Byte.l)\
+	CHECK_C_SUB(val)\
+	A=opAux.Byte.l
 
 
 #include <stdint.h>
