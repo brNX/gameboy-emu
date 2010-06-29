@@ -30,8 +30,9 @@
 #define C_FLAG	 0x10	/* Carry			Bit 4 */
 
 //é 0 ?
-//com branch
-#define CHECK_Z(val)  F = val ? F & ~Z_FLAG : F|Z_FLAG;
+//if (val==0) F |= Z_FLAG; else F &= ~Z_FLAG;
+#define CHECK_Z(val) \
+	F = (F & ~Z_FLAG) | (-(val==0) & Z_FLAG);
 
 //com lookup
 #define CHECK_ZL(val)  F = ZeroLookup[val];
@@ -45,37 +46,45 @@
 //Set if no borrow (0001 no opAux.Byte.h , logo 0001 << 4 = 0001 0000 = 0x10 = C_FLAG)
 #define CHECK_C_SUB(val) F |= ((uint8_t) (-(int8_t)opAux.Byte.h) << 4);
 
+//se houve halfcarry 16bit
+#define CHECK_H16(val) \
+	opAux.Word = opAux32.W.l; \
+	F |= (H_FLAG & ((H ^ ((val)>>8)^ opAux.Byte.h) << 1));
+
+//se houve carry (0001 no opAux32.W.h , logo 0001 << 4 = 0001 0000 = 0x10 = C_FLAG) 16bit
+#define CHECK_C_ADD16(val) F |= (uint8_t)(opAux32.W.h << 4);
+
 
 #define ADD_A(val) \
 	opAux.Word = (uint16_t) A + (uint16_t)val;\
+	F=0x0;\
 	CHECK_Z(opAux.Byte.l)\
-	F &= ~N_FLAG;\
-	CHECK_H(opAux.Byte.l)\
+	CHECK_H(val)\
 	CHECK_C_ADD(val)\
 	A=opAux.Byte.l
 
 #define ADC_A(val) \
 	opAux.Word = (uint16_t) A + (uint16_t)val + ((uint16_t)(F & C_FLAG) >> 4) ;\
+	F=0x0;\
 	CHECK_Z(opAux.Byte.l)\
-	F &= ~N_FLAG;\
-	CHECK_H(opAux.Byte.l)\
+	CHECK_H(val)\
 	CHECK_C_ADD(val)\
 	A=opAux.Byte.l
 
 
 #define SUB_A(val) \
 	opAux.Word = (uint16_t) A - (uint16_t)val;\
+	F=N_FLAG;\
 	CHECK_Z(opAux.Byte.l)\
-	F |= N_FLAG;\
-	CHECK_H(opAux.Byte.l)\
+	CHECK_H(val)\
 	CHECK_C_SUB(val)\
 	A=opAux.Byte.l
 
 #define SBC_A(val) \
 	opAux.Word = (uint16_t) A - (uint16_t)val - ((uint16_t)(F & C_FLAG) >> 4) ;\
+	F=N_FLAG;\
 	CHECK_Z(opAux.Byte.l)\
-	F |= N_FLAG;\
-	CHECK_H(opAux.Byte.l)\
+	CHECK_H(val)\
 	CHECK_C_SUB(val)\
 	A=opAux.Byte.l
 
@@ -96,36 +105,48 @@
 
 #define CP_A(val) \
 	opAux.Word = (uint16_t) A - (uint16_t)val;\
+	F=N_FLAG;\
 	CHECK_Z(opAux.Byte.l)\
-	F |= N_FLAG;\
-	CHECK_H(opAux.Byte.l)\
+	CHECK_H(val)\
 	CHECK_C_SUB(val)
 
 #define INC(val) \
 	opAux.Word = (uint16_t)val + 1 ;\
+	F&=C_FLAG;\
 	CHECK_Z(opAux.Byte.l)\
-	F &= ~N_FLAG;\
-	CHECK_H(opAux.Byte.l)\
+	F&=~N_FLAG;\
+	CHECK_H(0x1)\
 	val=opAux.Byte.l
 
 #define DEC(val) \
 	opAux.Word = (uint16_t)val - 1 ;\
+	F&=C_FLAG;\
 	CHECK_Z(opAux.Byte.l)\
-	F |= N_FLAG;\
-	CHECK_H(opAux.Byte.l)\
+	F|=N_FLAG;\
+	CHECK_H(0x1)\
 	val=opAux.Byte.l
 
-/*tmp := a,
-if nf then
- if hf or [a AND 0x0f > 9] then tmp -= 0x06
- if cf or [a > 0x99] then tmp -= 0x60
-else
- if hf or [a AND 0x0f > 9] then tmp += 0x06
- if cf or [a > 0x99] then tmp += 0x60
-endif,
-tmp => flags, cf := cf OR [a > 0x99],
-hf := a.4 XOR tmp.4, a := tmp
-*/
+#define ADD_HL(val) \
+	opAux32.DW = (uint32_t) HL + (uint32_t) val;\
+	F &= ~N_FLAG;\
+	CHECK_H16(val);\
+	CHECK_C_ADD16(val);\
+	HL=opAux32.W.l
+
+#define ADD_SP(val) \
+	opAux32.DW = (uint32_t) SP + (uint32_t) val;\
+	F = 0;\
+	CHECK_H16(val);\
+	CHECK_C_ADD16(val);\
+	SP=opAux32.W.l
+
+#define LD_HLSP(val) \
+	opAux32.DW = (uint32_t) SP + (uint32_t) val;\
+	F = 0;\
+	CHECK_H16(val);\
+	CHECK_C_ADD16(val);\
+	HL=opAux32.W.l
+
 
 #include <stdint.h>
 
@@ -134,52 +155,32 @@ extern "C"
 {
 #endif
 
-	//numero de ciclos correspondentes a cada opcode
-	const static int Cycles[256] =
-	{ 4, 12, 8, 8, 4, 4, 8, 4, 20, 8, 8, 8, 4, 4, 8, 4, 4, 12, 8, 8, 4, 4, 8,
-			4, 12, 8, 8, 8, 4, 4, 8, 4, 12, 12, 8, 8, 4, 4, 8, 4, 12, 8, 8, 8,
-			4, 4, 8, 4, 12, 12, 8, 8, 4, 12, 12, 12, 12, 8, 8, 8, 4, 4, 8, 4,
-
-			4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4,
-			8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4,
-			4, 4, 8, 4, 8, 8, 8, 8, 8, 8, 4, 8, 4, 4, 4, 4, 4, 4, 8, 4,
-
-			4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4,
-			8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4,
-			4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4,
-
-			20, 12, 16, 16, 24, 16, 8, 16, 20, 16, 16, 4, 24, 24, 8, 16, 20,
-			12, 16, 0, 24, 16, 8, 16, 20, 16, 16, 0, 24, 0, 8, 16, 12, 12, 8,
-			0, 0, 16, 8, 16, 16, 4, 16, 0, 0, 0, 8, 16, 12, 12, 8, 4, 0, 16, 8,
-			16, 12, 8, 16, 4, 0, 0, 8, 16, };
-
-	//ZeroLookupTable
-	const static int ZeroLookup[256] =
-	{ Z_FLAG, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-			, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-			, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-			, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	};
-
 	//union para registo 16bit com accesso 8bit
 	typedef union
 	{
 			struct
 			{
-#ifdef BIG_ENDIAN
-					uint8_t l,h; /* ...in low-endian architecture */
-#else
-					uint8_t h, l; /* ...in high-endian architecture */
-#endif
+				#ifdef BIG_ENDIAN
+				uint8_t l,h; /* ...in low-endian architecture */
+				#else
+				uint8_t h, l; /* ...in high-endian architecture */
+				#endif
 			} Byte;
 			uint16_t Word;
 	} reg16bit;
+
+	typedef union
+	{
+		struct
+		{
+			#ifdef BIG_ENDIAN
+			uint16_t l,h; /* ...in low-endian architecture */
+			#else
+			uint16_t h, l; /* ...in high-endian architecture */
+			#endif
+		} W;
+		uint32_t DW;
+	} reg32bit;
 
 	typedef struct
 	{
