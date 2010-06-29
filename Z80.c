@@ -7,7 +7,7 @@
 
 #include "Z80.h"
 #include "memory.h"
-#include "lockuptables.h"
+#include "lookuptables.h"
 #include <stdint.h>
 
 Z80 gbcpu;
