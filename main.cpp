@@ -1,5 +1,6 @@
 #include "Z80.h"
 #include "memory.h"
+#include "lockuptables.h"
 #include <cstdio>
 
 int main()

@@ -7,6 +7,7 @@
 
 #include "Z80.h"
 #include "memory.h"
+#include "lockuptables.h"
 #include <stdint.h>
 
 Z80 gbcpu;
@@ -31,12 +32,18 @@ int execute(int ncycles)
 	int Counter = ncycles;
 	uint8_t pc = PC;
 
-	reg16bit opAux; //registo temporario para operacoes(não existe no processador)
+
+
 
 	for (;;)
 	{
+		//variaveis temporarias para operacoes(não existe no processador)
+		reg16bit opAux;
 		uint16_t address;
 		uint8_t tempbyte;
+		reg32bit opAux32;
+
+
 		uint8_t OpCode = readMem(pc++);
 		Counter -= Cycles[OpCode];
 		gbcpu.cyclecounter += Cycles[OpCode];
@@ -758,21 +765,74 @@ int execute(int ncycles)
 
 		/*DAA */
 		case 0x27:
-			opAux.Word=A;
-			if ((F&N_FLAG) == N_FLAG){
-				if (((F&H_FLAG) == H_FLAG) || ((A & 0x0f) >9))
-					opAux.Word -= 0x06;
-				if (((F&C_FLAG) == C_FLAG) || (A  >0x99))
-					opAux.Word -= 0x60;
-			}else{
-				if (((F&H_FLAG) == H_FLAG) || ((A & 0x0f) >9))
-					opAux.Word += 0x06;
-				if (((F&C_FLAG) == C_FLAG) || (A  >0x99))
-					opAux.Word += 0x60;
-
-			}
-
+			//TODO: verificar valor
+			opAux.Byte.h = (F & 0x70) >> 4;
+			opAux.Byte.l = A;
+			AF= DAALookup[opAux.Word];
 			break;
+		/*CPL*/
+		case 0x2F:
+			A = A ^ 0xFF;
+			F |= H_FLAG;
+			F |= N_FLAG;
+			break;
+
+	 /*****************GMB 16bit-Arithmetic/logical Commands*********************/
+
+		/*ADD HL,rr*/
+		case 0x09: // ADD HL,BC
+			ADD_HL(BC);
+			break;
+		case 0x19: // ADD HL,DE
+			ADD_HL(DE);
+			break;
+		case 0x29: // ADD HL,HL
+			ADD_HL(HL);
+			break;
+		case 0x39: // ADD HL,SP
+			ADD_HL(SP);
+			break;
+
+		/*ADD SP,n */
+		case 0xE8:
+			ADD_SP(readMem(pc++));
+			break;
+
+		/*INC rr*/
+		case 0x03: //INC BC
+			BC+=1;
+			break;
+		case 0x13: //INC DE
+			DE+=1;
+			break;
+		case 0x23: //INC HL
+			HL+=1;
+			break;
+		case 0x33: //INC SP
+			SP+=1;
+			break;
+
+		/*DEC rr*/
+		case 0x0B: //DEC BC
+			BC-=1;
+			break;
+		case 0x1B: //DEC DE
+			DE-=1;
+			break;
+		case 0x2B: //DEC HL
+			HL-=1;
+			break;
+		case 0x3B: //DEC SP
+			SP-=1;
+			break;
+
+		/*LD HL,SP+n*/
+		case 0xF8:
+			LD_HLSP(readMem(pc++));
+			break;
+
+
+
 
 
 		default:
