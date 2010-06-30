@@ -832,7 +832,183 @@ int execute(int ncycles)
 			LD_HLSP(readMem(pc++));
 			break;
 
+		/*****************GMB Rotate- and Shift-Commands*********************/
 
+		case 0x07: //RLCA
+			F = (A & 0x80) >> 3;
+			A = (A << 1) | (A >> 7);
+			break;
+
+		case 0x17: //RLA
+			opAux.Byte.l=A;
+			opAux.Byte.h=(F&C_FLAG)>>4;
+			opAux.Word = ((opAux.Word << 1)|(opAux.Word >> 8)) & 0x1FF;
+			A=opAux.Byte.l;
+			F=opAux.Byte.h << 4;
+			break;
+
+		case 0x0F: //RRCA
+			F = (A & 0x1) << 4;
+			A = (A >> 1) | (A << 7);
+			break;
+
+		case 0x1F: //RRA
+			opAux.Word =  (A << 1) | ((F & C_FLAG) >> 4);
+			opAux.Word = ((opAux.Word >> 1) | (opAux.Word << 8)) & 0x1FF;
+			F = (opAux.Word & 0x1) << 4 ;
+			A = opAux.Word >> 1;
+			break;
+
+		/*rotate and shifts CB Opcodes */
+		case 0xCB:
+			OpCode= readMem(pc++);
+			//TODO: get  and add ticks to counter
+			switch (OpCode) {
+
+				/*RLC  r*/
+				case 0x00: //RLC B
+					RLC(B);
+					break;
+
+				case 0x01://RLC C
+					RLC(C);
+					break;
+
+				case 0x02://RLC D
+					RLC(D);
+					break;
+
+				case 0x03://RLC E
+					RLC(E);
+					break;
+
+				case 0x04://RLC H
+					RLC(H);
+					break;
+
+				case 0x05://RLC L
+					RLC (L);
+					break;
+
+				case 0x06://RLC (HL)
+					tempbyte=readMem(HL);
+					RLC(tempbyte);
+					writeMem(HL,tempbyte);
+					break;
+
+				case 0x07: //RLC A
+					RLC (A);
+					break;
+
+				/*RL   r*/
+				case 0x10: //RL B
+					RL(B);
+					break;
+
+				case 0x11://RL C
+					RL(C);
+					break;
+
+				case 0x12://RL D
+					RL(D);
+					break;
+
+				case 0x13://RL E
+					RL(E);
+					break;
+
+				case 0x14://RL H
+					RL(H);
+					break;
+
+				case 0x15://RL L
+					RL(L);
+					break;
+
+				case 0x16://RL (HL)
+					tempbyte=readMem(HL);
+					RL(tempbyte);
+					writeMem(HL,tempbyte);
+					break;
+
+				case 0x17://RL A
+					RL(A);
+					break;
+
+			   /*RRC r*/
+				case 0x08: //RRC B
+					RRC(B);
+					break;
+
+				case 0x09://RRC C
+					RRC(C);
+					break;
+
+				case 0x0A://RRC D
+					RRC(D);
+					break;
+
+				case 0x0B://RRC E
+					RRC(E);
+					break;
+
+				case 0x0C://RRC H
+					RRC(H);
+					break;
+
+				case 0x0D://RRC L
+					RRC (L);
+					break;
+
+				case 0x0E://RRC (HL)
+					tempbyte=readMem(HL);
+					RRC(tempbyte);
+					writeMem(HL,tempbyte);
+					break;
+
+				case 0x0F: //RRC A
+					RRC (A);
+					break;
+
+
+			   /*RR r*/
+				case 0x18: //RR B
+					RR(B);
+					break;
+
+				case 0x19://RR C
+					RR(C);
+					break;
+
+				case 0x1A://RR D
+					RR(D);
+					break;
+
+				case 0x1B://RR E
+					RR(E);
+					break;
+
+				case 0x1C://RR H
+					RR(H);
+					break;
+
+				case 0x1D://RR L
+					RR (L);
+					break;
+
+				case 0x1E://RR (HL)
+					tempbyte=readMem(HL);
+					RR(tempbyte);
+					writeMem(HL,tempbyte);
+					break;
+
+				case 0x1F: //RR A
+					RR (A);
+					break;
+
+				default:
+					break;
+			}
 
 
 

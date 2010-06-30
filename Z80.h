@@ -147,6 +147,34 @@
 	CHECK_C_ADD16(val);\
 	HL=opAux32.W.l
 
+#define RLC(val) \
+		F=0;\
+		val = (val << 1) | (val >> 7);\
+		CHECK_Z(val)\
+		F = (val & 0x1) << 4
+
+#define RL(val) \
+		F=0;\
+		opAux.Byte.l=val;\
+		opAux.Byte.h=(F&C_FLAG)>>4;\
+		opAux.Word = ((opAux.Word << 1)|(opAux.Word >> 8)) & 0x1FF;\
+		val=opAux.Byte.l;\
+		F=opAux.Byte.h << 4;\
+		F = (F & ~Z_FLAG) | (-(val==0) & Z_FLAG)
+
+#define RRC(val)\
+	    F=0;\
+		F = (val & 0x1) << 4;\
+		val = (val >> 1) | (val << 7);\
+		F = (F & ~Z_FLAG) | (-(val==0) & Z_FLAG)
+
+#define RR(val)\
+	    F=0;\
+	    opAux.Word =  (val << 1) | ((F & C_FLAG) >> 4);\
+		opAux.Word = ((opAux.Word >> 1) | (opAux.Word << 8)) & 0x1FF; \
+		F = (opAux.Word & 0x1) << 4 ; \
+		val = opAux.Word >> 1; \
+		F = (F & ~Z_FLAG) | (-(val==0) & Z_FLAG)
 
 #include <stdint.h>
 
