@@ -1006,6 +1006,145 @@ int execute(int ncycles)
 					RR (A);
 					break;
 
+			   /*SLA r*/
+				case 0x20: //SLA B
+					SLA(B);
+					break;
+
+				case 0x21://SLA C
+					SLA(C);
+					break;
+
+				case 0x22://SLA D
+					SLA(D);
+					break;
+
+				case 0x23://SLA E
+					SLA(E);
+					break;
+
+				case 0x24://SLA H
+					SLA(H);
+					break;
+
+				case 0x25://SLA L
+					SLA (L);
+					break;
+
+				case 0x26://SLA (HL)
+					tempbyte=readMem(HL);
+					SLA(tempbyte);
+					writeMem(HL,tempbyte);
+					break;
+
+				case 0x27: //SLA A
+					SLA (A);
+					break;
+
+				/*SRA r*/
+				case 0x28: //SRA B
+					SRA(B);
+					break;
+
+				case 0x29://SRA C
+					SRA(C);
+					break;
+
+				case 0x2A://SRA D
+					SRA(D);
+					break;
+
+				case 0x2B://SRA E
+					SRA(E);
+					break;
+
+				case 0x2C://SRA H
+					SRA(H);
+					break;
+
+				case 0x2D://SRA L
+					SRA (L);
+					break;
+
+				case 0x2E://SRA (HL)
+					tempbyte=readMem(HL);
+					SRA(tempbyte);
+					writeMem(HL,tempbyte);
+					break;
+
+				case 0x2F: //SRA A
+					SRA (A);
+					break;
+
+				/*SRL r*/
+				case 0x38: //SRL B
+					SRL(B);
+					break;
+
+				case 0x39://SRL C
+					SRL(C);
+					break;
+
+				case 0x3A://SRL D
+					SRL(D);
+					break;
+
+				case 0x3B://SRL E
+					SRL(E);
+					break;
+
+				case 0x3C://SRL H
+					SRL(H);
+					break;
+
+				case 0x3D://SRL L
+					SRL (L);
+					break;
+
+				case 0x3E://SRL (HL)
+					tempbyte=readMem(HL);
+					SRL(tempbyte);
+					writeMem(HL,tempbyte);
+					break;
+
+				case 0x3F: //SRL A
+					SRL (A);
+					break;
+
+				/*SWAP r*/
+				case 0x30: //SWAP B
+					SWAP(B);
+					break;
+
+				case 0x31://SWAP C
+					SWAP(C);
+					break;
+
+				case 0x32://SWAP D
+					SWAP(D);
+					break;
+
+				case 0x33://SWAP E
+					SWAP(E);
+					break;
+
+				case 0x34://SWAP H
+					SWAP(H);
+					break;
+
+				case 0x35://SWAP L
+					SWAP (L);
+					break;
+
+				case 0x36://SWAP (HL)
+					tempbyte=readMem(HL);
+					SWAP(tempbyte);
+					writeMem(HL,tempbyte);
+					break;
+
+				case 0x37: //SWAP A
+					SWAP (A);
+					break;
 				default:
 					break;
 			}

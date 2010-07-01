@@ -176,6 +176,28 @@
 		val = opAux.Word >> 1; \
 		F = (F & ~Z_FLAG) | (-(val==0) & Z_FLAG)
 
+#define SLA(val)\
+	    F=(val&0x80)>>3;\
+	    val = val << 1;\
+		F = (F & ~Z_FLAG) | (-(val==0) & Z_FLAG)
+
+#define SRA(val)\
+	    F=(val&0x1)<<4;\
+	    val = (val & 0x80 ) |  (val >> 1);\
+		F = (F & ~Z_FLAG) | (-(val==0) & Z_FLAG)
+
+#define SRL(val)\
+	    F=(val&0x1)<<4;\
+	    val = val >> 1;\
+		F = (F & ~Z_FLAG) | (-(val==0) & Z_FLAG)
+
+#define SWAP(val)\
+	F = 0;\
+	val = (val >>4) | (val << 4);\
+	F = (F & ~Z_FLAG) | (-(val==0) & Z_FLAG)
+
+
+
 #include <stdint.h>
 
 #ifdef __cplusplus
