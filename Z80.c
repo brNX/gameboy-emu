@@ -1781,9 +1781,43 @@ int execute(int ncycles)
 				default:
 					break;
 			}
-
+			break;
 
 		/*****************GMB Jumpcommands*********************/
+
+		/*JP nn*/
+		case 0xC3:
+			//TODO: mudar para gbcpu.pc provavelmente
+			opAux.Byte.l=readMem(pc++);
+			opAux.Byte.h= readMem(pc);
+			pc=opAux.Word;
+			break;
+
+		//TODO : verificar pc++
+		/*JP cc,nn*/
+		case 0xC2: // JP  NZ,nn
+			opAux.Byte.l=readMem(pc++);
+			opAux.Byte.h= readMem(pc++);
+			if ((F & Z_FLAG)==0 ) pc=opAux.Word;
+			break;
+		case 0xCA: // JP  Z,nn
+			opAux.Byte.l=readMem(pc++);
+			opAux.Byte.h= readMem(pc++);
+			if ((F & Z_FLAG)==1 ) pc=opAux.Word;
+			break;
+
+		case 0xD2: // JP  NC,nn
+			opAux.Byte.l=readMem(pc++);
+			opAux.Byte.h= readMem(pc++);
+			if ((F & C_FLAG)==0 ) pc=opAux.Word;
+			break;
+
+		case 0xDA: // JP  C,nn
+			opAux.Byte.l=readMem(pc++);
+			opAux.Byte.h= readMem(pc++);
+			if ((F & C_FLAG)==1 ) pc=opAux.Word;
+			break;
+
 
 
 
