@@ -196,6 +196,23 @@
 	val = (val >>4) | (val << 4);\
 	F = (F & ~Z_FLAG) | (-(val==0) & Z_FLAG)
 
+//TODO : verificar o BIT
+#define BIT(n,val)\
+	if(((0x1 << n) & val)==0)\
+		F |= Z_FLAG;\
+	else \
+		F &= ~Z_FLAG; \
+	F &= ~N_FLAG;\
+	F |= H_FLAG
+
+//TODO : verificar o SET
+#define SET(n,val)\
+	val |= (0x1 << n)
+
+//TODO : verificar o RES
+#define RES(n,val)\
+	val &= ~(0x1 << n)
+
 
 
 #include <stdint.h>
