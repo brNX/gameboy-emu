@@ -1793,29 +1793,43 @@ int execute(int ncycles)
 			pc=opAux.Word;
 			break;
 
+		/* JP (HL) */
+		case 0xE9:
+			pc=HL;
+			break; 
+
 		//TODO : verificar pc++
 		/*JP cc,nn*/
 		case 0xC2: // JP  NZ,nn
-			opAux.Byte.l=readMem(pc++);
-			opAux.Byte.h= readMem(pc++);
-			if ((F & Z_FLAG)==0 ) pc=opAux.Word;
+			if ((F & Z_FLAG)==0 ) {
+			  opAux.Byte.l=readMem(pc++);
+			  opAux.Byte.h= readMem(pc++);
+			  pc=opAux.Word;
+			}else pc+=2;
 			break;
+
 		case 0xCA: // JP  Z,nn
-			opAux.Byte.l=readMem(pc++);
-			opAux.Byte.h= readMem(pc++);
-			if ((F & Z_FLAG)==1 ) pc=opAux.Word;
+			if ((F & Z_FLAG)==1 ) {
+			  opAux.Byte.l=readMem(pc++);
+			  opAux.Byte.h= readMem(pc++);
+			  pc=opAux.Word;
+			}else pc+=2;
 			break;
 
 		case 0xD2: // JP  NC,nn
-			opAux.Byte.l=readMem(pc++);
-			opAux.Byte.h= readMem(pc++);
-			if ((F & C_FLAG)==0 ) pc=opAux.Word;
+			if ((F & C_FLAG)==0 ) {
+			  opAux.Byte.l=readMem(pc++);
+			  opAux.Byte.h= readMem(pc++);
+			  pc=opAux.Word;
+			}else pc+=2;
 			break;
 
 		case 0xDA: // JP  C,nn
-			opAux.Byte.l=readMem(pc++);
-			opAux.Byte.h= readMem(pc++);
-			if ((F & C_FLAG)==1 ) pc=opAux.Word;
+			if ((F & C_FLAG)==1 ){ 
+			  opAux.Byte.l=readMem(pc++);
+			  opAux.Byte.h= readMem(pc++);
+			  pc=opAux.Word;
+			}else pc+=2;
 			break;
 
 
