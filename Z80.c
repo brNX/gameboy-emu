@@ -2031,6 +2031,26 @@ int execute(int ncycles)
               /*****************GMB CPU-Controlcommands*********************/
 
 
+                case 0x3F: //CCF
+                    F = (F &(Z_FLAG|C_FLAG))^C_FLAG;
+                    break;
+                case 0x37: //SCF
+                    F = (F&Z_FLAG)|C_FLAG;
+                    break;
+                case 0x76://HALT
+                    //TODO: fazer algo ou nao
+                    break;
+                case 0x10://STOP
+                    //TODO: fazer algo ou nao
+                    pc++;
+                    break;
+                case 0xF3: //DI
+                    IME=0;
+                    break;
+                case 0xFB: //EI
+                    IME=1;
+
+
 		default:
 			break;
 		}
