@@ -26,6 +26,8 @@ void resetZ80()
 	HL = 0x014D;
 	gbcpu.cyclecounter = 0;
 	SP = 0xFFFE;
+        //todo: verificar
+        gbcpu.ime=1;
 }
 
 int execute(int ncycles)
@@ -1875,20 +1877,156 @@ int execute(int ncycles)
 		case 0xCD:
 			opAux.Byte.l = readMem(pc++);
 			opAux.Byte.h = readMem(pc++);
-			writeMem(SP-1,((pc&0xF0)>>4));
-			writeMem(SP-2,(pc&0xF));
+                        writeMem(SP-1,((pc&0xFF00)>>8));
+                        writeMem(SP-2,(pc&0xFF));
 			SP-=2;
 			pc=opAux.Word;
 			break;
 
-		case 0xC4://CALL NZ,nn
-			break;
+                case 0xC4://CALL NZ,nn
+                    if ((F & Z_FLAG)==0 ) {
+                        opAux.Byte.l = readMem(pc++);
+                        opAux.Byte.h = readMem(pc++);
+                        writeMem(SP-1,((pc&0xFF00)>>8));
+                        writeMem(SP-2,(pc&0xFF));
+                        SP-=2;
+                        pc=opAux.Word;
+                    }else pc+=2;
+                    break;
+
 		case 0xCC://CALL Z,nn
-			break;
+                    if ((F & Z_FLAG)==1 ) {
+                        opAux.Byte.l = readMem(pc++);
+                        opAux.Byte.h = readMem(pc++);
+                        writeMem(SP-1,((pc&0xFF00)>>8));
+                        writeMem(SP-2,(pc&0xFF));
+                        SP-=2;
+                        pc=opAux.Word;
+                    }else pc+=2;
+                    break;
+
 		case 0xD4://CALL NC,nn
-			break;
+                    if ((F & C_FLAG)==0 ) {
+                        opAux.Byte.l = readMem(pc++);
+                        opAux.Byte.h = readMem(pc++);
+                        writeMem(SP-1,((pc&0xFF00)>>8));
+                        writeMem(SP-2,(pc&0xFF));
+                        SP-=2;
+                        pc=opAux.Word;
+                    }else pc+=2;
+                    break;
+
 		case 0xDC://CALL C,nn
-			break;
+                    if ((F & C_FLAG)==1 ) {
+                        opAux.Byte.l = readMem(pc++);
+                        opAux.Byte.h = readMem(pc++);
+                        writeMem(SP-1,((pc&0xFF00)>>8));
+                        writeMem(SP-2,(pc&0xFF));
+                        SP-=2;
+                        pc=opAux.Word;
+                    }else pc+=2;
+                    break;
+
+                /*RET*/
+                case 0xC9:
+                    opAux.Byte.l = readMem(SP);
+                    opAux.Byte.h = readMem(SP+1);
+                    SP+=2;
+                    pc=opAux.Word;
+                    break;
+
+                /*RET cc*/
+                case 0xC0://RET NZ
+                        if ((F & Z_FLAG)==0 ) {
+                            opAux.Byte.l = readMem(SP);
+                            opAux.Byte.h = readMem(SP+1);
+                            SP+=2;
+                            pc=opAux.Word;
+                        }
+                        break;
+                case 0xC8://RET Z
+                        if ((F & Z_FLAG)==1 ) {
+                            opAux.Byte.l = readMem(SP);
+                            opAux.Byte.h = readMem(SP+1);
+                            SP+=2;
+                            pc=opAux.Word;
+                        }
+                        break;
+                case 0xD0://RET NC
+                        if ((F & C_FLAG)==0 ) {
+                            opAux.Byte.l = readMem(SP);
+                            opAux.Byte.h = readMem(SP+1);
+                            SP+=2;
+                            pc=opAux.Word;
+                        }
+                        break;
+                case 0xD8://RET C
+                        if ((F & C_FLAG)==1 ){
+                            opAux.Byte.l = readMem(SP);
+                            opAux.Byte.h = readMem(SP+1);
+                            SP+=2;
+                            pc=opAux.Word;
+                        }
+                        break;
+
+                /*RETI*/
+                case 0xD9:
+                        IME=1;
+                        opAux.Byte.l = readMem(SP);
+                        opAux.Byte.h = readMem(SP+1);
+                        SP+=2;
+                        pc=opAux.Word;
+                        break;
+
+                /*RST n*/
+                case 0xC7://RST 0x0
+                    writeMem(SP-1,((pc&0xFF00)>>8));
+                    writeMem(SP-2,(pc&0xFF));
+                    SP-=2;
+                    pc=0;
+                    break;
+                case 0xD7://RST 0x10
+                    writeMem(SP-1,((pc&0xFF00)>>8));
+                    writeMem(SP-2,(pc&0xFF));
+                    SP-=2;
+                    pc=0x10;
+                    break;
+                case 0xDF://RST 0x18
+                    writeMem(SP-1,((pc&0xFF00)>>8));
+                    writeMem(SP-2,(pc&0xFF));
+                    SP-=2;
+                    pc=0x18;
+                    break;
+                case 0xE7://RST 0x20
+                    writeMem(SP-1,((pc&0xFF00)>>8));
+                    writeMem(SP-2,(pc&0xFF));
+                    SP-=2;
+                    pc=0x20;
+                    break;
+                case 0xEF://RST 0x28
+                    writeMem(SP-1,((pc&0xFF00)>>8));
+                    writeMem(SP-2,(pc&0xFF));
+                    SP-=2;
+                    pc=0x28;
+                    break;
+                case 0xF7://RST 0x30
+                    writeMem(SP-1,((pc&0xFF00)>>8));
+                    writeMem(SP-2,(pc&0xFF));
+                    SP-=2;
+                    pc=0x30;
+                    break;
+                case 0xFF://RST 0x38
+                    writeMem(SP-1,((pc&0xFF00)>>8));
+                    writeMem(SP-2,(pc&0xFF));
+                    SP-=2;
+                    pc=0x38;
+                    break;
+                case 0xCF://RST 0x8
+                    writeMem(SP-1,((pc&0xFF00)>>8));
+                    writeMem(SP-2,(pc&0xFF));
+                    SP-=2;
+                    pc=0x8;
+                    break;
 
 
 		default:

@@ -23,13 +23,14 @@
 #define HL gbcpu.hl.Word
 #define SP gbcpu.sp.Word
 #define PC gbcpu.pc.Word
+#define IME gbcpu.ime
 
 #define Z_FLAG	 0x80	/* Zero				Bit 7 */
 #define N_FLAG   0x40	/* Add/Substract	Bit 6 */
 #define H_FLAG	 0x20	/* Half Carry		Bit 5 */
 #define C_FLAG	 0x10	/* Carry			Bit 4 */
 
-//é 0 ?
+//is 0 ?
 //if (val==0) F |= Z_FLAG; else F &= ~Z_FLAG;
 #define CHECK_Z(val) \
 	F = (F & ~Z_FLAG) | (-(val==0) & Z_FLAG);
@@ -249,6 +250,7 @@ extern "C"
 	typedef struct
 	{
 			reg16bit af, bc, de, hl, sp, pc;
+                        int ime;
 			int cyclecounter;
 			int pause;
 			int halt;
