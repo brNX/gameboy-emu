@@ -56,7 +56,7 @@
 
 
 #define ADD_A(val) \
-	opAux.Word = (uint16_t) A + (uint16_t)val;\
+	opAux.Word = A + val;\
 	F=0x0;\
 	CHECK_Z(opAux.Byte.l)\
 	CHECK_H(val)\
@@ -64,7 +64,7 @@
 	A=opAux.Byte.l
 
 #define ADC_A(val) \
-	opAux.Word = (uint16_t) A + (uint16_t)val + ((uint16_t)(F & C_FLAG) >> 4) ;\
+	opAux.Word =  A + val + ((F & C_FLAG) >> 4) ;\
 	F=0x0;\
 	CHECK_Z(opAux.Byte.l)\
 	CHECK_H(val)\
@@ -73,7 +73,7 @@
 
 
 #define SUB_A(val) \
-	opAux.Word = (uint16_t) A - (uint16_t)val;\
+	opAux.Word = A - val;\
 	F=N_FLAG;\
 	CHECK_Z(opAux.Byte.l)\
 	CHECK_H(val)\
@@ -81,7 +81,7 @@
 	A=opAux.Byte.l
 
 #define SBC_A(val) \
-	opAux.Word = (uint16_t) A - (uint16_t)val - ((uint16_t)(F & C_FLAG) >> 4) ;\
+	opAux.Word =  A - val - ((F & C_FLAG) >> 4) ;\
 	F=N_FLAG;\
 	CHECK_Z(opAux.Byte.l)\
 	CHECK_H(val)\
@@ -104,14 +104,14 @@
 	F = val ? 0x0 : Z_FLAG
 
 #define CP_A(val) \
-	opAux.Word = (uint16_t) A - (uint16_t)val;\
+	opAux.Word =  A - val;\
 	F=N_FLAG;\
 	CHECK_Z(opAux.Byte.l)\
 	CHECK_H(val)\
 	CHECK_C_SUB(val)
 
 #define INC(val) \
-	opAux.Word = (uint16_t)val + 1 ;\
+	opAux.Word = val + 1 ;\
 	F&=C_FLAG;\
 	CHECK_Z(opAux.Byte.l)\
 	F&=~N_FLAG;\
@@ -119,7 +119,7 @@
 	val=opAux.Byte.l
 
 #define DEC(val) \
-	opAux.Word = (uint16_t)val - 1 ;\
+	opAux.Word = val - 1 ;\
 	F&=C_FLAG;\
 	CHECK_Z(opAux.Byte.l)\
 	F|=N_FLAG;\
@@ -127,21 +127,21 @@
 	val=opAux.Byte.l
 
 #define ADD_HL(val) \
-	opAux32.DW = (uint32_t) HL + (uint32_t) val;\
+	opAux32.DW = HL + val;\
 	F &= ~N_FLAG;\
 	CHECK_H16(val);\
 	CHECK_C_ADD16(val);\
 	HL=opAux32.W.l
 
 #define ADD_SP(val) \
-	opAux32.DW = (uint32_t) SP + (uint32_t) val;\
+	opAux32.DW = SP + val;\
 	F = 0;\
 	CHECK_H16(val);\
 	CHECK_C_ADD16(val);\
 	SP=opAux32.W.l
 
 #define LD_HLSP(val) \
-	opAux32.DW = (uint32_t) SP + (uint32_t) val;\
+	opAux32.DW = SP + val;\
 	F = 0;\
 	CHECK_H16(val);\
 	CHECK_C_ADD16(val);\

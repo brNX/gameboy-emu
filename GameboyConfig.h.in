@@ -1,0 +1,3 @@
+// the configured options and settings for Tutorial
+#define Gameboy-Emu_VERSION_MAJOR @Gameboy-Emu_VERSION_MAJOR@
+#define Gameboy-Emu_VERSION_MINOR @Gameboy-Emu_VERSION_MINOR@

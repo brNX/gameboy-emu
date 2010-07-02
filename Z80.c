@@ -31,7 +31,7 @@ void resetZ80()
 int execute(int ncycles)
 {
 	int Counter = ncycles;
-	uint8_t pc = PC;
+	uint16_t pc = PC;
 
 
 
@@ -42,6 +42,7 @@ int execute(int ncycles)
 		reg16bit opAux;
 		uint16_t address;
 		uint8_t tempbyte;
+		int8_t signedtempbyte;
 		reg32bit opAux32;
 
 
@@ -795,8 +796,10 @@ int execute(int ncycles)
 			break;
 
 		/*ADD SP,n */
+		//TODO: por verificar (signed byte)
 		case 0xE8:
-			ADD_SP(readMem(pc++));
+			signedtempbyte = readMem(pc++);
+			ADD_SP(signedtempbyte);
 			break;
 
 		/*INC rr*/
@@ -828,8 +831,10 @@ int execute(int ncycles)
 			break;
 
 		/*LD HL,SP+n*/
+		//TODO: por verificar (signed byte)
 		case 0xF8:
-			LD_HLSP(readMem(pc++));
+			signedtempbyte=readMem(pc++);
+			LD_HLSP(signedtempbyte);
 			break;
 
 		/*****************GMB Rotate- , Shift- and Singlebit Operation Commands*********************/
@@ -1832,8 +1837,58 @@ int execute(int ncycles)
 			}else pc+=2;
 			break;
 
+		/*JR PC+dd*/
+		//TODO: verificar range (pc++)
+		case 0x18:
+			signedtempbyte = readMem(pc++);
+			pc += signedtempbyte;
+			break;
 
+		/*JR   f,PC+dd*/
+		case 0x20://JR NZ,dd
+			if ((F & Z_FLAG)==0 ) {
+				signedtempbyte=readMem(pc++);
+				pc+=signedtempbyte;
+			}else pc++;
+			break;
+		case 0x28://JR Z,dd
+			if ((F & Z_FLAG)==1 ) {
+				signedtempbyte=readMem(pc++);
+				pc+=signedtempbyte;
+			}else pc++;
+			break;
+		case 0x30://JR NC,dd
+			if ((F & C_FLAG)==0 ) {
+				signedtempbyte=readMem(pc++);
+				pc+=signedtempbyte;
+			}else pc++;
+			break;
+		case 0x38://JR C,dd
+			if ((F & C_FLAG)==1 ){
+				signedtempbyte=readMem(pc++);
+				pc+=signedtempbyte;
+			}else pc++;
+			break;
 
+		/*CALL nn*/
+		//TODO: mudar para PC provavelmente
+		case 0xCD:
+			opAux.Byte.l = readMem(pc++);
+			opAux.Byte.h = readMem(pc++);
+			writeMem(SP-1,((pc&0xF0)>>4));
+			writeMem(SP-2,(pc&0xF));
+			SP-=2;
+			pc=opAux.Word;
+			break;
+
+		case 0xC4://CALL NZ,nn
+			break;
+		case 0xCC://CALL Z,nn
+			break;
+		case 0xD4://CALL NC,nn
+			break;
+		case 0xDC://CALL C,nn
+			break;
 
 
 		default:
