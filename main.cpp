@@ -44,6 +44,7 @@ int main()
 	printf("cenas ? : %u\n",cenas3);
 	cenas2+=cenas;
 	printf("cenas2 ? : %u\n",cenas2);
+        printf("cycles: %d\n",Cycles[0xCB]);
 
 	return 0;
 }

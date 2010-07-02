@@ -35,9 +35,7 @@ int execute(int ncycles)
 	int Counter = ncycles;
 	uint16_t pc = PC;
 
-
-
-
+        //emulation loop
 	for (;;)
 	{
 		//variaveis temporarias para operacoes(não existe no processador)
@@ -869,7 +867,8 @@ int execute(int ncycles)
 		/*rotate and shifts CB Opcodes */
 		case 0xCB:
 			OpCode= readMem(pc++);
-			//TODO: get  and add ticks to counter
+                        Counter -= CyclesCB[OpCode];
+                        gbcpu.cyclecounter += CyclesCB[OpCode];
 			switch (OpCode) {
 
 				/*RLC  r*/
