@@ -2028,6 +2028,8 @@ int execute(int ncycles)
                     pc=0x8;
                     break;
 
+              /*****************GMB CPU-Controlcommands*********************/
+
 
 		default:
 			break;
