@@ -1,10 +1,16 @@
 cmake_minimum_required(VERSION 2.6)
 
+# std C libraries
+#find_package(stdlibs REQUIRED)
+
 project (Gameboy-Emu)
 
 # The version number.
 set (Gameboy-Emu_VERSION_MAJOR 1)
 set (Gameboy-Emu_VERSION_MINOR 0)
+
+# additional compiler flags
+add_definitions(-Wall -g)
 
 # configure a header file to pass some of the CMake settings
 # to the source code
