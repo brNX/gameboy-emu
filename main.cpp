@@ -5,6 +5,8 @@
 
 #include <cstdio>
 
+
+
 int main()
 {
 	reg16bit af;
@@ -19,6 +21,20 @@ int main()
 
 	printf("A: %x F: %x\n",af.Byte.h,af.Byte.l);
 	resetZ80();
+
+        FILE *f;
+        int n;
+
+        f = fopen("memdump", "rb");
+        if (f)
+        {
+            n = fread(gb_memory, 0x10000, 1, f);
+        }
+        else{
+            printf("cenas\n");
+        }
+
+
 	printf ("%d\n",Cycles[0xE5]);
 	printf ("%d\n",Cycles[0xF1]);
 	uint8_t cenas = 250;
