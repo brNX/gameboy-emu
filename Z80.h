@@ -225,10 +225,10 @@ extern "C"
 	{
 			struct
 			{
-				#ifdef BIG_ENDIAN
-				uint8_t h,l; /* ...in low-endian architecture */
+				#ifndef BIG_ENDIAN
+				uint8_t l,h; /* ...in little-endian architecture */
 				#else
-				uint8_t l, h; /* ...in high-endian architecture */
+				uint8_t h, l; /* ...in big-endian architecture */
 				#endif
 			} Byte;
 			uint16_t Word;
@@ -238,10 +238,10 @@ extern "C"
 	{
 		struct
 		{
-			#ifdef BIG_ENDIAN
-			uint16_t l,h; /* ...in low-endian architecture */
+			#ifndef BIG_ENDIAN
+			uint16_t l,h; /* ...in little-endian architecture */
 			#else
-			uint16_t h, l; /* ...in high-endian architecture */
+			uint16_t h, l; /* ...in big-endian architecture */
 			#endif
 		} W;
 		uint32_t DW;

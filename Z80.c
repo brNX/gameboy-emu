@@ -13,7 +13,12 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#ifdef DEBUG
+#include "debugcounters.h"
+#endif
+
 Z80 gbcpu;
+
 
 void resetZ80()
 {
@@ -60,6 +65,7 @@ int execute(int ncycles)
 
 #ifdef DEBUG
 	printf("opcode:%02x ",OpCode);
+	CyclesCount[OpCode]++;
 #endif
 
 	switch (OpCode)
@@ -1275,11 +1281,20 @@ int execute(int ncycles)
 
 		    /*AND A,(HL) */
 		case 0xA6:
+#ifdef DEBUG
+		    printf("\nmnemonic:AND A,(HL)\n");
+		    printf("**************************\n");
+#endif
 		    AND_A(readMem(HL));
 		    break;
 		    /*AND A,n*/
 		case 0xE6:
 		    AND_A(readMem(pc++));
+#ifdef DEBUG
+		    printf("%02x",readMem(pc-1));
+		    printf("\nmnemonic:AND A,%02x\n",readMem(pc-1));
+		    printf("**************************\n");
+#endif
 		    break;
 
 		    /*XOR A,r */
@@ -1343,10 +1358,19 @@ int execute(int ncycles)
 		    /*XOR A,(HL) */
 		case 0xAE:
 		    XOR_A(readMem(HL));
+#ifdef DEBUG
+		    printf("\nmnemonic:XOR A,(HL)\n");
+		    printf("**************************\n");
+#endif
 		    break;
 		    /*XOR A,n*/
 		case 0xEE:
 		    XOR_A(readMem(pc++));
+#ifdef DEBUG
+		    printf("%02x",readMem(pc-1));
+		    printf("\nmnemonic:XOR A,%02x\n",readMem(pc-1));
+		    printf("**************************\n");
+#endif
 		    break;
 
 		    /*OR A,r */
@@ -1410,10 +1434,20 @@ int execute(int ncycles)
 		    /*OR A,(HL) */
 		case 0xB6:
 		    OR_A(readMem(HL));
+#ifdef DEBUG
+		    printf("\nmnemonic:OR A,(HL)\n");
+		    printf("**************************\n");
+#endif
 		    break;
+
 		    /*OR A,n*/
 		case 0xF6:
 		    OR_A(readMem(pc++));
+#ifdef DEBUG
+		    printf("%02x",readMem(pc-1));
+		    printf("\nmnemonic:OR A,%02x\n",readMem(pc-1));
+		    printf("**************************\n");
+#endif
 		    break;
 
 		    /*CP A,r */
@@ -1477,10 +1511,20 @@ int execute(int ncycles)
 		    /*CP A,(HL) */
 		case 0xBE:
 		    CP_A(readMem(HL));
+#ifdef DEBUG
+		    printf("\nmnemonic:CP A,(HL)\n");
+		    printf("**************************\n");
+#endif
 		    break;
+
 		    /*CP A,n*/
 		case 0xFE:
 		    CP_A(readMem(pc++));
+#ifdef DEBUG
+		    printf("%02x",readMem(pc-1));
+		    printf("\nmnemonic:CP A,%02x\n",readMem(pc-1));
+		    printf("**************************\n");
+#endif
 		    break;
 
 		    /*INC r */
@@ -1546,6 +1590,10 @@ int execute(int ncycles)
 		    tempbyte=readMem(HL);
 		    INC(tempbyte);
 		    writeMem(HL,tempbyte);
+#ifdef DEBUG
+		    printf("\nmnemonic:INC (HL)\n");
+		    printf("**************************\n");
+#endif
 		    break;
 
 		    /*DEC r */
@@ -1611,6 +1659,10 @@ int execute(int ncycles)
 		    tempbyte=readMem(HL);
 		    DEC(tempbyte);
 		    writeMem(HL,tempbyte);
+#ifdef DEBUG
+		    printf("\nmnemonic:DEC (HL)\n");
+		    printf("**************************\n");
+#endif
 		    break;
 
 		    /*DAA */
@@ -1619,12 +1671,21 @@ int execute(int ncycles)
 		    opAux.Byte.h = (F & 0x70) >> 4;
 		    opAux.Byte.l = A;
 		    AF= DAALookup[opAux.Word];
+#ifdef DEBUG
+		    printf("\nmnemonic:DAA\n");
+		    printf("**************************\n");
+#endif
 		    break;
+
 		    /*CPL*/
 		case 0x2F:
 		    A = A ^ 0xFF;
 		    F |= H_FLAG;
 		    F |= N_FLAG;
+#ifdef DEBUG
+		    printf("\nmnemonic:CPL\n");
+		    printf("**************************\n");
+#endif
 		    break;
 
 		    /*****************GMB 16bit-Arithmetic/logical Commands*********************/
@@ -1668,6 +1729,11 @@ int execute(int ncycles)
 		case 0xE8:
 		    signedtempbyte = readMem(pc++);
 		    ADD_SP(signedtempbyte);
+#ifdef DEBUG
+		    printf("%02x",signedtempbyte);
+		    printf("\nmnemonic:CP A,%d\n",signedtempbyte);
+		    printf("**************************\n");
+#endif
 		    break;
 
 		    /*INC rr*/
@@ -1743,6 +1809,11 @@ int execute(int ncycles)
 		case 0xF8:
 		    signedtempbyte=readMem(pc++);
 		    LD_HLSP(signedtempbyte);
+#ifdef DEBUG
+		    printf("%02x",signedtempbyte);
+		    printf("\nmnemonic:LD HL,SP+%d\n",signedtempbyte);
+		    printf("**************************\n");
+#endif
 		    break;
 
 		    /*****************GMB Rotate- , Shift- and Singlebit Operation Commands*********************/
@@ -1750,6 +1821,10 @@ int execute(int ncycles)
 		case 0x07: //RLCA
 		    F = (A & 0x80) >> 3;
 		    A = (A << 1) | (A >> 7);
+#ifdef DEBUG
+		    printf("\nmnemonic:RLCA\n");
+		    printf("**************************\n");
+#endif
 		    break;
 
 		case 0x17: //RLA
@@ -1758,11 +1833,19 @@ int execute(int ncycles)
 		    opAux.Word = ((opAux.Word << 1)|(opAux.Word >> 8)) & 0x1FF;
 		    A=opAux.Byte.l;
 		    F=opAux.Byte.h << 4;
+#ifdef DEBUG
+		    printf("\nmnemonic:RLA\n");
+		    printf("**************************\n");
+#endif
 		    break;
 
 		case 0x0F: //RRCA
 		    F = (A & 0x1) << 4;
 		    A = (A >> 1) | (A << 7);
+#ifdef DEBUG
+		    printf("\nmnemonic:RRCA\n");
+		    printf("**************************\n");
+#endif
 		    break;
 
 		case 0x1F: //RRA
@@ -1770,13 +1853,23 @@ int execute(int ncycles)
 		    opAux.Word = ((opAux.Word >> 1) | (opAux.Word << 8)) & 0x1FF;
 		    F = (opAux.Word & 0x1) << 4 ;
 		    A = opAux.Word >> 1;
+#ifdef DEBUG
+		    printf("\nmnemonic:RRA\n");
+		    printf("**************************\n");
+#endif
 		    break;
 
 		    /*rotate and shifts CB Opcodes */
 		case 0xCB:
-		    OpCode= readMem(pc++);
+
+			OpCode= readMem(pc++);
 		    Counter -= CyclesCB[OpCode];
 		    gbcpu.cyclecounter += CyclesCB[OpCode];
+#ifdef DEBUG
+		    printf("%02x",OpCode);
+		    CyclesCBCount[OpCode]++;
+#endif
+
 		    switch (OpCode) {
 
 			/*RLC  r*/
@@ -1838,6 +1931,10 @@ int execute(int ncycles)
 			tempbyte=readMem(HL);
 			RLC(tempbyte);
 			writeMem(HL,tempbyte);
+#ifdef DEBUG
+			printf("\nmnemonic:RLC (HL)\n");
+			printf("**************************\n");
+#endif
 			break;
 
 		    case 0x07: //RLC A
@@ -1908,6 +2005,10 @@ int execute(int ncycles)
 			tempbyte=readMem(HL);
 			RL(tempbyte);
 			writeMem(HL,tempbyte);
+#ifdef DEBUG
+			printf("\nmnemonic:RL (HL)\n");
+			printf("**************************\n");
+#endif
 			break;
 
 		    case 0x17://RL A
@@ -1978,6 +2079,10 @@ int execute(int ncycles)
 			tempbyte=readMem(HL);
 			RRC(tempbyte);
 			writeMem(HL,tempbyte);
+#ifdef DEBUG
+			printf("\nmnemonic:RRC (HL)\n");
+			printf("**************************\n");
+#endif
 			break;
 
 		    case 0x0F: //RRC A
@@ -2049,6 +2154,10 @@ int execute(int ncycles)
 			tempbyte=readMem(HL);
 			RR(tempbyte);
 			writeMem(HL,tempbyte);
+#ifdef DEBUG
+			printf("\nmnemonic:RR (HL)\n");
+			printf("**************************\n");
+#endif
 			break;
 
 		    case 0x1F: //RR A
@@ -2119,6 +2228,10 @@ int execute(int ncycles)
 			tempbyte=readMem(HL);
 			SLA(tempbyte);
 			writeMem(HL,tempbyte);
+#ifdef DEBUG
+			printf("\nmnemonic:SLA (HL)\n");
+			printf("**************************\n");
+#endif
 			break;
 
 		    case 0x27: //SLA A
@@ -2189,6 +2302,10 @@ int execute(int ncycles)
 			    tempbyte=readMem(HL);
 			    SRA(tempbyte);
 			    writeMem(HL,tempbyte);
+#ifdef DEBUG
+			printf("\nmnemonic:SRA (HL)\n");
+			printf("**************************\n");
+#endif
 			    break;
 
 			case 0x2F: //SRA A
@@ -2259,6 +2376,10 @@ int execute(int ncycles)
 			    tempbyte=readMem(HL);
 			    SRL(tempbyte);
 			    writeMem(HL,tempbyte);
+#ifdef DEBUG
+			printf("\nmnemonic:SRL (HL)\n");
+			printf("**************************\n");
+#endif
 			    break;
 
 			case 0x3F: //SRL A
@@ -2329,6 +2450,10 @@ int execute(int ncycles)
 			    tempbyte=readMem(HL);
 			    SWAP(tempbyte);
 			    writeMem(HL,tempbyte);
+#ifdef DEBUG
+			printf("\nmnemonic:SWAP (HL)\n");
+			printf("**************************\n");
+#endif
 			    break;
 
 			case 0x37: //SWAP A
@@ -3969,6 +4094,11 @@ int execute(int ncycles)
 				opAux.Byte.h= readMem(pc++);
 				pc=opAux.Word;
 			    }else pc+=2;
+#ifdef DEBUG
+		    printf(" %02x %02x",readMem(pc-2), readMem(pc-1));
+		    printf("\nmnemonic:JP NZ,%04x\n",readMem(pc-2)|(readMem(pc-1)<<8));
+		    printf("**************************\n");
+#endif
 			    break;
 
 			case 0xCA: //JP  Z,nn
@@ -3977,6 +4107,11 @@ int execute(int ncycles)
 				opAux.Byte.h= readMem(pc++);
 				pc=opAux.Word;
 			    }else pc+=2;
+#ifdef DEBUG
+		    printf(" %02x %02x",readMem(pc-2), readMem(pc-1));
+		    printf("\nmnemonic:JP Z,%04x\n",readMem(pc-2)|(readMem(pc-1)<<8));
+		    printf("**************************\n");
+#endif
 			    break;
 
 			case 0xD2: //JP  NC,nn
@@ -3985,6 +4120,11 @@ int execute(int ncycles)
 				opAux.Byte.h= readMem(pc++);
 				pc=opAux.Word;
 			    }else pc+=2;
+#ifdef DEBUG
+		    printf(" %02x %02x",readMem(pc-2), readMem(pc-1));
+		    printf("\nmnemonic:JP NC,%04x\n",readMem(pc-2)|(readMem(pc-1)<<8));
+		    printf("**************************\n");
+#endif
 			    break;
 
 			case 0xDA: //JP  C,nn
@@ -3993,6 +4133,11 @@ int execute(int ncycles)
 				opAux.Byte.h= readMem(pc++);
 				pc=opAux.Word;
 			    }else pc+=2;
+#ifdef DEBUG
+		    printf(" %02x %02x",readMem(pc-2), readMem(pc-1));
+		    printf("\nmnemonic:JP C,%04x\n",readMem(pc-2)|(readMem(pc-1)<<8));
+		    printf("**************************\n");
+#endif
 			    break;
 
 			    /*JR PC+dd*/
@@ -4000,6 +4145,12 @@ int execute(int ncycles)
 			case 0x18:
 			    signedtempbyte = readMem(pc++);
 			    pc += signedtempbyte;
+#ifdef DEBUG
+			signedtempbyte=readMem(pc-1);
+		    printf(" %02x",readMem(pc-1));
+		    printf("\nmnemonic:JP PC+%d\n",signedtempbyte);
+		    printf("**************************\n");
+#endif
 			    break;
 
 			    /*JR   f,PC+dd*/
@@ -4008,24 +4159,48 @@ int execute(int ncycles)
 				signedtempbyte=readMem(pc++);
 				pc+=signedtempbyte;
 			    }else pc++;
+#ifdef DEBUG
+			signedtempbyte=readMem(pc-1);
+		    printf(" %02x",readMem(pc-1));
+		    printf("\nmnemonic:JP NZ,PC+%d\n",signedtempbyte);
+		    printf("**************************\n");
+#endif
 			    break;
 			case 0x28://JR Z,dd
 			    if ((F & Z_FLAG)==1 ) {
 				signedtempbyte=readMem(pc++);
 				pc+=signedtempbyte;
 			    }else pc++;
+#ifdef DEBUG
+			signedtempbyte=readMem(pc-1);
+		    printf(" %02x",readMem(pc-1));
+		    printf("\nmnemonic:JP Z,PC+%d\n",signedtempbyte);
+		    printf("**************************\n");
+#endif
 			    break;
 			case 0x30://JR NC,dd
 			    if ((F & C_FLAG)==0 ) {
 				signedtempbyte=readMem(pc++);
 				pc+=signedtempbyte;
 			    }else pc++;
+#ifdef DEBUG
+			signedtempbyte=readMem(pc-1);
+		    printf(" %02x",readMem(pc-1));
+		    printf("\nmnemonic:JP NC,PC+%d\n",signedtempbyte);
+		    printf("**************************\n");
+#endif
 			    break;
 			case 0x38://JR C,dd
 			    if ((F & C_FLAG)==1 ){
 				signedtempbyte=readMem(pc++);
 				pc+=signedtempbyte;
 			    }else pc++;
+#ifdef DEBUG
+			signedtempbyte=readMem(pc-1);
+		    printf(" %02x",readMem(pc-1));
+		    printf("\nmnemonic:JP C,PC+%d\n",signedtempbyte);
+		    printf("**************************\n");
+#endif
 			    break;
 
 			    /*CALL nn*/
@@ -4037,6 +4212,11 @@ int execute(int ncycles)
 			    writeMem(SP-2,(pc&0xFF));
 			    SP-=2;
 			    pc=opAux.Word;
+#ifdef DEBUG
+		    printf(" %02x %02x", opAux.Byte.l, opAux.Byte.h);
+		    printf("\nmnemonic:CALL %04x\n",opAux.Word);
+		    printf("**************************\n");
+#endif
 			    break;
 
 			case 0xC4://CALL NZ,nn
@@ -4048,6 +4228,13 @@ int execute(int ncycles)
 				SP-=2;
 				pc=opAux.Word;
 			    }else pc+=2;
+#ifdef DEBUG
+			opAux.Byte.l = readMem(pc-2);
+			opAux.Byte.h = readMem(pc-1);
+		    printf(" %02x %02x", opAux.Byte.l, opAux.Byte.h);
+		    printf("\nmnemonic:CALL NZ,%04x\n",opAux.Word);
+		    printf("**************************\n");
+#endif
 			    break;
 
 			case 0xCC://CALL Z,nn
@@ -4059,6 +4246,13 @@ int execute(int ncycles)
 				SP-=2;
 				pc=opAux.Word;
 			    }else pc+=2;
+#ifdef DEBUG
+			opAux.Byte.l = readMem(pc-2);
+			opAux.Byte.h = readMem(pc-1);
+		    printf(" %02x %02x", opAux.Byte.l, opAux.Byte.h);
+		    printf("\nmnemonic:CALL Z,%04x\n",opAux.Word);
+		    printf("**************************\n");
+#endif
 			    break;
 
 			case 0xD4://CALL NC,nn
@@ -4070,6 +4264,13 @@ int execute(int ncycles)
 				SP-=2;
 				pc=opAux.Word;
 			    }else pc+=2;
+#ifdef DEBUG
+			opAux.Byte.l = readMem(pc-2);
+			opAux.Byte.h = readMem(pc-1);
+		    printf(" %02x %02x", opAux.Byte.l, opAux.Byte.h);
+		    printf("\nmnemonic:CALL NC,%04x\n",opAux.Word);
+		    printf("**************************\n");
+#endif
 			    break;
 
 			case 0xDC://CALL C,nn
@@ -4081,6 +4282,13 @@ int execute(int ncycles)
 				SP-=2;
 				pc=opAux.Word;
 			    }else pc+=2;
+#ifdef DEBUG
+			opAux.Byte.l = readMem(pc-2);
+			opAux.Byte.h = readMem(pc-1);
+		    printf(" %02x %02x", opAux.Byte.l, opAux.Byte.h);
+		    printf("\nmnemonic:CALL C,%04x\n",opAux.Word);
+		    printf("**************************\n");
+#endif
 			    break;
 
 			    /*RET*/
@@ -4089,6 +4297,10 @@ int execute(int ncycles)
 			    opAux.Byte.h = readMem(SP+1);
 			    SP+=2;
 			    pc=opAux.Word;
+#ifdef DEBUG
+		    printf("\nmnemonic:RET\n");
+		    printf("**************************\n");
+#endif
 			    break;
 
 			    /*RET cc*/
@@ -4099,6 +4311,10 @@ int execute(int ncycles)
 				SP+=2;
 				pc=opAux.Word;
 			    }
+#ifdef DEBUG
+		    printf("\nmnemonic:RET NZ\n");
+		    printf("**************************\n");
+#endif
 			    break;
 			case 0xC8://RET Z
 			    if ((F & Z_FLAG)==1 ) {
@@ -4107,6 +4323,10 @@ int execute(int ncycles)
 				SP+=2;
 				pc=opAux.Word;
 			    }
+#ifdef DEBUG
+		    printf("\nmnemonic:RET Z\n");
+		    printf("**************************\n");
+#endif
 			    break;
 			case 0xD0://RET NC
 			    if ((F & C_FLAG)==0 ) {
@@ -4115,6 +4335,10 @@ int execute(int ncycles)
 				SP+=2;
 				pc=opAux.Word;
 			    }
+#ifdef DEBUG
+		    printf("\nmnemonic:RET NC\n");
+		    printf("**************************\n");
+#endif
 			    break;
 			case 0xD8://RET C
 			    if ((F & C_FLAG)==1 ){
@@ -4123,89 +4347,153 @@ int execute(int ncycles)
 				SP+=2;
 				pc=opAux.Word;
 			    }
-			    break;
+#ifdef DEBUG
+		    printf("\nmnemonic:RET C\n");
+		    printf("**************************\n");
+#endif
+		    break;
 
-			    /*RETI*/
+		    /*RETI*/
 			case 0xD9:
-			    IME=1;
-			    opAux.Byte.l = readMem(SP);
-			    opAux.Byte.h = readMem(SP+1);
-			    SP+=2;
-			    pc=opAux.Word;
-			    break;
+				IME=1;
+				opAux.Byte.l = readMem(SP);
+				opAux.Byte.h = readMem(SP+1);
+				SP+=2;
+				pc=opAux.Word;
+#ifdef DEBUG
+				printf("\nmnemonic:RETI\n");
+				printf("**************************\n");
+#endif
+				break;
 
-			    /*RST n*/
+				/*RST n*/
 			case 0xC7://RST 0x0
-			    writeMem(SP-1,((pc&0xFF00)>>8));
-			    writeMem(SP-2,(pc&0xFF));
-			    SP-=2;
-			    pc=0;
-			    break;
+#ifdef DEBUG
+				printf("\nmnemonic:RST 0x0\n");
+				printf("**************************\n");
+#endif
+				writeMem(SP-1,((pc&0xFF00)>>8));
+				writeMem(SP-2,(pc&0xFF));
+				SP-=2;
+				pc=0;
+				break;
 			case 0xD7://RST 0x10
-			    writeMem(SP-1,((pc&0xFF00)>>8));
-			    writeMem(SP-2,(pc&0xFF));
-			    SP-=2;
-			    pc=0x10;
-			    break;
+#ifdef DEBUG
+				printf("\nmnemonic:RST 0x10\n");
+				printf("**************************\n");
+#endif
+				writeMem(SP-1,((pc&0xFF00)>>8));
+				writeMem(SP-2,(pc&0xFF));
+				SP-=2;
+				pc=0x10;
+				break;
 			case 0xDF://RST 0x18
-			    writeMem(SP-1,((pc&0xFF00)>>8));
-			    writeMem(SP-2,(pc&0xFF));
-			    SP-=2;
-			    pc=0x18;
-			    break;
+#ifdef DEBUG
+				printf("\nmnemonic:RST 0x18\n");
+				printf("**************************\n");
+#endif
+				writeMem(SP-1,((pc&0xFF00)>>8));
+				writeMem(SP-2,(pc&0xFF));
+				SP-=2;
+				pc=0x18;
+				break;
 			case 0xE7://RST 0x20
-			    writeMem(SP-1,((pc&0xFF00)>>8));
-			    writeMem(SP-2,(pc&0xFF));
-			    SP-=2;
-			    pc=0x20;
-			    break;
+#ifdef DEBUG
+				printf("\nmnemonic:RST 0x20\n");
+				printf("**************************\n");
+#endif
+				writeMem(SP-1,((pc&0xFF00)>>8));
+				writeMem(SP-2,(pc&0xFF));
+				SP-=2;
+				pc=0x20;
+				break;
 			case 0xEF://RST 0x28
-			    writeMem(SP-1,((pc&0xFF00)>>8));
-			    writeMem(SP-2,(pc&0xFF));
-			    SP-=2;
-			    pc=0x28;
-			    break;
+#ifdef DEBUG
+				printf("\nmnemonic:RST 0x28\n");
+				printf("**************************\n");
+#endif
+				writeMem(SP-1,((pc&0xFF00)>>8));
+				writeMem(SP-2,(pc&0xFF));
+				SP-=2;
+				pc=0x28;
+				break;
 			case 0xF7://RST 0x30
-			    writeMem(SP-1,((pc&0xFF00)>>8));
-			    writeMem(SP-2,(pc&0xFF));
-			    SP-=2;
-			    pc=0x30;
-			    break;
+#ifdef DEBUG
+				printf("\nmnemonic:RST 0x30\n");
+				printf("**************************\n");
+#endif
+				writeMem(SP-1,((pc&0xFF00)>>8));
+				writeMem(SP-2,(pc&0xFF));
+				SP-=2;
+				pc=0x30;
+				break;
 			case 0xFF://RST 0x38
-			    writeMem(SP-1,((pc&0xFF00)>>8));
-			    writeMem(SP-2,(pc&0xFF));
-			    SP-=2;
-			    pc=0x38;
-			    break;
+#ifdef DEBUG
+				printf("\nmnemonic:RST 0x38\n");
+				printf("**************************\n");
+#endif
+				writeMem(SP-1,((pc&0xFF00)>>8));
+				writeMem(SP-2,(pc&0xFF));
+				SP-=2;
+				pc=0x38;
+				break;
 			case 0xCF://RST 0x8
-			    writeMem(SP-1,((pc&0xFF00)>>8));
-			    writeMem(SP-2,(pc&0xFF));
-			    SP-=2;
-			    pc=0x8;
-			    break;
+#ifdef DEBUG
+				printf("\nmnemonic:RST 0x8\n");
+				printf("**************************\n");
+#endif
+				writeMem(SP-1,((pc&0xFF00)>>8));
+				writeMem(SP-2,(pc&0xFF));
+				SP-=2;
+				pc=0x8;
+				break;
 
-			    /*****************GMB CPU-Controlcommands*********************/
 
+				/*****************GMB CPU-Controlcommands*********************/
 
 			case 0x3F: //CCF
 			    F = (F &(Z_FLAG|C_FLAG))^C_FLAG;
+#ifdef DEBUG
+				printf("\nmnemonic:CCF\n");
+				printf("**************************\n");
+#endif
 			    break;
 			case 0x37: //SCF
 			    F = (F&Z_FLAG)|C_FLAG;
+#ifdef DEBUG
+				printf("\nmnemonic:SCF\n");
+				printf("**************************\n");
+#endif
 			    break;
 			case 0x76://HALT
 			    //TODO: fazer algo ou nao
+#ifdef DEBUG
+				printf("\nmnemonic:HALT\n");
+				printf("**************************\n");
+#endif
 			    break;
 			case 0x10://STOP
 			    //TODO: fazer algo ou nao
 			    pc++;
+#ifdef DEBUG
+				printf("\nmnemonic:STOP\n");
+				printf("**************************\n");
+#endif
 			    break;
 			case 0xF3: //DI
 			    IME=0;
+#ifdef DEBUG
+				printf("\nmnemonic:DI\n");
+				printf("**************************\n");
+#endif
 			    break;
 			case 0xFB: //EI
 			    IME=1;
-
+#ifdef DEBUG
+				printf("\nmnemonic:EI\n");
+				printf("**************************\n");
+#endif
+			    break;
 
 			default:
 			    break;
