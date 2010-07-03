@@ -33,7 +33,6 @@ int main()
         else{
             printf("cenas\n");
         }
-
         execute(1000500);
 
 	return 0;
