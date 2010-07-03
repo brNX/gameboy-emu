@@ -118,7 +118,7 @@
 #define DEC(val) \
 	opAux.Word = val - 1 ;\
         val=opAux.Byte.l;\
-        F=(F&C_FLAG) | INCLookup[val]
+        F=(F&C_FLAG) | DECLookup[val]
 
 #define ADD_HL(val) \
 	opAux32.DW = HL + val;\
