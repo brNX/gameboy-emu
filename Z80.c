@@ -4536,9 +4536,8 @@ void interruptZ80()
 
 void printStatusZ80(){
     printf("*******Z80 Status*********\n");
-    printf("ZF:%d NF:%d HF:%d CF:%d\n",(F>>8),(F&N_FLAG)>>6,(F&H_FLAG)>>5,(F&C_FLAG)>>4);
-    printf("A:%02x\n",A);
-    printf("BC:%04x DE:%04x HL:%04x PC:%04x SP:%04x\n",BC,DE,HL,PC,SP);
+    printf("ZF:%d NF:%d HF:%d CF:%d\n",(F>>7),(F&N_FLAG)>>6,(F&H_FLAG)>>5,(F&C_FLAG)>>4);
+    printf("AF:%04x BC:%04x DE:%04x HL:%04x PC:%04x SP:%04x\n",AF,BC,DE,HL,PC,SP);
     printf("IME: %d\n",IME);
     printf("**************************\n");
 

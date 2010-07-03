@@ -72,7 +72,6 @@
 	CHECK_C_ADD(val)\
 	A=opAux.Byte.l
 
-
 #define SUB_A(val) \
 	opAux.Word = A - val;\
 	F=N_FLAG;\
@@ -113,19 +112,13 @@
 
 #define INC(val) \
 	opAux.Word = val + 1 ;\
-	F&=C_FLAG;\
-	CHECK_Z(opAux.Byte.l)\
-	F&=~N_FLAG;\
-	CHECK_H(0x1)\
-	val=opAux.Byte.l
+        val=opAux.Byte.l;\
+        F=(F&C_FLAG) | INCLookup[val]
 
 #define DEC(val) \
 	opAux.Word = val - 1 ;\
-	F&=C_FLAG;\
-	CHECK_Z(opAux.Byte.l)\
-	F|=N_FLAG;\
-	CHECK_H(0x1)\
-	val=opAux.Byte.l
+        val=opAux.Byte.l;\
+        F=(F&C_FLAG) | INCLookup[val]
 
 #define ADD_HL(val) \
 	opAux32.DW = HL + val;\
