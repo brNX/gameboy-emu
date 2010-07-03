@@ -262,6 +262,7 @@ extern "C"
 	/*Z80 getcontext(); //      -> returns the CPU context
 	 void setcontext(Z80 * cpu); //   -> sets the CPU context*/
 	void interruptZ80(); //      -> sends an interrupt signal
+	void printStatusZ80();
 
 #ifdef __cplusplus
 }

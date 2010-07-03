@@ -34,7 +34,7 @@ int main()
             printf("cenas\n");
         }
 
-        execute(50);
+        execute(500);
 
 	return 0;
 }

@@ -12,6 +12,11 @@ set (Gameboy-Emu_VERSION_MINOR 0)
 # additional compiler flags
 add_definitions(-Wall -g)
 
+set (CMAKE_C_FLAGS_DEBUG "-g -O0 -Wall")
+set (CMAKE_C_FLAGS_RELEASE "-march=native -03") 
+set (CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall")
+set (CMAKE_CXX_FLAGS_RELEASE "-march=native -03") 
+
 # configure a header file to pass some of the CMake settings
 # to the source code
 configure_file (
