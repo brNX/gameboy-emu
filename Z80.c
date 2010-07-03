@@ -2060,7 +2060,7 @@ int execute(int ncycles)
 			// cyclic tasks here
 
 			Counter += ncycles;
-			//if(ExitRequired) break;
+			break;
 		}
 	}
 	return 0;

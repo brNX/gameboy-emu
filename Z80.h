@@ -226,9 +226,9 @@ extern "C"
 			struct
 			{
 				#ifdef BIG_ENDIAN
-				uint8_t l,h; /* ...in low-endian architecture */
+				uint8_t h,l; /* ...in low-endian architecture */
 				#else
-				uint8_t h, l; /* ...in high-endian architecture */
+				uint8_t l, h; /* ...in high-endian architecture */
 				#endif
 			} Byte;
 			uint16_t Word;

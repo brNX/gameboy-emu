@@ -34,17 +34,7 @@ int main()
             printf("cenas\n");
         }
 
-
-	printf ("%d\n",Cycles[0xE5]);
-	printf ("%d\n",Cycles[0xF1]);
-	uint8_t cenas = 250;
-	uint8_t cenas2 = 70;
-	printf("cenas ? : %u\n",cenas);
-	uint16_t cenas3 = cenas+cenas2;
-	printf("cenas ? : %u\n",cenas3);
-	cenas2+=cenas;
-	printf("cenas2 ? : %u\n",cenas2);
-        printf("cycles: %d\n",Cycles[0xCB]);
+        execute(50);
 
 	return 0;
 }
