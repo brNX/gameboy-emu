@@ -68,7 +68,7 @@ configure_file (
 include_directories("${PROJECT_BINARY_DIR}")
 
 
-add_executable(Gameboy-Emu Z80.c Z80.h memory.c memory.h lookuptables.h main.cpp)
+add_executable(Gameboy-Emu Z80.c Z80.h memory.c memory.h lookuptables.h debugcounters.h Opcodes.h main.cpp)
 
 # this command will generate rules that will run rcc on all files from SAMPLE_RCS
 # in result SAMPLE_RC_SRCS variable will contain paths to files produced by rcc
