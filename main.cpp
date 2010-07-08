@@ -1,5 +1,6 @@
 #include "Z80.h"
 #include "memory.h"
+#include "cartridge.h"
 
 #include "lookuptables.h"
 
@@ -34,6 +35,7 @@ int main()
             printf("cenas\n");
         }
         execute(1000500);
+        fclose(f);
 
 	return 0;
 }

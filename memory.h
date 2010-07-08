@@ -15,8 +15,6 @@ extern "C"
 {
 #endif
 
-
-
 	uint8_t gb_memory[0x10000];
 
 	inline uint8_t readMem(uint16_t address);

@@ -76,9 +76,9 @@ QT4_WRAP_UI( SAMPLE_UI_HDRS_UNIT ${SAMPLE_UIS_UNIT} )
 QT4_WRAP_CPP( SAMPLE_MOC_SRCS_UNIT ${SAMPLE_MOC_HDRS_UNIT} )
 
 # here we instruct CMake to build "sample" executable from all of the source files
-add_executable(Gameboy-Emu ${SAMPLE_SRCS} ${SAMPLE_MOC_SRCS} ${SAMPLE_RC_SRCS} ${SAMPLE_UI_HDRS} Z80.c Z80.h memory.c memory.h lookuptables.h debugcounters.h Opcodes.h main.cpp)
+add_executable(Gameboy-Emu ${SAMPLE_SRCS} ${SAMPLE_MOC_SRCS} ${SAMPLE_RC_SRCS} ${SAMPLE_UI_HDRS} Z80.c Z80.h memory.c memory.h cartridge.h cartridge.c lookuptables.h debugcounters.h Opcodes.h main.cpp)
 
-add_executable(Gameboy-Unit ${SAMPLE_SRCS_UNIT} ${SAMPLE_MOC_SRCS_UNIT} ${SAMPLE_RC_SRCS_UNIT} ${SAMPLE_UI_HDRS_UNIT} Z80.c Z80.h memory.c memory.h lookuptables.h debugcounters.h Opcodes.h)
+add_executable(Gameboy-Unit ${SAMPLE_SRCS_UNIT} ${SAMPLE_MOC_SRCS_UNIT} ${SAMPLE_RC_SRCS_UNIT} ${SAMPLE_UI_HDRS_UNIT} Z80.c Z80.h cartridge.h cartridge.c memory.c memory.h lookuptables.h debugcounters.h Opcodes.h)
 
 # last thing we have to do is to tell CMake what libraries our executable needs,
 # luckily FIND_PACKAGE prepared QT_LIBRARIES variable for us:
