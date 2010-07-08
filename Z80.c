@@ -20,6 +20,177 @@
 Z80 gbcpu;
 
 
+//is 0 ?
+//if (val==0) F |= Z_FLAG; else F &= ~Z_FLAG;
+#define CHECK_Z(val) \
+        F = (F & ~Z_FLAG) | (-(val==0) & Z_FLAG);
+
+//com lookup
+#define CHECK_ZL(val)  F |= ZeroLookup[val]
+
+//se houve halfcarry
+#define CHECK_H(val) F |= (H_FLAG & ((A ^ (val) ^ opAux.Byte.l) << 1));
+
+//se houve carry (0001 no opAux.Byte.h , logo 0001 << 4 = 0001 0000 = 0x10 = C_FLAG)
+#define CHECK_C_ADD(val) F |= (opAux.Byte.h << 4);
+
+//Set if no borrow (0001 no opAux.Byte.h , logo 0001 << 4 = 0001 0000 = 0x10 = C_FLAG)
+#define CHECK_C_SUB(val) F |= ((uint8_t) (-(int8_t)opAux.Byte.h) << 4);
+
+//se houve halfcarry 16bit
+#define CHECK_H16(val) \
+        F |= (H_FLAG & ((HL ^ (val) ^ opAux32.W.l) >> 7));
+
+//se houve carry (0001 no opAux32.W.h , logo 0001 << 4 = 0001 0000 = 0x10 = C_FLAG) 16bit
+#define CHECK_C_ADD16(val) F |= (uint8_t)(opAux32.W.h << 4);
+
+
+#define ADD_A(val) \
+        opAux.Word = A + val;\
+        F=0;\
+        CHECK_ZL(opAux.Byte.l);\
+        CHECK_H(val)\
+        CHECK_C_ADD(val)\
+        A=opAux.Byte.l
+
+#define ADC_A(val) \
+        opAux.Word =  A + val + ((F & C_FLAG) >> 4) ;\
+        F=0;\
+        CHECK_ZL(opAux.Byte.l);\
+        CHECK_H(val)\
+        CHECK_C_ADD(val)\
+        A=opAux.Byte.l
+
+#define SUB_A(val) \
+        opAux.Word = A - val;\
+        F=N_FLAG;\
+        CHECK_ZL(opAux.Byte.l);\
+        CHECK_H(val)\
+        CHECK_C_SUB(val)\
+        A=opAux.Byte.l
+
+#define SBC_A(val) \
+        opAux.Word =  A - val - ((F & C_FLAG) >> 4) ;\
+        F=N_FLAG;\
+        CHECK_ZL(opAux.Byte.l);\
+        CHECK_H(val)\
+        CHECK_C_SUB(val)\
+        A=opAux.Byte.l
+
+#define AND_A(val) \
+        A &= val ;\
+        F = 0x20; \
+        CHECK_ZL(A)
+
+#define XOR_A(val) \
+        A ^= val ;\
+        F = 0;\
+        CHECK_ZL(A)
+
+#define OR_A(val) \
+        A |= val ;\
+        F = 0;\
+        CHECK_ZL(A)
+
+#define CP_A(val) \
+        opAux.Word =  A - val;\
+        F=N_FLAG;\
+        CHECK_ZL(opAux.Byte.l);\
+        CHECK_H(val)\
+        CHECK_C_SUB(val)
+
+#define INC(val) \
+        opAux.Word = val + 1 ;\
+        val=opAux.Byte.l;\
+        F=(F&C_FLAG) | INCLookup[val]
+
+#define DEC(val) \
+        opAux.Word = val - 1 ;\
+        val=opAux.Byte.l;\
+        F=(F&C_FLAG) | DECLookup[val]
+
+#define ADD_HL(val) \
+        opAux32.DW = HL + val;\
+        F =(F&Z_FLAG);\
+        CHECK_H16(val);\
+        CHECK_C_ADD16(val);\
+        HL=opAux32.W.l
+
+#define ADD_SP(val) \
+        opAux32.DW = SP + val;\
+        F = 0;\
+        CHECK_H16(val);\
+        CHECK_C_ADD16(val);\
+        SP=opAux32.W.l
+
+#define LD_HLSP(val) \
+        opAux32.DW = SP + val;\
+        F = 0;\
+        CHECK_H16(val);\
+        CHECK_C_ADD16(val);\
+        HL=opAux32.W.l
+
+#define RLC(val) \
+        F=0;\
+        val = (val << 1) | (val >> 7);\
+        CHECK_ZL(val);\
+        F = (val & 0x1) << 4
+
+#define RL(val) \
+        F=0;\
+        opAux.Byte.l=val;\
+        opAux.Byte.h=(F&C_FLAG)>>4;\
+        opAux.Word = ((opAux.Word << 1)|(opAux.Word >> 8)) & 0x1FF;\
+        val=opAux.Byte.l;\
+        F=opAux.Byte.h << 4;\
+        CHECK_ZL(val)
+
+#define RRC(val)\
+         F=0;\
+         F = (val & 0x1) << 4;\
+         val = (val >> 1) | (val << 7);\
+         CHECK_ZL(val)
+
+#define RR(val)\
+        F=0;\
+        opAux.Word =  (val << 1) | ((F & C_FLAG) >> 4);\
+        opAux.Word = ((opAux.Word >> 1) | (opAux.Word << 8)) & 0x1FF; \
+        F = (opAux.Word & 0x1) << 4 ; \
+        val = opAux.Word >> 1; \
+        CHECK_ZL(val)
+
+#define SLA(val)\
+        F=(val&0x80)>>3;\
+        val = val << 1;\
+        CHECK_ZL(val)
+
+#define SRA(val)\
+         F=(val&0x1)<<4;\
+         val = (val & 0x80 ) |  (val >> 1);\
+         CHECK_ZL(val)
+
+#define SRL(val)\
+        F=(val&0x1)<<4;\
+        val = val >> 1;\
+        CHECK_ZL(val)
+
+#define SWAP(val)\
+        F = 0;\
+        val = (val >>4) | (val << 4);\
+        CHECK_ZL(val)
+
+#define BIT(n,val)\
+        F=(F&C_FLAG) | H_FLAG;\
+        F = (F & ~Z_FLAG) | (-(((0x1 << n) & val)==0) & Z_FLAG)
+
+#define SET(n,val)\
+        val |= (0x1 << n)
+
+#define RES(n,val)\
+        val &= ~(0x1 << n)
+
+
+
 void resetZ80()
 {
     gbcpu.pause = 1;

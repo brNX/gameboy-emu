@@ -16,6 +16,8 @@ private slots:
 
     void ADD_SP_n();
 
+    void BIT_N_R();
+
     void cleanupTestCase();
 };
 

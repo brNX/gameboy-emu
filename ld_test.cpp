@@ -1,12 +1,17 @@
 #include "ld_test.h"
 #include "Z80.h"
 #include "memory.h"
+#include "lookuptables.h"
+#include <cstdlib>
+
+
 
 
 
 void LD_Test::initTestCase()
 {
 	resetZ80();
+        srand(time(NULL));
 }
 
 void LD_Test::ADD_HL_SS()
@@ -40,6 +45,22 @@ void LD_Test::ADD_SP_n()
         gb_memory[0x100]=0x5;
         execOpcode(0xE8);
         QVERIFY(SP == temp+5);
+}
+
+void LD_Test::BIT_N_R(){
+    F=0;
+    B=0xF8;
+    gb_memory[0x100]=0x50;
+    execOpcode(0xCB);
+    QVERIFY((F&Z_FLAG) == Z_FLAG);
+    QVERIFY((F&N_FLAG) != N_FLAG);
+    QVERIFY((F&H_FLAG) == H_FLAG);
+
+    B=0xFC;
+    execOpcode(0xCB);
+    QVERIFY((F&Z_FLAG) != Z_FLAG);
+    QVERIFY((F&N_FLAG) != N_FLAG);
+    QVERIFY((F&H_FLAG) == H_FLAG);
 }
 
 void LD_Test::cleanupTestCase()
