@@ -49,8 +49,7 @@
 
 //se houve halfcarry 16bit
 #define CHECK_H16(val) \
-	opAux.Word = opAux32.W.l; \
-	F |= (H_FLAG & ((H ^ ((val)>>8)^ opAux.Byte.h) << 1));
+        F |= (H_FLAG & ((HL ^ (val) ^ opAux32.W.l) >> 7));
 
 //se houve carry (0001 no opAux32.W.h , logo 0001 << 4 = 0001 0000 = 0x10 = C_FLAG) 16bit
 #define CHECK_C_ADD16(val) F |= (uint8_t)(opAux32.W.h << 4);
@@ -122,7 +121,7 @@
 
 #define ADD_HL(val) \
 	opAux32.DW = HL + val;\
-	F &= ~N_FLAG;\
+        F =(F&Z_FLAG);\
 	CHECK_H16(val);\
 	CHECK_C_ADD16(val);\
 	HL=opAux32.W.l
@@ -218,7 +217,7 @@ extern "C"
 	{
 			struct
 			{
-				#ifndef BIG_ENDIAN
+                                #ifndef B_ENDIAN
 				uint8_t l,h; /* ...in little-endian architecture */
 				#else
 				uint8_t h, l; /* ...in big-endian architecture */
@@ -231,7 +230,7 @@ extern "C"
 	{
 		struct
 		{
-			#ifndef BIG_ENDIAN
+                        #ifndef B_ENDIAN
 			uint16_t l,h; /* ...in little-endian architecture */
 			#else
 			uint16_t h, l; /* ...in big-endian architecture */

@@ -11,12 +11,26 @@ void LD_Test::initTestCase()
 
 void LD_Test::ADD_HL_SS()
 {
-	BC=0x1111;
-	HL=0x4242;
-	execOpcode(0x19);
-	QVERIFY(HL == 0x5353);
-	QVERIFY((F&N_FLAG) != N_FLAG);
-	QVERIFY((F&C_FLAG) != C_FLAG);
+        DE=0x1111;
+        HL=0x4242;
+        execOpcode(0x19);
+        QVERIFY(HL == 0x5353);
+        QVERIFY((F&N_FLAG) != N_FLAG);
+        QVERIFY((F&C_FLAG) != C_FLAG);
+        printStatusZ80();
+
+}
+
+void LD_Test::ADD_HL_SS_CARRY()
+{
+        DE=0x680;
+        HL=0xFF42;
+        execOpcode(0x19);
+        QVERIFY(HL == 0x5C2);
+        QVERIFY((F&N_FLAG) != N_FLAG);
+        QVERIFY((F&C_FLAG) == C_FLAG);
+        QVERIFY((F&H_FLAG) == H_FLAG);
+        printStatusZ80();
 
 }
 

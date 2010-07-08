@@ -12,6 +12,8 @@ private slots:
 
     void ADD_HL_SS();
 
+    void ADD_HL_SS_CARRY();
+
     void ADD_SP_n();
 
     void cleanupTestCase();

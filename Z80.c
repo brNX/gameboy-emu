@@ -99,7 +99,17 @@ int execute(int ncycles)
 }
 
 
-void execOpcode(uint8_t opcode){
+void execOpcode(uint8_t OpCode){
+
+
+        //variaveis temporarias para operacoes(não existe no processador)
+        reg16bit opAux;
+        uint16_t address;
+        uint8_t tempbyte;
+        int8_t signedtempbyte;
+        reg32bit opAux32;
+        int Counter = 0;
+        uint16_t pc = PC;
 
 	switch (OpCode)
 	{
