@@ -252,10 +252,10 @@ extern "C"
 
 	void resetZ80(); //            -> resets the CPU core
 	int execute(int nclyces);//   -> the core executes n cycles
-	/*Z80 getcontext(); //      -> returns the CPU context
-	 void setcontext(Z80 * cpu); //   -> sets the CPU context*/
 	void interruptZ80(); //      -> sends an interrupt signal
 	void printStatusZ80();
+	void execOpcode(uint8_t opcode);
+
 
 #ifdef __cplusplus
 }

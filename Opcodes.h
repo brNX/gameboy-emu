@@ -1627,24 +1627,24 @@ break;
 #endif
         ADD_HL(BC);
         break;
-    case 0x19: //ADD HL,DE
 
+    case 0x19: //ADD HL,DE
 #ifdef DEBUG
         printf("\nmnemonic:ADD HL,DE\n");
         printf("**************************\n");
 #endif
         ADD_HL(DE);
         break;
-    case 0x29: //ADD HL,HL
 
+    case 0x29: //ADD HL,HL
 #ifdef DEBUG
         printf("\nmnemonic:ADD HL,HL\n");
         printf("**************************\n");
 #endif
         ADD_HL(HL);
         break;
-    case 0x39: //ADD HL,SP
 
+    case 0x39: //ADD HL,SP
 #ifdef DEBUG
         printf("\nmnemonic:ADD HL,SP\n");
         printf("**************************\n");

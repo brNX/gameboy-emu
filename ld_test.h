@@ -10,9 +10,9 @@ Q_OBJECT
 private slots:
     void initTestCase();
 
-    void myFirstTest();
+    void ADD_HL_SS();
 
-    void mySecondTest();
+    void ADD_SP_n();
 
     void cleanupTestCase();
 };

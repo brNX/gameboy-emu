@@ -53,16 +53,9 @@ int execute(int ncycles)
         reg32bit opAux32;
 
 #ifdef DEBUG
-	printStatusZ80();
-	printf("**************************\n");
-	printf("pc:%04x\n",pc);
-	printf("**************************\n");
-        int i =0x0226;
-        printf("%04x: %02x \n",i,gb_memory[i]);
-        i++;
-        printf("%04x: %02x \n",i,gb_memory[i]);
-        i++;
-        printf("%04x: %02x \n",i,gb_memory[i]);
+        printStatusZ80();
+        printf("**************************\n");
+        printf("pc:%04x\n",pc);
         printf("**************************\n");
 #endif
 
@@ -105,13 +98,19 @@ int execute(int ncycles)
     return 0;
 }
 
-/*Z80 getcontext(){
- return NULL;
- }*/
 
-/*void setcontext(Z80 * cpu){
+void execOpcode(uint8_t opcode){
 
- }*/
+	switch (OpCode)
+	{
+
+	#include "Opcodes.h"
+
+	default:
+		break;
+	}
+
+}
 
 void interruptZ80()
 {
