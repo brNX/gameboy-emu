@@ -1659,7 +1659,7 @@ break;
         ADD_SP(signedtempbyte);
 #ifdef DEBUG
         printf("%02x",signedtempbyte);
-        printf("\nmnemonic:CP A,%d\n",signedtempbyte);
+        printf("\nmnemonic:Add SP,%d\n",signedtempbyte);
         printf("**************************\n");
 #endif
         break;

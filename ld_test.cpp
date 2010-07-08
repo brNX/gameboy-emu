@@ -17,8 +17,6 @@ void LD_Test::ADD_HL_SS()
         QVERIFY(HL == 0x5353);
         QVERIFY((F&N_FLAG) != N_FLAG);
         QVERIFY((F&C_FLAG) != C_FLAG);
-        printStatusZ80();
-
 }
 
 void LD_Test::ADD_HL_SS_CARRY()
@@ -30,15 +28,18 @@ void LD_Test::ADD_HL_SS_CARRY()
         QVERIFY((F&N_FLAG) != N_FLAG);
         QVERIFY((F&C_FLAG) == C_FLAG);
         QVERIFY((F&H_FLAG) == H_FLAG);
-        printStatusZ80();
-
 }
 
 void LD_Test::ADD_SP_n()
 {
-
+        uint16_t temp=SP;
+        gb_memory[0x100]=0xF5;
 	execOpcode(0xE8);
-	QVERIFY(1 != 2);
+        QVERIFY(SP == temp-11);
+        temp=SP;
+        gb_memory[0x100]=0x5;
+        execOpcode(0xE8);
+        QVERIFY(SP == temp+5);
 }
 
 void LD_Test::cleanupTestCase()
