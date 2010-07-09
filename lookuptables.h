@@ -77,7 +77,7 @@ const static int ZeroLookup[256] =
 };
 
 //INC r lookuptable
-const static uint8_t INCLookup[256] =
+const static uint8 INCLookup[256] =
 {
     H_FLAG|Z_FLAG, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     H_FLAG, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -101,7 +101,7 @@ const static uint8_t INCLookup[256] =
 };
 
 //DEC r lookuptable
-const static uint8_t DECLookup[256] =
+const static uint8 DECLookup[256] =
 {
 
     N_FLAG|Z_FLAG, N_FLAG, N_FLAG, N_FLAG, N_FLAG, N_FLAG, N_FLAG, N_FLAG, N_FLAG, N_FLAG, N_FLAG, N_FLAG, N_FLAG, N_FLAG, N_FLAG, H_FLAG|N_FLAG,
@@ -127,7 +127,7 @@ const static uint8_t DECLookup[256] =
 };
 
 //DAA Lockuptable (valor para AF)
-const static uint16_t DAALookup[2048] =
+const static uint16 DAALookup[2048] =
 {
     0x0080,0x0100,0x0200,0x0300,0x0400,0x0500,0x0600,0x0700,
     0x0800,0x0900,0x1020,0x1120,0x1220,0x1320,0x1420,0x1520,

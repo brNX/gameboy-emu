@@ -35,14 +35,14 @@ Z80 gbcpu;
 #define CHECK_C_ADD(val) F |= (opAux.Byte.h << 4);
 
 //Set if no borrow (0001 no opAux.Byte.h , logo 0001 << 4 = 0001 0000 = 0x10 = C_FLAG)
-#define CHECK_C_SUB(val) F |= ((uint8_t) (-(int8_t)opAux.Byte.h) << 4);
+#define CHECK_C_SUB(val) F |= ((uint8) (-(int8)opAux.Byte.h) << 4);
 
 //se houve halfcarry 16bit
 #define CHECK_H16(val) \
         F |= (H_FLAG & ((HL ^ (val) ^ opAux32.W.l) >> 7));
 
 //se houve carry (0001 no opAux32.W.h , logo 0001 << 4 = 0001 0000 = 0x10 = C_FLAG) 16bit
-#define CHECK_C_ADD16(val) F |= (uint8_t)(opAux32.W.h << 4);
+#define CHECK_C_ADD16(val) F |= (uint8)(opAux32.W.h << 4);
 
 
 #define ADD_A(val) \
@@ -211,16 +211,16 @@ void resetZ80()
 int execute(int ncycles)
 {
     int Counter = ncycles;
-    uint16_t pc = PC;
+    uint16 pc = PC;
 
     //emulation loop
     for (;;)
     {
         //variaveis temporarias para operacoes(não existe no processador)
         reg16bit opAux;
-        uint16_t address;
-        uint8_t tempbyte;
-        int8_t signedtempbyte;
+        uint16 address;
+        uint8 tempbyte;
+        int8 signedtempbyte;
         reg32bit opAux32;
 
 #ifdef DEBUG
@@ -230,7 +230,7 @@ int execute(int ncycles)
         printf("**************************\n");
 #endif
 
-	uint8_t OpCode = readMem(pc++);
+        uint8 OpCode = readMem(pc++);
 	Counter -= Cycles[OpCode];
 	gbcpu.cyclecounter += Cycles[OpCode];
 
@@ -270,17 +270,17 @@ int execute(int ncycles)
 }
 
 
-void execOpcode(uint8_t OpCode){
+void execOpcode(uint8 OpCode){
 
 
         //variaveis temporarias para operacoes(não existe no processador)
         reg16bit opAux;
-        uint16_t address;
-        uint8_t tempbyte;
-        int8_t signedtempbyte;
+        uint16 address;
+        uint8 tempbyte;
+        int8 signedtempbyte;
         reg32bit opAux32;
         int Counter = 0;
-        uint16_t pc = PC;
+        uint16 pc = PC;
 
 	switch (OpCode)
 	{

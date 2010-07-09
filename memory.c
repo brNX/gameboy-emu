@@ -20,12 +20,12 @@
 //FFFF        Interrupt Enable Register
 
 //TODO: for now
-extern inline uint8_t readMem(uint16_t address)
+extern inline uint8 readMem(uint16 address)
 {
 	return (gb_memory[address]);
 }
 
-extern inline void writeMem(uint16_t address, uint8_t value)
+extern inline void writeMem(uint16 address, uint8 value)
 {
     if (address > 0x7FFF)
 	gb_memory[address] = value;

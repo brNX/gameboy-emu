@@ -8,6 +8,8 @@
 #ifndef Z80_H_
 #define Z80_H_
 
+#include "types.h"
+
 //macros para aceder facilmente ao cpu
 #define A gbcpu.af.Byte.h
 #define F gbcpu.af.Byte.l
@@ -30,8 +32,6 @@
 #define H_FLAG	 0x20	/* Half Carry		Bit 5 */
 #define C_FLAG	 0x10	/* Carry			Bit 4 */
 
-#include <stdint.h>
-
 #ifdef __cplusplus
 extern "C"
 {
@@ -43,12 +43,12 @@ extern "C"
 			struct
 			{
                                 #ifndef B_ENDIAN
-				uint8_t l,h; /* ...in little-endian architecture */
+                                uint8 l,h; /* ...in little-endian architecture */
 				#else
-				uint8_t h, l; /* ...in big-endian architecture */
+                                uint8 h, l; /* ...in big-endian architecture */
 				#endif
 			} Byte;
-			uint16_t Word;
+                        uint16 Word;
 	} reg16bit;
 
 	typedef union
@@ -56,12 +56,12 @@ extern "C"
 		struct
 		{
                         #ifndef B_ENDIAN
-			uint16_t l,h; /* ...in little-endian architecture */
+                        uint16 l,h; /* ...in little-endian architecture */
 			#else
-			uint16_t h, l; /* ...in big-endian architecture */
+                        uint16 h, l; /* ...in big-endian architecture */
 			#endif
 		} W;
-		uint32_t DW;
+                uint32 DW;
 	} reg32bit;
 
 	typedef struct
@@ -78,7 +78,7 @@ extern "C"
 	int execute(int nclyces);//   -> the core executes n cycles
 	void interruptZ80(); //      -> sends an interrupt signal
 	void printStatusZ80();
-	void execOpcode(uint8_t opcode);
+        void execOpcode(uint8 opcode);
 
 
 #ifdef __cplusplus
