@@ -35,9 +35,10 @@ extern "C"
         Cart_mode type;
         Cart_size_mode size;
         int ramsize;
+        int rombank,rambank;
     } Cartridge;
 
-    int read_cart_file(char * name,Cartridge * cart);
+    int read_cart_file(const char * name,Cartridge * cart);
     void destroy_cart_file(Cartridge * cart);
     void parse_cart_Header(GBMODE mode,Cartridge * cart);
     void parse_cart_Name(GBMODE mode,Cartridge * cart);

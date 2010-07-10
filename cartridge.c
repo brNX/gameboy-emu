@@ -39,7 +39,7 @@ Cart_size_mode Cart_size[] =
 };
 
 
-int read_cart_file(char * filename,Cartridge * cart){
+int read_cart_file(const char * filename,Cartridge * cart){
 
 FILE * file;
 int filesize=0;
@@ -72,6 +72,9 @@ void destroy_cart_file(Cartridge * cart){
 }
 
 void initMemory(uint8 * gbmemory,Cartridge * cart){
+
+    cart->rambank=0;
+    cart->rombank=1;
 
     if (cart->size.index == 0){
     //32kb rom only
@@ -197,7 +200,5 @@ void parse_cart_notimportant(Cartridge * cart){
     //destination
     printf("Destination : %s\n",(cart->gbcart[0x014A]==00)?"Japanese":"Non Japanese");
     printf("Version: %u\n",cart->gbcart[0x014C]);
-
-
 }
 
