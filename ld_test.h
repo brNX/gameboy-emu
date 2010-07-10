@@ -3,6 +3,7 @@
 
 #include <QtTest/QtTest>
 #include <QtDebug>
+#include "cartridge.h"
 
 class LD_Test : public QObject
 {
@@ -18,7 +19,12 @@ private slots:
 
     void BIT_N_R();
 
+    void benchmemoryRange();
+
     void cleanupTestCase();
+private :
+        Cartridge cart;
+
 };
 
 #endif // LD_TEST_H

@@ -71,24 +71,21 @@ void destroy_cart_file(Cartridge * cart){
     cart->gbcart=NULL;
 }
 
-void initMemory(uint8* gbmemory,Cartridge * cart){
-
-    //rom bank 00 16k
-    memcpy(gbmemory,cart->gbcart,sizeof(uint8)*0x4000);
+void initMemory(uint8 * gbmemory,Cartridge * cart){
 
     if (cart->size.index == 0){
     //32kb rom only
-        memcpy(gbmemory,cart->gbcart,sizeof(uint8)*0x8000);
+        //TODO: initialize variables
         return;
     }
 
     if (cart->size.index  <  0x52){
-        //TODO: copy rom bank
+        //TODO: initialize variables
         return;
     }
 
     if (cart->size.index  <  0x52){
-        //TODO: copy rom bank
+        //TODO: initialize variables
         return;
     }
 }

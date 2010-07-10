@@ -17,7 +17,7 @@ extern "C"
 {
 #endif
 
-        uint8 gb_memory[0x10000];
+        uint8  * gb_memory;
 
         inline uint8 readMem(uint16 address);
         inline void writeMem(uint16 address, uint8 value);

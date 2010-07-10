@@ -41,10 +41,11 @@ int main()
         Cartridge cart;
         //read_cart_file("killer_instinct.gb",&cart);
         //read_cart_file("motocross_maniacs.gb",&cart);
-        read_cart_file("MEGANIME.GB",&cart);
-        //read_cart_file("super_mario_land2.gb",&cart);
+        //read_cart_file("MEGANIME.GB",&cart);
+        read_cart_file("super_mario_land.gb",&cart);
         parse_cart_Header(EGB,&cart);
         initMemory(gb_memory,&cart);
+        gb_memory=cart.gbcart;
         execute(100);
         destroy_cart_file(&cart);
 

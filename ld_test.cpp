@@ -2,9 +2,9 @@
 #include "Z80.h"
 #include "memory.h"
 #include "lookuptables.h"
+#include "cartridge.h"
 #include <cstdlib>
-
-
+#include <cstring>
 
 
 
@@ -12,6 +12,10 @@ void LD_Test::initTestCase()
 {
 	resetZ80();
         srand(time(NULL));
+        read_cart_file("MEGANIME.GB",&cart);
+        parse_cart_Header(EGB,&cart);
+        initMemory(gb_memory,&cart);
+        gb_memory=cart.gbcart;
 }
 
 void LD_Test::ADD_HL_SS()
@@ -37,7 +41,8 @@ void LD_Test::ADD_HL_SS_CARRY()
 
 void LD_Test::ADD_SP_n()
 {
-        uint16_t temp=SP;
+
+        uint16 temp=SP;
         gb_memory[0x100]=0xF5;
 	execOpcode(0xE8);
         QVERIFY(SP == temp-11);
@@ -63,7 +68,20 @@ void LD_Test::BIT_N_R(){
     QVERIFY((F&H_FLAG) == H_FLAG);
 }
 
+
+void LD_Test::benchmemoryRange()
+{
+    uint8 bank=1;
+    uint16 addr = 0x4050;
+    QBENCHMARK{
+
+        gb_memory[(0x4000*bank)+((addr&0x7fff)-0x4000)]=5;
+    }
+}
+
 void LD_Test::cleanupTestCase()
-{ qDebug("called after myFirstTest and mySecondTest"); }
+{
+     destroy_cart_file(&cart);
+}
 
 QTEST_MAIN(LD_Test)

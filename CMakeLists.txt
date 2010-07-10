@@ -43,12 +43,14 @@ FIND_PACKAGE( Qt4 REQUIRED )
 INCLUDE( ${QT_USE_FILE} )
 
 # additional compiler flags
-add_definitions(-Wall)
+add_definitions(-Wall )
 
-set (CMAKE_C_FLAGS_DEBUG "-g -O0 -Wall")
+set (CMAKE_C_FLAGS_DEBUG "-g3 -O0 -Wall")
 set (CMAKE_C_FLAGS_RELEASE "-march=native -03") 
-set (CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall")
+set (CMAKE_CXX_FLAGS_DEBUG "-g3 -O0 -Wall")
 set (CMAKE_CXX_FLAGS_RELEASE "-march=native -03") 
+
+set (CMAKE_BUILD_TYPE Debug)
 
 # configure a header file to pass some of the CMake settings
 # to the source code
