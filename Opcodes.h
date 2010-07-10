@@ -349,7 +349,7 @@ break;
 
 /*LD r,n*/
 case 0x06: //LD B,n
-B = readMem(pc++);
+B = readOpcode(pc++);
 #ifdef DEBUG
 printf(" %02x\n",B);
 printf("mnemonic:LD B,%02x\n",B);
@@ -358,7 +358,7 @@ printf("**************************\n");
 
 break;
 case 0x0E: //LD C,n
-C = readMem(pc++);
+C = readOpcode(pc++);
 #ifdef DEBUG
 printf(" %02x\n",C);
 printf("mnemonic:LD C,%02x\n",C);
@@ -367,7 +367,7 @@ printf("**************************\n");
 
 break;
 case 0x16: //LD D,n
-D = readMem(pc++);
+D = readOpcode(pc++);
 #ifdef DEBUG
 printf(" %02x\n",D);
 printf("mnemonic:LD D,%02x\n",D);
@@ -376,7 +376,7 @@ printf("**************************\n");
 
 break;
 case 0x1E: //LD E,n
-E = readMem(pc++);
+E = readOpcode(pc++);
 #ifdef DEBUG
 printf(" %02x\n",E);
 printf("mnemonic:LD E,%02x\n",E);
@@ -385,7 +385,7 @@ printf("**************************\n");
 
 break;
 case 0x26: //LD H,n
-H = readMem(pc++);
+H = readOpcode(pc++);
 #ifdef DEBUG
 printf(" %02x\n",H);
 printf("mnemonic:LD H,%02x\n",H);
@@ -394,7 +394,7 @@ printf("**************************\n");
 
 break;
 case 0x2E: //LD L,n
-L = readMem(pc++);
+L = readOpcode(pc++);
 #ifdef DEBUG
 printf(" %02x\n",L);
 printf("mnemonic:LD L,%02x\n",L);
@@ -403,7 +403,7 @@ printf("**************************\n");
 
 break;
     case 0x3E: //LD A,n
-        A = readMem(pc++);
+        A = readOpcode(pc++);
 #ifdef DEBUG
         printf(" %02x\n",A);
         printf("mnemonic:LD A,%02x\n",A);
@@ -530,9 +530,9 @@ break;
 
         /*LD (HL), n*/
     case 0x36:
-        writeMem(HL, readMem(pc++));
+        writeMem(HL, readOpcode(pc++));
 #ifdef DEBUG
-        printf("\nmnemonic:LD (HL),%02x\n",readMem(pc-1));
+        printf("\nmnemonic:LD (HL),%02x\n",readOpcode(pc-1));
         printf("**************************\n");
 #endif
         break;
@@ -604,12 +604,12 @@ break;
         /* EA      JP   PE,nn      LD   (nn),A*/
         /*ld   (nn),A      EA        16 ----*/
     case 0xEA:
-        address = readMem(pc+1);
+        address = readOpcode(pc+1);
         address = address << 8;
-        address = address | readMem(pc);
+        address = address | readOpcode(pc);
         writeMem(address,A);
 #ifdef DEBUG
-        printf("%02x %02x",readMem(pc),readMem(pc+1));
+        printf("%02x %02x",readOpcode(pc),readOpcode(pc+1));
         printf("\nmnemonic:LD (%04x),A\n",address);
         printf("**************************\n");
 #endif
@@ -620,12 +620,12 @@ break;
         /*FA      JP   M,nn       LD   A,(nn)*/
         /*ld   A,(nn)      FA        16 ----*/
     case 0xFA:
-        address = readMem(pc+1);
+        address = readOpcode(pc+1);
         address = address << 8;
-        address=address | readMem(pc);
+        address=address | readOpcode(pc);
         A=readMem(address);
 #ifdef DEBUG
-        printf("%02x %02x",readMem(pc),readMem(pc+1));
+        printf("%02x %02x",readOpcode(pc),readOpcode(pc+1));
         printf("\nmnemonic:LD A,(%04x)\n",address);
         printf("**************************\n");
 #endif
@@ -636,10 +636,10 @@ break;
         /*E0      RET  PO         LD   (FF00+n),A*/
         /*ld   (FF00+n),A  E0 nn     12 ---- write to io-port n (memory FF00+n)*/
     case 0xE0:
-        writeMem(0xFF00+readMem(pc++),A);
+        writeMem(0xFF00+readOpcode(pc++),A);
 #ifdef DEBUG
-        printf("%02x",readMem(pc-1));
-        printf("\nmnemonic:LD (FF00+%02x),A\n",readMem(pc-1));
+        printf("%02x",readOpcode(pc-1));
+        printf("\nmnemonic:LD (FF00+%02x),A\n",readOpcode(pc-1));
         printf("**************************\n");
 #endif
         break;
@@ -648,10 +648,10 @@ break;
         /*F0      RET  P          LD   A,(FF00+n)*/
         /*ld   A,(FF00+n)  F0 nn     12 ---- read from io-port n (memory FF00+n)*/
     case 0xF0:
-        A=readMem(0xFF00+readMem(pc++));
+        A=readMem(0xFF00+readOpcode(pc++));
 #ifdef DEBUG
-        printf("%02x",readMem(pc-1));
-        printf("\nmnemonic:LD A,(FF00+%02x)\n",readMem(pc-1));
+        printf("%02x",readOpcode(pc-1));
+        printf("\nmnemonic:LD A,(FF00+%02x)\n",readOpcode(pc-1));
         printf("**************************\n");
 #endif
         break;
@@ -706,8 +706,8 @@ break;
 
         /*LD rr,nn*/
     case 0x01 ://LD BC,nn
-        C=readMem(pc++);
-        B=readMem(pc++);
+        C=readOpcode(pc++);
+        B=readOpcode(pc++);
 #ifdef DEBUG
         printf("%02x %02x",C,B);
         printf("\nmnemonic:LD BC,%04x\n",BC);
@@ -715,8 +715,8 @@ break;
 #endif
         break;
     case 0x11 : //LD DE,nn
-        E=readMem(pc++);
-        D=readMem(pc++);
+        E=readOpcode(pc++);
+        D=readOpcode(pc++);
 #ifdef DEBUG
         printf("%02x %02x",E,D);
         printf("\nmnemonic:LD DE,%04x\n",DE);
@@ -724,8 +724,8 @@ break;
 #endif
         break;
     case 0x21: //LD HL,nn
-        L=readMem(pc++);
-        H=readMem(pc++);
+        L=readOpcode(pc++);
+        H=readOpcode(pc++);
 #ifdef DEBUG
         printf("%02x %02x",L,H);
         printf("\nmnemonic:LD HL,%04x\n",HL);
@@ -733,10 +733,10 @@ break;
 #endif
         break;
     case 0x31: //LD SP,nn
-        gbcpu.sp.Byte.l = readMem(pc++);
-        gbcpu.sp.Byte.h = readMem(pc++);
+        gbcpu.sp.Byte.l = readOpcode(pc++);
+        gbcpu.sp.Byte.h = readOpcode(pc++);
 #ifdef DEBUG
-        printf("%02x %02x",readMem(pc-2),readMem(pc-1));
+        printf("%02x %02x",readOpcode(pc-2),readOpcode(pc-1));
         printf("\nmnemonic:LD SP,%04x\n",SP);
         printf("**************************\n");
 #endif
@@ -752,13 +752,13 @@ break;
         break;
         /*LD (nn),SP */
     case 0x08:
-        address = readMem(pc+1);
+        address = readOpcode(pc+1);
         address = address << 8;
-        address=address | readMem(pc);
+        address=address | readOpcode(pc);
         writeMem(address,gbcpu.sp.Byte.l);
         writeMem(address+1,gbcpu.sp.Byte.h);
 #ifdef DEBUG
-        printf("%02x %02x",readMem(pc),readMem(pc+1));
+        printf("%02x %02x",readOpcode(pc),readOpcode(pc+1));
         printf("\nmnemonic:LD (%04x),SP\n",address);
         printf("**************************\n");
 #endif
@@ -904,10 +904,10 @@ break;
 
         /*add A,n*/
     case 0xC6:
-        ADD_A(readMem(pc++));
+        ADD_A(readOpcode(pc++));
 #ifdef DEBUG
-        printf("%02x",readMem(pc-1));
-        printf("\nmnemonic:ADD A,%02x\n",readMem(pc-1));
+        printf("%02x",readOpcode(pc-1));
+        printf("\nmnemonic:ADD A,%02x\n",readOpcode(pc-1));
         printf("**************************\n");
 #endif
         break;
@@ -980,10 +980,10 @@ break;
 
         /*ADC A,n*/
     case 0xCE:
-        ADC_A(readMem(pc++));
+        ADC_A(readOpcode(pc++));
 #ifdef DEBUG
-        printf("%02x",readMem(pc-1));
-        printf("\nmnemonic:ADC A,%02x\n",readMem(pc-1));
+        printf("%02x",readOpcode(pc-1));
+        printf("\nmnemonic:ADC A,%02x\n",readOpcode(pc-1));
         printf("**************************\n");
 #endif
         break;
@@ -1065,10 +1065,10 @@ break;
         break;
         /*SUB A,n*/
     case 0xD6:
-        SUB_A(readMem(pc++));
+        SUB_A(readOpcode(pc++));
 #ifdef DEBUG
-        printf("%02x",readMem(pc-1));
-        printf("\nmnemonic:SUB A,%02x\n",readMem(pc-1));
+        printf("%02x",readOpcode(pc-1));
+        printf("\nmnemonic:SUB A,%02x\n",readOpcode(pc-1));
         printf("**************************\n");
 #endif
         break;
@@ -1141,10 +1141,10 @@ break;
         break;
         /*SBC A,n*/
     case 0xDE:
-        SBC_A(readMem(pc++));
+        SBC_A(readOpcode(pc++));
 #ifdef DEBUG
-        printf("%02x",readMem(pc-1));
-        printf("\nmnemonic:SBC A,%02x\n",readMem(pc-1));
+        printf("%02x",readOpcode(pc-1));
+        printf("\nmnemonic:SBC A,%02x\n",readOpcode(pc-1));
         printf("**************************\n");
 #endif
         break;
@@ -1217,10 +1217,10 @@ break;
         break;
         /*AND A,n*/
     case 0xE6:
-        AND_A(readMem(pc++));
+        AND_A(readOpcode(pc++));
 #ifdef DEBUG
-        printf("%02x",readMem(pc-1));
-        printf("\nmnemonic:AND A,%02x\n",readMem(pc-1));
+        printf("%02x",readOpcode(pc-1));
+        printf("\nmnemonic:AND A,%02x\n",readOpcode(pc-1));
         printf("**************************\n");
 #endif
         break;
@@ -1293,10 +1293,10 @@ break;
         break;
         /*XOR A,n*/
     case 0xEE:
-        XOR_A(readMem(pc++));
+        XOR_A(readOpcode(pc++));
 #ifdef DEBUG
-        printf("%02x",readMem(pc-1));
-        printf("\nmnemonic:XOR A,%02x\n",readMem(pc-1));
+        printf("%02x",readOpcode(pc-1));
+        printf("\nmnemonic:XOR A,%02x\n",readOpcode(pc-1));
         printf("**************************\n");
 #endif
         break;
@@ -1370,10 +1370,10 @@ break;
 
         /*OR A,n*/
     case 0xF6:
-        OR_A(readMem(pc++));
+        OR_A(readOpcode(pc++));
 #ifdef DEBUG
-        printf("%02x",readMem(pc-1));
-        printf("\nmnemonic:OR A,%02x\n",readMem(pc-1));
+        printf("%02x",readOpcode(pc-1));
+        printf("\nmnemonic:OR A,%02x\n",readOpcode(pc-1));
         printf("**************************\n");
 #endif
         break;
@@ -1447,10 +1447,10 @@ break;
 
         /*CP A,n*/
     case 0xFE:
-        CP_A(readMem(pc++));
+        CP_A(readOpcode(pc++));
 #ifdef DEBUG
-        printf("%02x",readMem(pc-1));
-        printf("\nmnemonic:CP A,%02x\n",readMem(pc-1));
+        printf("%02x",readOpcode(pc-1));
+        printf("\nmnemonic:CP A,%02x\n",readOpcode(pc-1));
         printf("**************************\n");
 #endif
         break;
@@ -1655,7 +1655,7 @@ break;
         /*ADD SP,n */
         //TODO: por verificar (signed byte)
     case 0xE8:
-        signedtempbyte = readMem(pc++);
+        signedtempbyte = readOpcode(pc++);
         ADD_SP(signedtempbyte);
 #ifdef DEBUG
         printf("%02x",signedtempbyte);
@@ -1735,7 +1735,7 @@ break;
         /*LD HL,SP+n*/
         //TODO: por verificar (signed byte)
     case 0xF8:
-        signedtempbyte=readMem(pc++);
+        signedtempbyte=readOpcode(pc++);
         LD_HLSP(signedtempbyte);
 #ifdef DEBUG
         printf("%02x",signedtempbyte);
@@ -1790,7 +1790,7 @@ break;
         /*rotate and shifts CB Opcodes */
     case 0xCB:
 
-            OpCode= readMem(pc++);
+            OpCode= readOpcode(pc++);
         Counter -= CyclesCB[OpCode];
         gbcpu.cyclecounter += CyclesCB[OpCode];
 #ifdef DEBUG
@@ -3995,8 +3995,8 @@ break;
         /*JP nn*/
             case 0xC3:
         //TODO: mudar para gbcpu.pc provavelmente
-        opAux.Byte.l=readMem(pc++);
-        opAux.Byte.h= readMem(pc);
+        opAux.Byte.l=readOpcode(pc++);
+        opAux.Byte.h= readOpcode(pc);
         pc=opAux.Word;
 #ifdef DEBUG
         printf(" %02x %02x",opAux.Byte.l, opAux.Byte.h);
@@ -4018,26 +4018,26 @@ break;
         /*JP cc,nn*/
             case 0xC2: //JP  NZ,nn
 #ifdef DEBUG
-        printf(" %02x %02x",readMem(pc), readMem(pc+1));
-        printf("\nmnemonic:JP NZ,%04x\n",readMem(pc)|(readMem(pc+1)<<8));
+        printf(" %02x %02x",readOpcode(pc), readOpcode(pc+1));
+        printf("\nmnemonic:JP NZ,%04x\n",readOpcode(pc)|(readOpcode(pc+1)<<8));
         printf("**************************\n");
 #endif
                 if ((F & Z_FLAG)==0 ) {
-                    opAux.Byte.l=readMem(pc++);
-                    opAux.Byte.h= readMem(pc++);
+                    opAux.Byte.l=readOpcode(pc++);
+                    opAux.Byte.h= readOpcode(pc++);
                     pc=opAux.Word;
                 }else pc+=2;
                 break;
 
             case 0xCA: //JP  Z,nn
 #ifdef DEBUG
-        printf(" %02x %02x",readMem(pc), readMem(pc+1));
-        printf("\nmnemonic:JP Z,%04x\n",readMem(pc)|(readMem(pc+1)<<8));
+        printf(" %02x %02x",readOpcode(pc), readOpcode(pc+1));
+        printf("\nmnemonic:JP Z,%04x\n",readOpcode(pc)|(readOpcode(pc+1)<<8));
         printf("**************************\n");
 #endif
                 if ((F & Z_FLAG)==1 ) {
-                    opAux.Byte.l=readMem(pc++);
-                    opAux.Byte.h= readMem(pc++);
+                    opAux.Byte.l=readOpcode(pc++);
+                    opAux.Byte.h= readOpcode(pc++);
                     pc=opAux.Word;
                 }else pc+=2;
 
@@ -4045,13 +4045,13 @@ break;
 
             case 0xD2: //JP  NC,nn
 #ifdef DEBUG
-        printf(" %02x %02x",readMem(pc), readMem(pc+1));
-        printf("\nmnemonic:JP NC,%04x\n",readMem(pc)|(readMem(pc+1)<<8));
+        printf(" %02x %02x",readOpcode(pc), readOpcode(pc+1));
+        printf("\nmnemonic:JP NC,%04x\n",readOpcode(pc)|(readOpcode(pc+1)<<8));
         printf("**************************\n");
 #endif
                 if ((F & C_FLAG)==0 ) {
-                    opAux.Byte.l=readMem(pc++);
-                    opAux.Byte.h= readMem(pc++);
+                    opAux.Byte.l=readOpcode(pc++);
+                    opAux.Byte.h= readOpcode(pc++);
                     pc=opAux.Word;
                 }else pc+=2;
 
@@ -4059,13 +4059,13 @@ break;
 
             case 0xDA: //JP  C,nn
 #ifdef DEBUG
-        printf(" %02x %02x",readMem(pc), readMem(pc+1));
-        printf("\nmnemonic:JP C,%04x\n",readMem(pc)|(readMem(pc+1)<<8));
+        printf(" %02x %02x",readOpcode(pc), readOpcode(pc+1));
+        printf("\nmnemonic:JP C,%04x\n",readOpcode(pc)|(readOpcode(pc+1)<<8));
         printf("**************************\n");
 #endif
                 if ((F & C_FLAG)==1 ){
-                    opAux.Byte.l=readMem(pc++);
-                    opAux.Byte.h= readMem(pc++);
+                    opAux.Byte.l=readOpcode(pc++);
+                    opAux.Byte.h= readOpcode(pc++);
                     pc=opAux.Word;
                 }else pc+=2;
 
@@ -4074,11 +4074,11 @@ break;
                 /*JR PC+dd*/
                 //TODO: verificar range (pc++)
             case 0x18:
-                signedtempbyte = readMem(pc++);
+                signedtempbyte = readOpcode(pc++);
                 pc += signedtempbyte;
 #ifdef DEBUG
-            signedtempbyte=readMem(pc-1);
-        printf(" %02x",readMem(pc-1));
+            signedtempbyte=readOpcode(pc-1);
+        printf(" %02x",readOpcode(pc-1));
         printf("\nmnemonic:JP PC+%d\n",signedtempbyte);
         printf("**************************\n");
 #endif
@@ -4087,52 +4087,52 @@ break;
                 /*JR   f,PC+dd*/
             case 0x20://JR NZ,dd
 #ifdef DEBUG
-        signedtempbyte=readMem(pc);
-        printf(" %02x",readMem(pc));
+        signedtempbyte=readOpcode(pc);
+        printf(" %02x",readOpcode(pc));
         printf("\nmnemonic:JP NZ,PC+%d\n",signedtempbyte);
         printf("**************************\n");
 #endif
                 if ((F & Z_FLAG)==0 ) {
-                    signedtempbyte=readMem(pc++);
+                    signedtempbyte=readOpcode(pc++);
                     pc+=signedtempbyte;
                 }else pc++;
                 break;
 
             case 0x28://JR Z,dd
 #ifdef DEBUG
-            signedtempbyte=readMem(pc);
-        printf(" %02x",readMem(pc));
+            signedtempbyte=readOpcode(pc);
+        printf(" %02x",readOpcode(pc));
         printf("\nmnemonic:JP Z,PC+%d\n",signedtempbyte);
         printf("**************************\n");
 #endif
                 if ((F & Z_FLAG)==1 ) {
-                    signedtempbyte=readMem(pc++);
+                    signedtempbyte=readOpcode(pc++);
                     pc+=signedtempbyte;
                 }else pc++;
                 break;
 
             case 0x30://JR NC,dd
 #ifdef DEBUG
-        signedtempbyte=readMem(pc);
-        printf(" %02x",readMem(pc));
+        signedtempbyte=readOpcode(pc);
+        printf(" %02x",readOpcode(pc));
         printf("\nmnemonic:JP NC,PC+%d\n",signedtempbyte);
         printf("**************************\n");
 #endif
                 if ((F & C_FLAG)==0 ) {
-                    signedtempbyte=readMem(pc++);
+                    signedtempbyte=readOpcode(pc++);
                     pc+=signedtempbyte;
                 }else pc++;
                 break;
 
             case 0x38://JR C,dd
 #ifdef DEBUG
-        signedtempbyte=readMem(pc);
-        printf(" %02x",readMem(pc));
+        signedtempbyte=readOpcode(pc);
+        printf(" %02x",readOpcode(pc));
         printf("\nmnemonic:JP C,PC+%d\n",signedtempbyte);
         printf("**************************\n");
 #endif
                 if ((F & C_FLAG)==1 ){
-                    signedtempbyte=readMem(pc++);
+                    signedtempbyte=readOpcode(pc++);
                     pc+=signedtempbyte;
                 }else pc++;
                 break;
@@ -4140,8 +4140,8 @@ break;
                 /*CALL nn*/
                 //TODO: mudar para PC provavelmente
             case 0xCD:
-                opAux.Byte.l = readMem(pc++);
-                opAux.Byte.h = readMem(pc++);
+                opAux.Byte.l = readOpcode(pc++);
+                opAux.Byte.h = readOpcode(pc++);
                 writeMem(SP-1,((pc&0xFF00)>>8));
                 writeMem(SP-2,(pc&0xFF));
                 SP-=2;
@@ -4155,15 +4155,15 @@ break;
 
             case 0xC4://CALL NZ,nn
 #ifdef DEBUG
-            opAux.Byte.l = readMem(pc);
-            opAux.Byte.h = readMem(pc+1);
+            opAux.Byte.l = readOpcode(pc);
+            opAux.Byte.h = readOpcode(pc+1);
         printf(" %02x %02x", opAux.Byte.l, opAux.Byte.h);
         printf("\nmnemonic:CALL NZ,%04x\n",opAux.Word);
         printf("**************************\n");
 #endif
                 if ((F & Z_FLAG)==0 ) {
-                    opAux.Byte.l = readMem(pc++);
-                    opAux.Byte.h = readMem(pc++);
+                    opAux.Byte.l = readOpcode(pc++);
+                    opAux.Byte.h = readOpcode(pc++);
                     writeMem(SP-1,((pc&0xFF00)>>8));
                     writeMem(SP-2,(pc&0xFF));
                     SP-=2;
@@ -4173,15 +4173,15 @@ break;
 
             case 0xCC://CALL Z,nn
 #ifdef DEBUG
-            opAux.Byte.l = readMem(pc);
-            opAux.Byte.h = readMem(pc+1);
+            opAux.Byte.l = readOpcode(pc);
+            opAux.Byte.h = readOpcode(pc+1);
         printf(" %02x %02x", opAux.Byte.l, opAux.Byte.h);
         printf("\nmnemonic:CALL Z,%04x\n",opAux.Word);
         printf("**************************\n");
 #endif
                 if ((F & Z_FLAG)==1 ) {
-                    opAux.Byte.l = readMem(pc++);
-                    opAux.Byte.h = readMem(pc++);
+                    opAux.Byte.l = readOpcode(pc++);
+                    opAux.Byte.h = readOpcode(pc++);
                     writeMem(SP-1,((pc&0xFF00)>>8));
                     writeMem(SP-2,(pc&0xFF));
                     SP-=2;
@@ -4191,15 +4191,15 @@ break;
 
             case 0xD4://CALL NC,nn
 #ifdef DEBUG
-            opAux.Byte.l = readMem(pc);
-            opAux.Byte.h = readMem(pc+1);
+            opAux.Byte.l = readOpcode(pc);
+            opAux.Byte.h = readOpcode(pc+1);
         printf(" %02x %02x", opAux.Byte.l, opAux.Byte.h);
         printf("\nmnemonic:CALL NC,%04x\n",opAux.Word);
         printf("**************************\n");
 #endif
                 if ((F & C_FLAG)==0 ) {
-                    opAux.Byte.l = readMem(pc++);
-                    opAux.Byte.h = readMem(pc++);
+                    opAux.Byte.l = readOpcode(pc++);
+                    opAux.Byte.h = readOpcode(pc++);
                     writeMem(SP-1,((pc&0xFF00)>>8));
                     writeMem(SP-2,(pc&0xFF));
                     SP-=2;
@@ -4209,15 +4209,15 @@ break;
 
             case 0xDC://CALL C,nn
 #ifdef DEBUG
-            opAux.Byte.l = readMem(pc);
-            opAux.Byte.h = readMem(pc+1);
+            opAux.Byte.l = readOpcode(pc);
+            opAux.Byte.h = readOpcode(pc+1);
         printf(" %02x %02x", opAux.Byte.l, opAux.Byte.h);
         printf("\nmnemonic:CALL C,%04x\n",opAux.Word);
         printf("**************************\n");
 #endif
                 if ((F & C_FLAG)==1 ) {
-                    opAux.Byte.l = readMem(pc++);
-                    opAux.Byte.h = readMem(pc++);
+                    opAux.Byte.l = readOpcode(pc++);
+                    opAux.Byte.h = readOpcode(pc++);
                     writeMem(SP-1,((pc&0xFF00)>>8));
                     writeMem(SP-2,(pc&0xFF));
                     SP-=2;

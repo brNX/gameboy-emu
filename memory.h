@@ -20,6 +20,7 @@ extern "C"
         uint8  * gb_memory;
 
         inline uint8 readMem(uint16 address);
+        inline uint8 readOpcode(uint16 address);
         inline void writeMem(uint16 address, uint8 value);
 
 #ifdef __cplusplus

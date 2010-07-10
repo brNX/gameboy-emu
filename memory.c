@@ -25,6 +25,12 @@ extern inline uint8 readMem(uint16 address)
 	return (gb_memory[address]);
 }
 
+//TODO: for now
+extern inline uint8 readOpcode(uint16 address)
+{
+        return (gb_memory[address]);
+}
+
 extern inline void writeMem(uint16 address, uint8 value)
 {
 	gb_memory[address] = value;
