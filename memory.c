@@ -27,6 +27,24 @@ extern inline uint8 readMem(uint16 address)
 
 extern inline void writeMem(uint16 address, uint8 value)
 {
-    if (address > 0x7FFF)
 	gb_memory[address] = value;
+
+        //TODO: use optionaly SIMD instructions for ranges
+
+        //ECHO ram
+        //a <= x <= b -> x-a <= b - a (hackers delight)
+        //C000 <= adress <= DDFF
+        uint16 x1 = address - 0xC000;
+        if (x1 <= 0x1DFF){
+            gb_memory[0XE000+x1] = value;
+            return;
+        }
+
+        //E000 <= adress <= FDFF
+        x1 = address - 0xE000;
+        if (x1 <= 0x1DFF){
+            gb_memory[0XC000+x1] = value;
+            return;
+        }
+
 }

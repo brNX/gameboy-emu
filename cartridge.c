@@ -1,6 +1,7 @@
 #include "cartridge.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 Cart_mode Cart_type[] =
 {
@@ -70,9 +71,33 @@ void destroy_cart_file(Cartridge * cart){
     cart->gbcart=NULL;
 }
 
+void initMemory(uint8* gbmemory,Cartridge * cart){
+
+    //rom bank 00 16k
+    memcpy(gbmemory,cart->gbcart,sizeof(uint8)*0x4000);
+
+    if (cart->size.index == 0){
+    //32kb rom only
+        memcpy(gbmemory,cart->gbcart,sizeof(uint8)*0x8000);
+        return;
+    }
+
+    if (cart->size.index  <  0x52){
+        //TODO: copy rom bank
+        return;
+    }
+
+    if (cart->size.index  <  0x52){
+        //TODO: copy rom bank
+        return;
+    }
+}
+
+//Parsing file
 void parse_cart_Header(GBMODE mode,Cartridge * cart){
     parse_cart_Name(mode,cart);
     parse_cart_SGBCapable(cart);
+    parse_cart_GBCCapable(cart);
     parse_cart_type(cart);
     parse_cart_size(cart);
     parse_cart_ramsize(cart);
@@ -83,6 +108,12 @@ void parse_cart_Header(GBMODE mode,Cartridge * cart){
 void parse_cart_SGBCapable(Cartridge * cart){
     cart->SGB=(cart->gbcart[0x0146]==0x03)?1:0;
     printf("SGB Capable: %d\n",(cart->gbcart[0x0146]==0x03)?1:0);
+}
+
+//GBC capable ?
+void parse_cart_GBCCapable(Cartridge * cart){
+     cart->GBC=(cart->gbcart[0x0143]==0x80)?1:0;
+     printf("GBC Capable: %d\n",cart->GBC);
 }
 
 void parse_cart_ramsize(Cartridge * cart){
