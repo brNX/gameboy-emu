@@ -5,6 +5,7 @@
  *      Author: brNX
  */
 #include "memory.h"
+#include <stdio.h>
 
 //0000-3FFF   16KB ROM Bank 00     (in cartridge, fixed at bank 00)
 //4000-7FFF   16KB ROM Bank 01..NN (in cartridge, switchable bank number)
@@ -40,17 +41,44 @@ extern inline void writeMem(uint16 address, uint8 value)
         //ECHO ram
         //a <= x <= b -> x-a <= b - a (hackers delight)
         //C000 <= adress <= DDFF
-        uint16 x1 = address - 0xC000;
-        if (x1 <= 0x1DFF){
-            gb_memory[0XE000+x1] = value;
+        uint16 x = address - 0xC000;
+        if (x <= 0x1DFF){
+            gb_memory[0XE000+x] = value;
             return;
         }
 
         //E000 <= adress <= FDFF
-        x1 = address - 0xE000;
-        if (x1 <= 0x1DFF){
-            gb_memory[0XC000+x1] = value;
+        x = address - 0xE000;
+        if (x <= 0x1DFF){
+            gb_memory[0XC000+x] = value;
             return;
         }
 
-}
+        //rom bank switching
+        //2000<= adress <= 3FFF
+        x = address - 0x2000;
+        if (x <= 0x3FFF){
+
+            //MBC1
+            if (gb_cart->type.index > 0 && gb_cart->type.index < 4){
+
+                //00 -> 01, 20 -> 21 , 40 -> 41 , 60 -> 61
+                uint8 addr = value&0x1F;
+                addr+=(addr==0)?1:0;
+
+                gb_cart->rombank=(gb_cart->rombank&0xE0) | addr;
+                return;
+            }
+
+            //MBC2
+            if (gb_cart->type.index > 4 && gb_cart->type.index < 7){
+                gb_cart->rombank=value&0xF;
+                return;
+            }
+
+            //TODO: write value?
+            //gb_memory[address] = value;
+        }
+
+
+    }

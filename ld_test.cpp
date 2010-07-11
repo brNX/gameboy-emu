@@ -14,8 +14,7 @@ void LD_Test::initTestCase()
         srand(time(NULL));
         read_cart_file("MEGANIME.GB",&cart);
         parse_cart_Header(EGB,&cart);
-        initMemory(gb_memory,&cart);
-        gb_memory=cart.gbcart;
+        initMemory(&gb_memory,&gb_cart,&cart);
 }
 
 void LD_Test::ADD_HL_SS()

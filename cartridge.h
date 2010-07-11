@@ -40,6 +40,7 @@ extern "C"
 
     int read_cart_file(const char * name,Cartridge * cart);
     void destroy_cart_file(Cartridge * cart);
+
     void parse_cart_Header(GBMODE mode,Cartridge * cart);
     void parse_cart_Name(GBMODE mode,Cartridge * cart);
     void parse_cart_SGBCapable(Cartridge * cart);
@@ -49,7 +50,7 @@ extern "C"
     void parse_cart_ramsize(Cartridge * cart);
     void parse_cart_notimportant(Cartridge * cart);
 
-    void initMemory(uint8* gbmemory,Cartridge * cart);
+    void initMemory(uint8** gbmemory,Cartridge ** gbcart,Cartridge * cart);
 
 
 
