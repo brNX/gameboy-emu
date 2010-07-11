@@ -76,6 +76,16 @@ extern inline void writeMem(uint16 address, uint8 value)
                 return;
             }
 
+            //MBC3
+            if (gb_cart->type.index > 0xE && gb_cart->type.index < 0x14){
+                uint8 addr = value&0x7F;
+                addr+=(addr==0)?1:0;
+
+                gb_cart->rombank=value;
+                return;
+            }
+
+
             //TODO: write value?
             //gb_memory[address] = value;
         }
