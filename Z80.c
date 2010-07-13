@@ -6,6 +6,11 @@
  */
 
 #define DEBUG
+
+#ifdef WIN32
+#include "no_sillywarnings.h"
+#endif
+
 #include "Z80.h"
 #include "memory.h"
 
@@ -222,6 +227,7 @@ int execute(int ncycles)
         uint8 tempbyte;
         int8 signedtempbyte;
         reg32bit opAux32;
+		uint8 OpCode;
 
 #ifdef DEBUG
         printStatusZ80();
@@ -230,7 +236,7 @@ int execute(int ncycles)
         printf("**************************\n");
 #endif
 
-        uint8 OpCode = readOpcode(pc++);
+    OpCode = readOpcode(pc++);
 	Counter -= Cycles[OpCode];
 	gbcpu.cyclecounter += Cycles[OpCode];
 

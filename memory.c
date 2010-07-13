@@ -21,27 +21,40 @@
 //FFFF        Interrupt Enable Register
 
 //TODO: for now
+#ifdef WIN32
+extern __inline uint8 readMem(uint16 address)
+#else
 extern inline uint8 readMem(uint16 address)
+#endif
 {
 	return (gb_memory[address]);
 }
 
 //TODO: for now
+#ifdef WIN32
+extern __inline uint8 readOpcode(uint16 address)
+#else
 extern inline uint8 readOpcode(uint16 address)
+#endif
 {
         return (gb_memory[address]);
 }
 
+#ifdef WIN32
+extern __inline void writeMem(uint16 address, uint8 value)
+#else
 extern inline void writeMem(uint16 address, uint8 value)
+#endif
 {
+	uint16 x;
 	gb_memory[address] = value;
 
         //TODO: use optionaly SIMD instructions for ranges
 
         //ECHO ram
         //a <= x <= b -> x-a <= b - a (hackers delight)
-        //C000 <= adress <= DDFF
-        uint16 x = address - 0xC000;
+        //C000 <= adress <= DDFF 
+		x = address - 0xC000;
         if (x <= 0x1DFF){
             gb_memory[0XE000+x] = value;
             return;
