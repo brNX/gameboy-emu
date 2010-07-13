@@ -7,7 +7,7 @@
 
 #define DEBUG
 
-#ifdef WIN32
+#ifdef _MSC_VER
 #include "no_sillywarnings.h"
 #endif
 
@@ -15,7 +15,6 @@
 #include "memory.h"
 
 #include "lookuptables.h"
-#include <stdint.h>
 #include <stdio.h>
 
 #ifdef DEBUG

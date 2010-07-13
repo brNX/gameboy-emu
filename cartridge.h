@@ -1,7 +1,6 @@
 #ifndef CARTRIDGE_H_
 #define CARTRIDGE_H_
 
-#include <stdint.h>
 #include "types.h"
 
 #ifdef __cplusplus

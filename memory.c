@@ -21,30 +21,19 @@
 //FFFF        Interrupt Enable Register
 
 //TODO: for now
-#ifdef WIN32
-extern __inline uint8 readMem(uint16 address)
-#else
-extern inline uint8 readMem(uint16 address)
-#endif
+extern INLINE uint8 readMem(uint16 address)
 {
 	return (gb_memory[address]);
 }
 
-//TODO: for now
-#ifdef WIN32
-extern __inline uint8 readOpcode(uint16 address)
-#else
-extern inline uint8 readOpcode(uint16 address)
-#endif
+
+extern INLINE uint8 readOpcode(uint16 address)
 {
         return (gb_memory[address]);
 }
 
-#ifdef WIN32
-extern __inline void writeMem(uint16 address, uint8 value)
-#else
-extern inline void writeMem(uint16 address, uint8 value)
-#endif
+
+extern INLINE void writeMem(uint16 address, uint8 value)
 {
 	uint16 x;
 	gb_memory[address] = value;
