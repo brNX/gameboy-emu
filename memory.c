@@ -149,8 +149,9 @@ extern INLINE void writeMem(uint16 address, uint8 value)
             break;
         case 0x9:
             break;
+
+        /*TODO: external ram*/
         case 0xA:
-            break;
         case 0xB:
             break;
 
