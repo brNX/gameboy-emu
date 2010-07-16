@@ -34,7 +34,7 @@ extern "C"
         Cart_mode type;
         Cart_size_mode size;
         int ramsize;
-        int rombank,rambank;
+        int rombank,rambank,mbc1mode,mbc3rtc;
     } Cartridge;
 
     int read_cart_file(const char * name,Cartridge * cart);

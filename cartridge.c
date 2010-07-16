@@ -75,6 +75,7 @@ void initMemory(uint8 ** gbmemory,Cartridge ** gbcart,Cartridge * cart){
 
     cart->rambank=0;
     cart->rombank=1;
+    cart->mbc1mode=0;
 
     *gbmemory=cart->gbcart;
     *gbcart=cart;
