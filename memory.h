@@ -23,12 +23,26 @@ extern "C"
 {
 #endif
 
-        uint8  * gb_memory;
-        Cartridge * gb_cart;
+    typedef struct
+    {
+        uint8 * rombanks;
+        uint8 * rambanks;
 
-        INLINE uint8 readMem(uint16 address);
-        INLINE uint8 readOpcode(uint16 address);
-        INLINE void writeMem(uint16 address, uint8 value);
+        uint8 wram[8192];
+        uint8 echowram[7680];
+
+        uint8 hram[127];
+        uint8 OAM[160];
+        uint8 IO[128];
+        uint8 ie;
+        Cartridge * cart;
+    }Memory;
+
+    INLINE uint8 readMem(uint16 address,Memory * mem);
+    INLINE uint8 readOpcode(uint16 address,Memory * mem);
+    INLINE void writeMem(uint16 address, uint8 value,Memory * mem);
+    void initMemory(Memory* mem,Cartridge * cart);
+    void destroyMemory(Memory * mem);
 
 
 

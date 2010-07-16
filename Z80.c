@@ -195,7 +195,7 @@ Z80 gbcpu;
 
 
 
-void resetZ80()
+void resetZ80(Memory * mem)
 {
     gbcpu.pause = 1;
     gbcpu.halt = 0;
@@ -210,6 +210,7 @@ void resetZ80()
     SP = 0xFFFE;
     //todo: verificar
     gbcpu.ime=1;
+    gbcpu.mem=mem;
 }
 
 int execute(int ncycles)
@@ -226,7 +227,7 @@ int execute(int ncycles)
         uint8 tempbyte;
         int8 signedtempbyte;
         reg32bit opAux32;
-		uint8 OpCode;
+        uint8 OpCode;
 
 #ifdef DEBUG
         printStatusZ80();
@@ -235,7 +236,7 @@ int execute(int ncycles)
         printf("**************************\n");
 #endif
 
-    OpCode = readOpcode(pc++);
+    OpCode = readOpcode(pc++, gbcpu.mem);
 	Counter -= Cycles[OpCode];
 	gbcpu.cyclecounter += Cycles[OpCode];
 

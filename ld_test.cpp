@@ -10,11 +10,11 @@
 
 void LD_Test::initTestCase()
 {
-	resetZ80();
+        resetZ80(&mem);
         //srand(time(NULL));
         read_cart_file("MEGANIME.GB",&cart);
         parse_cart_Header(EGB,&cart);
-        initMemory(&gb_memory,&gb_cart,&cart);
+        initMemory(&mem,&cart);
 }
 
 void LD_Test::ADD_HL_SS()
@@ -42,11 +42,11 @@ void LD_Test::ADD_SP_n()
 {
 
         uint16 temp=SP;
-        gb_memory[0x100]=0xF5;
+        mem.rombanks[0x100]=0xF5;
 	execOpcode(0xE8);
         QVERIFY(SP == temp-11);
         temp=SP;
-        gb_memory[0x100]=0x5;
+        mem.rombanks[0x100]=0x5;
         execOpcode(0xE8);
         QVERIFY(SP == temp+5);
 }
@@ -54,7 +54,7 @@ void LD_Test::ADD_SP_n()
 void LD_Test::BIT_N_R(){
     F=0;
     B=0xF8;
-    gb_memory[0x100]=0x50;
+    mem.rombanks[0x100]=0x50;
     execOpcode(0xCB);
     QVERIFY((F&Z_FLAG) == Z_FLAG);
     QVERIFY((F&N_FLAG) != N_FLAG);
@@ -68,19 +68,9 @@ void LD_Test::BIT_N_R(){
 }
 
 
-void LD_Test::benchmemoryRange()
-{
-    uint8 bank=1;
-    uint16 addr = 0x4050;
-    QBENCHMARK{
-
-        gb_memory[(0x4000*bank)+((addr&0x7fff)-0x4000)]=5;
-    }
-}
-
 void LD_Test::cleanupTestCase()
 {
-     destroy_cart_file(&cart);
+     destroyMemory(&mem);
 }
 
 QTEST_MAIN(LD_Test)

@@ -37,16 +37,17 @@ int main()
 //        execute(1000500);
 //        fclose(f);
 
-        resetZ80();
         Cartridge cart;
+        Memory mem;
+        resetZ80(&mem);
         read_cart_file("killer_instinct.gb",&cart);
         //read_cart_file("motocross_maniacs.gb",&cart);
         //read_cart_file("MEGANIME.GB",&cart);
         //read_cart_file("super_mario_land.gb",&cart);
         parse_cart_Header(EGB,&cart);
-        initMemory(&gb_memory,&gb_cart,&cart);
+        initMemory(&mem,&cart);
         execute(1000000);
-        destroy_cart_file(&cart);
+        destroyMemory(&mem);
 
 	return 0;
 }

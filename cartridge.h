@@ -49,8 +49,6 @@ extern "C"
     void parse_cart_ramsize(Cartridge * cart);
     void parse_cart_notimportant(Cartridge * cart);
 
-    void initMemory(uint8** gbmemory,Cartridge ** gbcart,Cartridge * cart);
-
 
 
 #ifdef __cplusplus

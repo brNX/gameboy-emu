@@ -9,6 +9,7 @@
 #define Z80_H_
 
 #include "types.h"
+#include "memory.h"
 
 //macros para aceder facilmente ao cpu
 #define A gbcpu.af.Byte.h
@@ -71,10 +72,12 @@ extern "C"
 			int cyclecounter;
 			int pause;
 			int halt;
+                        Memory * mem;
+
 	} Z80;
 	extern Z80 gbcpu;
 
-	void resetZ80(); //            -> resets the CPU core
+        void resetZ80(Memory * mem); //      -> resets the CPU core
 	int execute(int nclyces);//   -> the core executes n cycles
 	void interruptZ80(); //      -> sends an interrupt signal
 	void printStatusZ80();
