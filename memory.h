@@ -29,9 +29,8 @@ extern "C"
         uint8 * rambanks;
 
         uint8 wram[8192];
-        uint8 echowram[7680];
-
         uint8 hram[127];
+        uint8 vram[8192];
         uint8 OAM[160];
         uint8 IO[128];
         uint8 ie;
