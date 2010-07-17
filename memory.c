@@ -316,14 +316,15 @@ extern INLINE void writeMem(uint16 address, uint8 value,Memory * mem)
 }
 
 void initMemory(Memory * mem,Cartridge * cart){
-
-    cart->rambank=0;
+	int romsize,ramsize;
+    
+	cart->rambank=0;
     cart->rombank=1;
     cart->mbc1mode=0;
 
     mem->cart=cart;
 
-    int romsize,ramsize;
+    
     /*16384 bytes *  n rombanks*/
     if (cart->size.nbanks > 0)
         romsize=cart->size.nbanks*16384*sizeof(uint8);
