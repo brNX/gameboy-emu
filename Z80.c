@@ -210,7 +210,40 @@ void resetZ80(Memory * mem)
     SP = 0xFFFE;
     //todo: verificar
     gbcpu.ime=1;
+
     gbcpu.mem=mem;
+
+    mem->IO[0x05] = 0x00   ;// TIMA
+    mem->IO[0x06] = 0x00   ;// TMA
+    mem->IO[0x07] = 0x00   ;// TAC
+    mem->IO[0x10] = 0x80   ;// NR10
+    mem->IO[0x11] = 0xBF   ;// NR11
+    mem->IO[0x12] = 0xF3   ;// NR12
+    mem->IO[0x14] = 0xBF   ;// NR14
+    mem->IO[0x16] = 0x3F   ;// NR21
+    mem->IO[0x17] = 0x00   ;// NR22
+    mem->IO[0x19] = 0xBF   ;// NR24
+    mem->IO[0x1A] = 0x7F   ;// NR30
+    mem->IO[0x1B] = 0xFF   ;// NR31
+    mem->IO[0x1C] = 0x9F   ;// NR32
+    mem->IO[0x1E] = 0xBF   ;// NR33
+    mem->IO[0x20] = 0xFF   ;// NR41
+    mem->IO[0x21] = 0x00   ;// NR42
+    mem->IO[0x22] = 0x00   ;// NR43
+    mem->IO[0x23] = 0xBF   ;// NR30
+    mem->IO[0x24] = 0x77   ;// NR50
+    mem->IO[0x25] = 0xF3   ;// NR51
+    mem->IO[0x26] = 0xF1   ;// -GB, $F0-SGB ; NR52
+    mem->IO[0x40] = 0x91   ;// LCDC
+    mem->IO[0x42] = 0x00   ;// SCY
+    mem->IO[0x43] = 0x00   ;// SCX
+    mem->IO[0x45] = 0x00   ;// LYC
+    mem->IO[0x47] = 0xFC   ;// BGP
+    mem->IO[0x48] = 0xFF   ;// OBP0
+    mem->IO[0x49] = 0xFF   ;// OBP1
+    mem->IO[0x4A] = 0x00   ;// WY
+    mem->IO[0x4B]= 0;   //    [$FF4B] = $00   ; WX
+    mem->ie=0;          //    [$FFFF] = $00   ; IE
 }
 
 int execute(int ncycles)
