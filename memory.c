@@ -23,7 +23,6 @@
 //FF80-FFFE   High RAM (HRAM)
 //FFFF        Interrupt Enable Register
 
-//TODO: for now
 extern INLINE uint8 readMem(uint16 address,Memory * mem)
 {
     uint8 index;
@@ -54,10 +53,9 @@ extern INLINE uint8 readMem(uint16 address,Memory * mem)
         break;
 
     /*********external ram*********/
-        //TODO: banking
     case 0xA:
     case 0xB:
-        return mem->rambanks[address-0xA000];
+        return mem->rambanks[address-0xA000 + (mem->cart->rambank*8192)];
         break;
 
     /***********Work RAM************/
@@ -117,14 +115,6 @@ extern INLINE uint8 readMem(uint16 address,Memory * mem)
     }
 
     return 0;
-}
-
-
-extern INLINE uint8 readOpcode(uint16 address,Memory * mem)
-{
-    uint8 index=address >> 14;
-    uint16 newaddress = address + index*((mem->cart->rombank-1)*0x4000);
-    return (mem->rombanks[newaddress]);
 }
 
 
@@ -245,10 +235,10 @@ extern INLINE void writeMem(uint16 address, uint8 value,Memory * mem)
         mem->vram[address -0x8000]=value;
         break;
 
-    /*TODO: external ram banking*/
+    /*******external ram********/
     case 0xA:
     case 0xB:
-        mem->rambanks[address-0xA000]=value;
+        mem->rambanks[address-0xA000 + (mem->cart->rambank*8192)]=value;
         break;
 
     /*C000-CFFF   4KB Work RAM Bank 0 (WRAM)*/
@@ -316,9 +306,9 @@ extern INLINE void writeMem(uint16 address, uint8 value,Memory * mem)
 }
 
 void initMemory(Memory * mem,Cartridge * cart){
-	int romsize,ramsize;
+    int romsize,ramsize;
     
-	cart->rambank=0;
+    cart->rambank=0;
     cart->rombank=1;
     cart->mbc1mode=0;
 
@@ -344,10 +334,10 @@ void initMemory(Memory * mem,Cartridge * cart){
         ramsize=2*1024*sizeof(uint8);
         break;
     case 2:
-         ramsize=8*1024*sizeof(uint8);
+        ramsize=8*1024*sizeof(uint8);
         break;
     case 3:
-         ramsize=32*1024*sizeof(uint8);
+        ramsize=32*1024*sizeof(uint8);
         break;
     default:
         break;
@@ -355,7 +345,7 @@ void initMemory(Memory * mem,Cartridge * cart){
 
     //TODO : read and write ram from/to file  (savegame)
     if (ramsize > 0)
-       mem->rambanks=(uint8 *) malloc (ramsize);
+        mem->rambanks=(uint8 *) malloc (ramsize);
 
     /*copy rom from file*/
     memcpy(mem->rombanks,cart->gbcart,romsize);
