@@ -54,6 +54,15 @@ extern INLINE uint8 readMem(uint16 address,Memory * mem)
 
     /*********external ram*********/
     case 0xA:
+
+        //MBC2
+        if (mem->cart->type.index == 0x05 || mem->cart->type.index == 0x06){
+            /*0xA000 <= adress <= 0xA1FF*/
+            addr = address - 0xA000;
+            if (addr <= 0xA1FF) return (mem->rambanks[addr]&0xF);
+            break;
+        }
+
     case 0xB:
         return mem->rambanks[address-0xA000 + (mem->cart->rambank*8192)];
         break;
@@ -237,6 +246,15 @@ extern INLINE void writeMem(uint16 address, uint8 value,Memory * mem)
 
     /*******external ram********/
     case 0xA:
+
+        //MBC2
+        if (mem->cart->type.index == 0x05 || mem->cart->type.index == 0x06){
+            /*0xA000 <= adress <= 0xA1FF*/
+            addr = address - 0xA000;
+            if (addr <= 0xA1FF) mem->rambanks[addr]=(value&0xF);
+            break;
+        }
+
     case 0xB:
         mem->rambanks[address-0xA000 + (mem->cart->rambank*8192)]=value;
         break;
@@ -346,6 +364,11 @@ void initMemory(Memory * mem,Cartridge * cart){
     //TODO : read and write ram from/to file  (savegame)
     if (ramsize > 0)
         mem->rambanks=(uint8 *) malloc (ramsize);
+
+    //MBC2
+    if (cart->type.index == 0x06 || cart->type.index == 0x05)
+        mem->rambanks=(uint8 *) malloc (512*sizeof(uint8));
+
 
     /*copy rom from file*/
     memcpy(mem->rombanks,cart->gbcart,romsize);
