@@ -4026,7 +4026,10 @@ break;
                     opAux.Byte.l=readOpcode(pc++,gbcpu.mem);
                     opAux.Byte.h= readOpcode(pc++,gbcpu.mem);
                     pc=opAux.Word;
-                }else pc+=2;
+                }else{
+                    pc+=2;
+                    Counter+=4;
+                }
                 break;
 
             case 0xCA: //JP  Z,nn
@@ -4039,7 +4042,10 @@ break;
                     opAux.Byte.l=readOpcode(pc++,gbcpu.mem);
                     opAux.Byte.h= readOpcode(pc++,gbcpu.mem);
                     pc=opAux.Word;
-                }else pc+=2;
+                }else{
+                    pc+=2;
+                    Counter+=4;
+                }
 
                 break;
 
@@ -4053,7 +4059,10 @@ break;
                     opAux.Byte.l=readOpcode(pc++,gbcpu.mem);
                     opAux.Byte.h= readOpcode(pc++,gbcpu.mem);
                     pc=opAux.Word;
-                }else pc+=2;
+                }else{
+                    pc+=2;
+                    Counter+=4;
+                }
 
                 break;
 
@@ -4067,7 +4076,10 @@ break;
                     opAux.Byte.l=readOpcode(pc++,gbcpu.mem);
                     opAux.Byte.h= readOpcode(pc++,gbcpu.mem);
                     pc=opAux.Word;
-                }else pc+=2;
+                }else{
+                    pc+=2;
+                    Counter+=4;
+                }
 
                 break;
 
@@ -4095,7 +4107,10 @@ break;
                 if ((F & Z_FLAG)==0 ) {
                     signedtempbyte=readOpcode(pc++,gbcpu.mem);
                     pc+=signedtempbyte;
-                }else pc++;
+                }else {
+                    pc++;
+                    Counter+=4;
+                }
                 break;
 
             case 0x28://JR Z,dd
@@ -4108,7 +4123,10 @@ break;
                 if ((F & Z_FLAG)==1 ) {
                     signedtempbyte=readOpcode(pc++,gbcpu.mem);
                     pc+=signedtempbyte;
-                }else pc++;
+                }else {
+                    pc++;
+                    Counter+=4;
+                }
                 break;
 
             case 0x30://JR NC,dd
@@ -4121,7 +4139,10 @@ break;
                 if ((F & C_FLAG)==0 ) {
                     signedtempbyte=readOpcode(pc++,gbcpu.mem);
                     pc+=signedtempbyte;
-                }else pc++;
+                }else {
+                    pc++;
+                    Counter+=4;
+                }
                 break;
 
             case 0x38://JR C,dd
@@ -4134,7 +4155,10 @@ break;
                 if ((F & C_FLAG)==1 ){
                     signedtempbyte=readOpcode(pc++,gbcpu.mem);
                     pc+=signedtempbyte;
-                }else pc++;
+                }else {
+                    pc++;
+                    Counter+=4;
+                }
                 break;
 
                 /*CALL nn*/
@@ -4168,7 +4192,10 @@ break;
                     writeMem(SP-2,(pc&0xFF),gbcpu.mem);
                     SP-=2;
                     pc=opAux.Word;
-                }else pc+=2;
+                }else {
+                    pc+=2;
+                    Counter += 12;
+                }
                 break;
 
             case 0xCC://CALL Z,nn
@@ -4186,7 +4213,10 @@ break;
                     writeMem(SP-2,(pc&0xFF),gbcpu.mem);
                     SP-=2;
                     pc=opAux.Word;
-                }else pc+=2;
+                }else {
+                    pc+=2;
+                    Counter += 12;
+                }
                 break;
 
             case 0xD4://CALL NC,nn
@@ -4204,7 +4234,10 @@ break;
                     writeMem(SP-2,(pc&0xFF),gbcpu.mem);
                     SP-=2;
                     pc=opAux.Word;
-                }else pc+=2;
+                }else {
+                    pc+=2;
+                    Counter += 12;
+                }
                 break;
 
             case 0xDC://CALL C,nn
@@ -4222,7 +4255,10 @@ break;
                     writeMem(SP-2,(pc&0xFF),gbcpu.mem);
                     SP-=2;
                     pc=opAux.Word;
-                }else pc+=2;
+                }else {
+                    pc+=2;
+                    Counter += 12;
+                }
                 break;
 
                 /*RET*/
@@ -4244,7 +4280,9 @@ break;
                     opAux.Byte.h = readMem(SP+1,gbcpu.mem);
                     SP+=2;
                     pc=opAux.Word;
+                    break;
                 }
+                Counter+=12;
 #ifdef DEBUG
         printf("\nmnemonic:RET NZ\n");
         printf("**************************\n");
@@ -4256,7 +4294,9 @@ break;
                     opAux.Byte.h = readMem(SP+1,gbcpu.mem);
                     SP+=2;
                     pc=opAux.Word;
+                    break;
                 }
+                Counter+=12;
 #ifdef DEBUG
         printf("\nmnemonic:RET Z\n");
         printf("**************************\n");
@@ -4268,7 +4308,9 @@ break;
                     opAux.Byte.h = readMem(SP+1,gbcpu.mem);
                     SP+=2;
                     pc=opAux.Word;
+                    break;
                 }
+                Counter+=12;
 #ifdef DEBUG
         printf("\nmnemonic:RET NC\n");
         printf("**************************\n");
@@ -4280,7 +4322,9 @@ break;
                     opAux.Byte.h = readMem(SP+1,gbcpu.mem);
                     SP+=2;
                     pc=opAux.Word;
+                    break;
                 }
+                Counter+=12;
 #ifdef DEBUG
         printf("\nmnemonic:RET C\n");
         printf("**************************\n");

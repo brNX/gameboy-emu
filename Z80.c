@@ -236,7 +236,7 @@ int execute(int ncycles)
         printf("**************************\n");
 #endif
 
-    OpCode = readOpcode(pc++, gbcpu.mem);
+        OpCode = readOpcode(pc++, gbcpu.mem);
 	Counter -= Cycles[OpCode];
 	gbcpu.cyclecounter += Cycles[OpCode];
 
