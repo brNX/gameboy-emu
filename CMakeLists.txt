@@ -50,6 +50,9 @@ set (CMAKE_C_FLAGS_RELEASE "-march=native -03")
 set (CMAKE_CXX_FLAGS_DEBUG "-g3 -O0 -Wall")
 set (CMAKE_CXX_FLAGS_RELEASE "-march=native -03") 
 
+#set (CMAKE_C_COMPILER "clang")
+#set (CMAKE_CXX_COMPILER "clang++")
+
 set (CMAKE_BUILD_TYPE Debug)
 
 # configure a header file to pass some of the CMake settings

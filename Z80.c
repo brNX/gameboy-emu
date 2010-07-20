@@ -249,7 +249,6 @@ void resetZ80(Memory * mem)
 int execute(int ncycles)
 {
     int Counter = ncycles;
-    uint16 pc = PC;
 
     //emulation loop
     for (;;)
@@ -265,11 +264,9 @@ int execute(int ncycles)
 #ifdef DEBUG
         printStatusZ80();
         printf("**************************\n");
-        printf("pc:%04x\n",pc);
-        printf("**************************\n");
 #endif
 
-        OpCode = readMem(pc++, gbcpu.mem);
+        OpCode = readMem(PC++, gbcpu.mem);
 	Counter -= Cycles[OpCode];
 	gbcpu.cyclecounter += Cycles[OpCode];
 
@@ -319,7 +316,6 @@ void execOpcode(uint8 OpCode){
         int8 signedtempbyte;
         reg32bit opAux32;
         int Counter = 0;
-        uint16 pc = PC;
 
 	switch (OpCode)
 	{

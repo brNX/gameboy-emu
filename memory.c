@@ -46,7 +46,7 @@ extern INLINE uint8 readMem(uint16 address,Memory * mem)
         break;
 
     /*********VRAM**************/
-        //TODO: verificar
+    //TODO: verificar
     case 0x8:
     case 0x9:
         return mem->wram[address-0x8000];
