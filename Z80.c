@@ -264,6 +264,7 @@ int execute(int ncycles)
 #ifdef DEBUG
         printStatusZ80();
         printf("**************************\n");
+        printMEMStatus(gbcpu.mem);
 #endif
 
         OpCode = readMem(PC++, gbcpu.mem);

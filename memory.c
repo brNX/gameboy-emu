@@ -23,13 +23,71 @@
 //FF80-FFFE   High RAM (HRAM)
 //FFFF        Interrupt Enable Register
 
+void byte2String(char *strBits, unsigned long long byte,int tamanho)
+{
+        char  mask = 0x01;  //get LSbit
+        char  bit;
+        int i;
+
+        for (i = (tamanho-1); i >= 0; i--)
+        {
+                bit = byte & mask;
+                strBits[i] = bit + 48; //converter valor num�rico para o caracter alfanum�rico correspondente
+                byte = byte >> 1;
+        }
+        strBits[tamanho]='\0';
+}
+
+void resetstring(char * string){
+    int i;
+    for (i=0;i<8;i++)
+        string[i]=0;
+}
+
 void printMEMStatus(Memory * mem)
 {
     printf("*******MEM Status*********\n");
-    //printf("ZF:%d NF:%d HF:%d CF:%d\n",(F>>7),(F&N_FLAG)>>6,(F&H_FLAG)>>5,(F&C_FLAG)>>4);
-    //printf("AF:%04x BC:%04x DE:%04x HL:%04x PC:%04x SP:%04x\n",AF,BC,DE,HL,PC,SP);
-    printf("IE: %x IF: %x\n",mem->ie,mem->IO[0x0F]);
+    char string[8];
+    uint8 c0,c1,c2,c3;
+
+    byte2String(string,mem->ie,5);
+    printf("IE: %s ",string);
+    byte2String(string,mem->IO[0x0F],5);
+    printf("IF: %s \n",string);
+    byte2String(string,mem->IO[0x40],8);
+    printf("LCDC: %s \n",string);
+    byte2String(string,mem->IO[0x41],7);
+    printf("STAT: %s \n",string);
+    printf("SCY: %u \n",mem->IO[0x42]);
+    printf("SCX: %u \n",mem->IO[0x43]);
+    printf("LY: %u \n",mem->IO[0x44]);
+    printf("LYC: %u \n",mem->IO[0x45]);
+    printf("WY: %u \n",mem->IO[0x4A]);
+    printf("WX: %u \n",mem->IO[0x4B]);
+
+    c0=(mem->IO[0x47] & 0x3);
+    c1=((mem->IO[0x47]>>2) & 0x3);
+    c2=((mem->IO[0x47]>>4) & 0x3);
+    c3=((mem->IO[0x47]>>6) & 0x3);
+    printf("BGP: C3: %u C2: %u C1: %u C0: %u\n",c3,c2,c1,c0);
     printf("**************************\n");
+
+    c1=((mem->IO[0x48]>>2) & 0x3);
+    c2=((mem->IO[0x48]>>4) & 0x3);
+    c3=((mem->IO[0x48]>>6) & 0x3);
+    printf("OBP0: C3: %u C2: %u C1: %u \n",c3,c2,c1);
+    printf("**************************\n");
+
+    c1=((mem->IO[0x49]>>2) & 0x3);
+    c2=((mem->IO[0x49]>>4) & 0x3);
+    c3=((mem->IO[0x49]>>6) & 0x3);
+    printf("OBP1: C3: %u C2: %u C1: %u \n",c3,c2,c1);
+    printf("**************************\n");
+
+    printf("DIV: %u \n",mem->IO[0x04]);
+    printf("TIMA: %u \n",mem->IO[0x05]);
+    printf("TMA: %u \n",mem->IO[0x06]);
+    printf("TAC: %u \n",mem->IO[0x07]);
 }
 
 extern INLINE uint8 readMem(uint16 address,Memory * mem)
@@ -318,13 +376,29 @@ extern INLINE void writeMem(uint16 address, uint8 value,Memory * mem)
             break;
         }
 
+//       TODO: FF46 - DMA - DMA Transfer and Start Address (W)
+//        Writing to this register launches a DMA transfer from ROM or RAM to OAM memory (sprite attribute table). The written value specifies the transfer source address divided by 100h, ie. source & destination are:
+//          Source:      XX00-XX9F   ;XX in range from 00-F1h
+//          Destination: FE00-FE9F
+//        FF04 - DIV - Divider Register (R/W)
+//        This register is incremented at rate of 16384Hz (~16779Hz on SGB). In CGB Double Speed Mode it is incremented twice as fast, ie. at 32768Hz. Writing any value to this register resets it to 00h.
+
         //FF00-FF7F   I/O Ports
         addr= address - 0xFF00;
         /*FF90 <= addr <= 0xFF7F*/
         if (addr <= 0xFF7F){
+
+            //FF04 - DIV - Divider Register (R/W)
+            if (addr == 04){
+                mem->IO[addr]=0;
+                break;
+            }
+
              mem->IO[addr]=value;
              break;
         }
+
+
 
         //FFFF  Interrupt Enable Register
         if (address == 0xFFFF){
@@ -412,6 +486,5 @@ void destroyMemory(Memory * mem){
     if (mem->rombanks)
         free(mem->rombanks);
     mem->rombanks=NULL;
-
 
 }
