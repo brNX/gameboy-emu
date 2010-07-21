@@ -46,7 +46,7 @@ void LD_Test::ADD_SP_n()
 	execOpcode(0xE8);
         QVERIFY(SP == temp-11);
         temp=SP;
-        mem.rombanks[0x100]=0x5;
+        mem.rombanks[0x101]=0x5;
         execOpcode(0xE8);
         QVERIFY(SP == temp+5);
 }
@@ -54,12 +54,13 @@ void LD_Test::ADD_SP_n()
 void LD_Test::BIT_N_R(){
     F=0;
     B=0xF8;
-    mem.rombanks[0x100]=0x50;
+    mem.rombanks[0x102]=0x50;
     execOpcode(0xCB);
     QVERIFY((F&Z_FLAG) == Z_FLAG);
     QVERIFY((F&N_FLAG) != N_FLAG);
     QVERIFY((F&H_FLAG) == H_FLAG);
 
+    mem.rombanks[0x103]=0x50;
     B=0xFC;
     execOpcode(0xCB);
     QVERIFY((F&Z_FLAG) != Z_FLAG);

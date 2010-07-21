@@ -23,6 +23,15 @@
 //FF80-FFFE   High RAM (HRAM)
 //FFFF        Interrupt Enable Register
 
+void printMEMStatus(Memory * mem)
+{
+    printf("*******MEM Status*********\n");
+    //printf("ZF:%d NF:%d HF:%d CF:%d\n",(F>>7),(F&N_FLAG)>>6,(F&H_FLAG)>>5,(F&C_FLAG)>>4);
+    //printf("AF:%04x BC:%04x DE:%04x HL:%04x PC:%04x SP:%04x\n",AF,BC,DE,HL,PC,SP);
+    printf("IE: %x IF: %x\n",mem->ie,mem->IO[0x0F]);
+    printf("**************************\n");
+}
+
 extern INLINE uint8 readMem(uint16 address,Memory * mem)
 {
     uint8 index;
@@ -103,6 +112,14 @@ extern INLINE uint8 readMem(uint16 address,Memory * mem)
          }
 
          //FF00-FF7F   I/O Ports
+         addr= address - 0xFF00;
+         /*FF90 <= addr <= 0xFF7F*/
+         if (addr <= 0xFF7F){
+              return mem->IO[addr];
+              break;
+         }
+
+
          //FFFF  Interrupt Enable Register
          if (address == 0xFFFF){
              return mem->ie;
@@ -302,6 +319,13 @@ extern INLINE void writeMem(uint16 address, uint8 value,Memory * mem)
         }
 
         //FF00-FF7F   I/O Ports
+        addr= address - 0xFF00;
+        /*FF90 <= addr <= 0xFF7F*/
+        if (addr <= 0xFF7F){
+             mem->IO[addr]=value;
+             break;
+        }
+
         //FFFF  Interrupt Enable Register
         if (address == 0xFFFF){
             mem->ie=value;
