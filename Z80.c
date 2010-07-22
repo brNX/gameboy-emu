@@ -271,7 +271,7 @@ int execute(int ncycles)
        if ((IE && IF) && IME){
 
            //v-sync
-           if ((IE & 0x1) && (IF & 0x1)){
+           if (IE & IF & 0x1){
                IME=0;
                IF&= ~(0x1);
                writeMem(SP-2,gbcpu.pc.Byte.l,gbcpu.mem);
@@ -280,34 +280,34 @@ int execute(int ncycles)
                PC=0x40;
            }else
            //LCD STAT
-           if ( ((IE>>1) & 0x1) && ((IF>>1) & 0x1) ){
+           if (IE & IF & 0x2){
                IME=0;
-               IF&= ~(0x1<<1);
+               IF&= ~(0x2);
                writeMem(SP-2,gbcpu.pc.Byte.l,gbcpu.mem);
                writeMem(SP-1,gbcpu.pc.Byte.h,gbcpu.mem);
                SP-=2;
                PC=0x48;
            }else
            //Timer
-           if ( ((IE>>2) & 0x1) && ((IF>>2) & 0x1) ){
+           if (IE & IF & 0x4){
                IME=0;
-               IF&= ~(0x1<<2);
+               IF&= ~(0x4);
                writeMem(SP-2,gbcpu.pc.Byte.l,gbcpu.mem);
                writeMem(SP-1,gbcpu.pc.Byte.h,gbcpu.mem);
                SP-=2;
                PC=0x50;
            }else
            //Serial
-           if ( ((IE>>3) & 0x1) && ((IF>>3) & 0x1) ){
+           if (IE & IF & 0x8){
                 IME=0;
-                IF&= ~(0x1<<3);
+                IF&= ~(0x8);
                 writeMem(SP-2,gbcpu.pc.Byte.l,gbcpu.mem);
                 writeMem(SP-1,gbcpu.pc.Byte.h,gbcpu.mem);
                 SP-=2;
                 PC=0x58;
            }else
            //Joypad
-           if ( ((IE>>4) & 0x1) && ((IF>>4) & 0x1) ){
+           if (IE & IF & 0x10){
                 IME=0;
                 IF&= ~(0x1<<4);
                 writeMem(SP-2,gbcpu.pc.Byte.l,gbcpu.mem);
