@@ -26,7 +26,11 @@
 #define HL gbcpu.hl.Word
 #define SP gbcpu.sp.Word
 #define PC gbcpu.pc.Word
+
+/*interupts registers*/
 #define IME gbcpu.ime
+#define IE  gbcpu.mem->ie
+#define IF  gbcpu.mem->IO[0x0F]
 
 #define Z_FLAG	 0x80	/* Zero				Bit 7 */
 #define N_FLAG   0x40	/* Add/Substract	Bit 6 */

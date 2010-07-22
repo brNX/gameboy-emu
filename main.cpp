@@ -6,7 +6,8 @@
 
 #include <cstdio>
 
-
+//TODO: verify this
+//cpucycles between lcd interupts =~ 70256
 
 int main()
 {

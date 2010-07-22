@@ -50,7 +50,7 @@ void printMEMStatus(Memory * mem)
     char string[8];
     uint8 c0,c1,c2,c3;
 
-	printf("*******MEM Status*********\n");
+    printf("*******MEM Status*********\n");
     byte2String(string,mem->ie,5);
     printf("IE: %s ",string);
     byte2String(string,mem->IO[0x0F],5);
