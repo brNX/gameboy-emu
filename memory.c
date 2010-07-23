@@ -71,24 +71,22 @@ void printMEMStatus(Memory * mem)
     c2=((mem->IO[0x47]>>4) & 0x3);
     c3=((mem->IO[0x47]>>6) & 0x3);
     printf("BGP: C3: %u C2: %u C1: %u C0: %u\n",c3,c2,c1,c0);
-    printf("**************************\n");
 
     c1=((mem->IO[0x48]>>2) & 0x3);
     c2=((mem->IO[0x48]>>4) & 0x3);
     c3=((mem->IO[0x48]>>6) & 0x3);
     printf("OBP0: C3: %u C2: %u C1: %u \n",c3,c2,c1);
-    printf("**************************\n");
 
     c1=((mem->IO[0x49]>>2) & 0x3);
     c2=((mem->IO[0x49]>>4) & 0x3);
     c3=((mem->IO[0x49]>>6) & 0x3);
     printf("OBP1: C3: %u C2: %u C1: %u \n",c3,c2,c1);
-    printf("**************************\n");
 
     printf("DIV: %u \n",mem->IO[0x04]);
     printf("TIMA: %u \n",mem->IO[0x05]);
     printf("TMA: %u \n",mem->IO[0x06]);
     printf("TAC: %u \n",mem->IO[0x07]);
+    printf("**************************\n");
 }
 
 extern INLINE uint8 readMem(uint16 address,Memory * mem)
@@ -127,7 +125,7 @@ extern INLINE uint8 readMem(uint16 address,Memory * mem)
         if (mem->cart->type.index == 0x05 || mem->cart->type.index == 0x06){
             /*0xA000 <= adress <= 0xA1FF*/
             addr = address - 0xA000;
-            if (addr <= 0xA1FF) return (mem->rambanks[addr]&0xF);
+            if (addr <= 0x1FF) return (mem->rambanks[addr]&0xF);
             break;
         }
 
@@ -157,7 +155,7 @@ extern INLINE uint8 readMem(uint16 address,Memory * mem)
          //FE00-FE9F   Sprite Attribute Table (OAM)
          /*FE00 <= addr <= 0xFE9F*/
          addr= address - 0xFE00;
-         if (addr <= 0xFE9F){
+         if (addr <= 0x9F){
              return mem->OAM[addr];
              break;
          }
@@ -165,7 +163,7 @@ extern INLINE uint8 readMem(uint16 address,Memory * mem)
          //FF80-FFFE   High RAM (HRAM)
          /*FF80 <= addr <= 0xFFFE*/
          addr= address - 0xFF80;
-         if (addr <= 0xFFFE){
+         if (addr <= 0x7E){
              return mem->hram[addr];
              break;
          }
@@ -173,7 +171,7 @@ extern INLINE uint8 readMem(uint16 address,Memory * mem)
          //FF00-FF7F   I/O Ports
          addr= address - 0xFF00;
          /*FF90 <= addr <= 0xFF7F*/
-         if (addr <= 0xFF7F){
+         if (addr <= 0x7F){
               return mem->IO[addr];
               break;
          }
@@ -188,7 +186,7 @@ extern INLINE uint8 readMem(uint16 address,Memory * mem)
          //echo ram
          /*F000 <= addr <= 0xFDFF*/
          addr= address - 0xF000;
-         if (addr <= 0xFDFF){
+         if (addr <= 0xDFF){
              return mem->wram[0X1000|addr];
              break;
          }
@@ -209,6 +207,7 @@ extern INLINE void writeMem(uint16 address, uint8 value,Memory * mem)
     uint16 addr;
     uint16 change;
 
+
     switch (address >> 12){
 
     case 0x0:
@@ -220,8 +219,6 @@ extern INLINE void writeMem(uint16 address, uint8 value,Memory * mem)
     //2000<= adress <= 3FFF
     case 0x2:
     case 0x3:
-
-        x = address - 0x2000;
         switch (mem->cart->type.index){
 
             //MBC1
@@ -265,7 +262,7 @@ extern INLINE void writeMem(uint16 address, uint8 value,Memory * mem)
         //MBC1
         /*0x1 <= index <= 0x3*/
         x= mem->cart->type.index - 0x1;
-        if (x <= 0x3){
+        if (x <= 0x2){
 
             change = value&0x3; //2 bit register
 
@@ -280,7 +277,7 @@ extern INLINE void writeMem(uint16 address, uint8 value,Memory * mem)
         //MBC3
         /*0xF <= index <= 0x13*/
         x= mem->cart->type.index - 0xF;
-        if (x <= 0x13){
+        if (x <= 0x4){
             change = value & 0xF;
             switch(change){
 
@@ -327,7 +324,7 @@ extern INLINE void writeMem(uint16 address, uint8 value,Memory * mem)
         if (mem->cart->type.index == 0x05 || mem->cart->type.index == 0x06){
             /*0xA000 <= adress <= 0xA1FF*/
             addr = address - 0xA000;
-            if (addr <= 0xA1FF) mem->rambanks[addr]=(value&0xF);
+            if (addr <= 0x1FF) mem->rambanks[addr]=(value&0xF);
             break;
         }
 
@@ -361,18 +358,21 @@ extern INLINE void writeMem(uint16 address, uint8 value,Memory * mem)
     //FFFF        Interrupt Enable Register
     case 0xF:
 
+
+
         //FE00-FE9F   Sprite Attribute Table (OAM)
         /*FE00 <= addr <= 0xFE9F*/
-        addr= address - 0xFE00;
-        if (addr <= 0xFE9F){
+        addr = address - 0xFE00;
+
+        if (addr <= 0x9F){
             mem->OAM[addr]=value;
             break;
         }
 
         //FF80-FFFE   High RAM (HRAM)
         /*FF80 <= addr <= 0xFFFE*/
-        addr= address - 0xFF80;
-        if (addr <= 0xFFFE){
+        addr = address - 0xFF80;
+        if (addr <= 0x7E){
             mem->hram[addr]=value;
             break;
         }
@@ -386,20 +386,16 @@ extern INLINE void writeMem(uint16 address, uint8 value,Memory * mem)
 
         //FF00-FF7F   I/O Ports
         addr= address - 0xFF00;
-        /*FF90 <= addr <= 0xFF7F*/
-        if (addr <= 0xFF7F){
-
+        /*FF00 <= addr <= 0xFF7F*/
+        if (addr <= 0x7F){
             //FF04 - DIV - Divider Register (R/W)
             if (addr == 04){
                 mem->IO[addr]=0;
                 break;
             }
-
              mem->IO[addr]=value;
              break;
         }
-
-
 
         //FFFF  Interrupt Enable Register
         if (address == 0xFFFF){
@@ -410,11 +406,10 @@ extern INLINE void writeMem(uint16 address, uint8 value,Memory * mem)
         //echo ram
         /*F000 <= addr <= 0xFDFF*/
         addr= address - 0xF000;
-        if (addr <= 0xFDFF){
+        if (addr <= 0xDFF){
             mem->wram[0X1000|addr] = value;
             break;
         }
-
 
         break;
     }

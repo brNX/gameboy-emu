@@ -6,8 +6,8 @@
 
 #include <cstdio>
 
-//TODO: verify this
-//cpucycles between lcd interupts =~ 70256
+
+//cpucycles between lcd interupts =~ 69905
 
 int main()
 {
@@ -21,7 +21,11 @@ int main()
         read_cart_file("super_mario_land.gb",&cart);
         parse_cart_Header(EGB,&cart);
         initMemory(&mem,&cart);
-        execute(1000000);
+        for(int i=0;i<5;i++){
+            execute(69905);
+            mem.IO[0x0F]|=0x1;
+        }
+
         destroyMemory(&mem);
 
 	return 0;
