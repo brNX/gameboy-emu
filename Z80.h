@@ -37,6 +37,12 @@
 #define H_FLAG	 0x20	/* Half Carry		Bit 5 */
 #define C_FLAG	 0x10	/* Carry			Bit 4 */
 
+#define I_V_BLANK   0
+#define I_LCD_STAT  1
+#define I_TIMER     2
+#define I_SERIAL    3
+#define I_JOYPAD    4
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -78,14 +84,19 @@ extern "C"
 			int halt;
                         Memory * mem;
 
+                        int timer1;
+                        int timer2;
+
 	} Z80;
 	extern Z80 gbcpu;
 
         void resetZ80(Memory * mem); //      -> resets the CPU core
 	int execute(int nclyces);//   -> the core executes n cycles
-	void interruptZ80(); //      -> sends an interrupt signal
+        void interruptZ80(int type); //      -> sends an interrupt signal
 	void printStatusZ80();
         void execOpcode(uint8 opcode);
+
+        static INLINE void timers(int cycles);
 
 
 #ifdef __cplusplus

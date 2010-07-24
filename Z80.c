@@ -23,7 +23,6 @@
 
 Z80 gbcpu;
 
-
 //is 0 ?
 //if (val==0) F |= Z_FLAG; else F &= ~Z_FLAG;
 #define CHECK_Z(val) \
@@ -193,6 +192,11 @@ Z80 gbcpu;
 #define RES(n,val)\
         val &= ~(0x1 << n)
 
+#define PUSHPC()\
+        writeMem(SP-2,gbcpu.pc.Byte.l,gbcpu.mem);\
+        writeMem(SP-1,gbcpu.pc.Byte.h,gbcpu.mem);\
+        SP-=2
+
 
 
 void resetZ80(Memory * mem)
@@ -274,45 +278,35 @@ int execute(int ncycles)
            if (IE & IF & 0x1){
                IME=0;
                IF&= ~(0x1);
-               writeMem(SP-2,gbcpu.pc.Byte.l,gbcpu.mem);
-               writeMem(SP-1,gbcpu.pc.Byte.h,gbcpu.mem);
-               SP-=2;
+               PUSHPC();
                PC=0x40;
            }else
            //LCD STAT
            if (IE & IF & 0x2){
                IME=0;
                IF&= ~(0x2);
-               writeMem(SP-2,gbcpu.pc.Byte.l,gbcpu.mem);
-               writeMem(SP-1,gbcpu.pc.Byte.h,gbcpu.mem);
-               SP-=2;
+               PUSHPC();
                PC=0x48;
            }else
            //Timer
            if (IE & IF & 0x4){
                IME=0;
                IF&= ~(0x4);
-               writeMem(SP-2,gbcpu.pc.Byte.l,gbcpu.mem);
-               writeMem(SP-1,gbcpu.pc.Byte.h,gbcpu.mem);
-               SP-=2;
+               PUSHPC();
                PC=0x50;
            }else
            //Serial
            if (IE & IF & 0x8){
                 IME=0;
                 IF&= ~(0x8);
-                writeMem(SP-2,gbcpu.pc.Byte.l,gbcpu.mem);
-                writeMem(SP-1,gbcpu.pc.Byte.h,gbcpu.mem);
-                SP-=2;
+                PUSHPC();
                 PC=0x58;
            }else
            //Joypad
            if (IE & IF & 0x10){
                 IME=0;
                 IF&= ~(0x1<<4);
-                writeMem(SP-2,gbcpu.pc.Byte.l,gbcpu.mem);
-                writeMem(SP-1,gbcpu.pc.Byte.h,gbcpu.mem);
-                SP-=2;
+                PUSHPC();
                 PC=0x60;
             }
        }
@@ -344,12 +338,11 @@ int execute(int ncycles)
 	}
 #endif
 
+        //TODO : count cycles
+
 	if (Counter <= 0)
 	{
-	    //Check for interrupts and do other
-	    //cyclic tasks here
-
-	    Counter += ncycles;
+            Counter += ncycles;
 	    break;
 	}
     }
@@ -379,8 +372,59 @@ void execOpcode(uint8 OpCode){
 
 }
 
-void interruptZ80()
+static INLINE void timers(int cycles){
+
+    gbcpu.timer1 += cycles;
+
+    if (gbcpu.mem->IO[07] & 0x4){
+
+        gbcpu.timer2 += cycles;
+
+        if( gbcpu.timer2 >= TACCycles[gbcpu.mem->IO[07]&0x3]){
+            gbcpu.timer2=0;
+            gbcpu.mem->IO[05]+=1;
+
+            //overflow
+            if (gbcpu.mem->IO[05]==0){
+                interruptZ80(I_TIMER);
+                gbcpu.mem->IO[05]=gbcpu.mem->IO[06];
+            }
+        }
+
+    }
+
+    if (gbcpu.timer1 >= 256 ){
+        gbcpu.timer1=0;
+        //TODO: verificar overflow
+        gbcpu.mem->IO[04]+=1;
+    }
+
+
+
+
+}
+
+
+
+void interruptZ80(int type)
 {
+    switch(type){
+    case I_V_BLANK:
+        IF |= 0x1;
+        break;
+    case I_LCD_STAT:
+        IF |= 0x2;
+        break;
+    case I_TIMER:
+        IF |= 0x4;
+        break;
+    case I_SERIAL:
+        IF |= 0x8;
+        break;
+    case I_JOYPAD:
+        IF |= 0x10;
+        break;
+    }
 
 }
 

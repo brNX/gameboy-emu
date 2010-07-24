@@ -23,7 +23,7 @@ int main()
         initMemory(&mem,&cart);
         for(int i=0;i<5;i++){
             execute(69905);
-            mem.IO[0x0F]|=0x1;
+            interruptZ80(I_V_BLANK);
         }
 
         destroyMemory(&mem);

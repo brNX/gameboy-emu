@@ -387,4 +387,9 @@ const static uint16 DAALookup[2048] =
     0x9250,0x9350,0x9450,0x9550,0x9650,0x9750,0x9850,0x9950,
 };
 
+const static int TACCycles[4] =
+{
+    1024,16,64,256,
+};
+
 #endif /* LOCKUPTABLES_H_ */
