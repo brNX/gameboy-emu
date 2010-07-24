@@ -79,7 +79,7 @@ extern "C"
 	{
 			reg16bit af, bc, de, hl, sp, pc;
                         int ime;
-			int cyclecounter;
+                        int cyclecounter;
 			int pause;
 			int halt;
                         Memory * mem;
@@ -96,7 +96,7 @@ extern "C"
 	void printStatusZ80();
         void execOpcode(uint8 opcode);
 
-        static INLINE void timers(int cycles);
+        static INLINE void updatetimers(int cycles);
 
 
 #ifdef __cplusplus

@@ -264,6 +264,7 @@ int execute(int ncycles)
         int8 signedtempbyte;
         reg32bit opAux32;
         uint8 OpCode;
+        int usedcycles=0;
 
 #ifdef DEBUG
         printStatusZ80();
@@ -312,8 +313,7 @@ int execute(int ncycles)
        }
 
         OpCode = readMem(PC++, gbcpu.mem);
-	Counter -= Cycles[OpCode];
-	gbcpu.cyclecounter += Cycles[OpCode];
+        usedcycles += Cycles[OpCode];
 
 #ifdef DEBUG
 	printf("opcode:%02x ",OpCode);
@@ -338,7 +338,12 @@ int execute(int ncycles)
 	}
 #endif
 
-        //TODO : count cycles
+        //update timers and update cyclecount
+
+        Counter-=usedcycles;
+        gbcpu.cyclecounter += usedcycles;
+        updatetimers(usedcycles);
+
 
 	if (Counter <= 0)
 	{
@@ -359,7 +364,7 @@ void execOpcode(uint8 OpCode){
         uint8 tempbyte;
         int8 signedtempbyte;
         reg32bit opAux32;
-        int Counter = 0;
+        int usedcycles=0;
 
 	switch (OpCode)
 	{
@@ -372,15 +377,23 @@ void execOpcode(uint8 OpCode){
 
 }
 
-static INLINE void timers(int cycles){
+static INLINE void updatetimers(int cycles){
 
+    //DIV
     gbcpu.timer1 += cycles;
 
+    if (gbcpu.timer1 >= 256 ){
+        gbcpu.timer1=0;
+        gbcpu.mem->IO[04]+=1;
+    }
+
+    //TIMA
     if (gbcpu.mem->IO[07] & 0x4){
 
         gbcpu.timer2 += cycles;
 
         if( gbcpu.timer2 >= TACCycles[gbcpu.mem->IO[07]&0x3]){
+
             gbcpu.timer2=0;
             gbcpu.mem->IO[05]+=1;
 
@@ -392,16 +405,6 @@ static INLINE void timers(int cycles){
         }
 
     }
-
-    if (gbcpu.timer1 >= 256 ){
-        gbcpu.timer1=0;
-        //TODO: verificar overflow
-        gbcpu.mem->IO[04]+=1;
-    }
-
-
-
-
 }
 
 

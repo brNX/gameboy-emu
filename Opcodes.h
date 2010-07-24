@@ -1791,8 +1791,7 @@ break;
     case 0xCB:
 
         OpCode= readMem(PC++,gbcpu.mem);
-        Counter -= CyclesCB[OpCode];
-        gbcpu.cyclecounter += CyclesCB[OpCode];
+        usedcycles += CyclesCB[OpCode];
 #ifdef DEBUG
         printf("%02x",OpCode);
         CyclesCBCount[OpCode]++;
@@ -4027,7 +4026,7 @@ break;
                     PC=opAux.Word;
                 }else{
                     PC+=2;
-                    Counter+=4;
+                    usedcycles-=4;
                 }
                 break;
 
@@ -4043,7 +4042,7 @@ break;
                     PC=opAux.Word;
                 }else{
                     PC+=2;
-                    Counter+=4;
+                    usedcycles-=4;
                 }
 
                 break;
@@ -4060,7 +4059,7 @@ break;
                     PC=opAux.Word;
                 }else{
                     PC+=2;
-                    Counter+=4;
+                    usedcycles-=4;
                 }
 
                 break;
@@ -4077,7 +4076,7 @@ break;
                     PC=opAux.Word;
                 }else{
                     PC+=2;
-                    Counter+=4;
+                    usedcycles-=4;
                 }
 
                 break;
@@ -4108,7 +4107,7 @@ break;
                     PC+=signedtempbyte;
                 }else {
                     PC++;
-                    Counter+=4;
+                    usedcycles-=4;
                 }
                 break;
 
@@ -4124,7 +4123,7 @@ break;
                     PC+=signedtempbyte;
                 }else {
                     PC++;
-                    Counter+=4;
+                    usedcycles-=4;
                 }
                 break;
 
@@ -4140,7 +4139,7 @@ break;
                     PC+=signedtempbyte;
                 }else {
                     PC++;
-                    Counter+=4;
+                    usedcycles-=4;
                 }
                 break;
 
@@ -4156,7 +4155,7 @@ break;
                     PC+=signedtempbyte;
                 }else {
                     PC++;
-                    Counter+=4;
+                    usedcycles-=4;
                 }
                 break;
 
@@ -4193,7 +4192,7 @@ break;
                     PC=opAux.Word;
                 }else {
                     PC+=2;
-                    Counter += 12;
+                    usedcycles-= 12;
                 }
                 break;
 
@@ -4214,7 +4213,7 @@ break;
                     PC=opAux.Word;
                 }else {
                     PC+=2;
-                    Counter += 12;
+                    usedcycles-= 12;
                 }
                 break;
 
@@ -4235,7 +4234,7 @@ break;
                     PC=opAux.Word;
                 }else {
                     PC+=2;
-                    Counter += 12;
+                    usedcycles-= 12;
                 }
                 break;
 
@@ -4256,7 +4255,7 @@ break;
                     PC=opAux.Word;
                 }else {
                     PC+=2;
-                    Counter += 12;
+                    usedcycles-= 12;
                 }
                 break;
 
@@ -4281,7 +4280,7 @@ break;
                     PC=opAux.Word;
                     break;
                 }
-                Counter+=12;
+                usedcycles-=12;
 #ifdef DEBUG
         printf("\nmnemonic:RET NZ\n");
         printf("**************************\n");
@@ -4295,7 +4294,7 @@ break;
                     PC=opAux.Word;
                     break;
                 }
-                Counter+=12;
+                usedcycles-=12;
 #ifdef DEBUG
         printf("\nmnemonic:RET Z\n");
         printf("**************************\n");
@@ -4309,7 +4308,7 @@ break;
                     PC=opAux.Word;
                     break;
                 }
-                Counter+=12;
+                usedcycles-=12;
 #ifdef DEBUG
         printf("\nmnemonic:RET NC\n");
         printf("**************************\n");
@@ -4323,7 +4322,7 @@ break;
                     PC=opAux.Word;
                     break;
                 }
-                Counter+=12;
+                usedcycles-=12;
 #ifdef DEBUG
         printf("\nmnemonic:RET C\n");
         printf("**************************\n");
