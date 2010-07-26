@@ -12,11 +12,7 @@
 int main()
 {
 
-        uint8 teste = 0xff;
-        printf("teste %u\n",teste);
-        teste++;
-        printf("teste %u\n",teste);
-        /*Cartridge cart;
+        Cartridge cart;
         Memory mem;
         resetZ80(&mem);
         //read_cart_file("killer_instinct.gb",&cart);
@@ -31,6 +27,6 @@ int main()
         }
 
         destroyMemory(&mem);
-        */
+
 	return 0;
 }

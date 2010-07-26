@@ -48,55 +48,56 @@ extern "C"
 {
 #endif
 
-	//union para registo 16bit com accesso 8bit
-	typedef union
-	{
-			struct
-			{
-                                #ifndef B_ENDIAN
-                                uint8 l,h; /* ...in little-endian architecture */
-				#else
-                                uint8 h, l; /* ...in big-endian architecture */
-				#endif
-			} Byte;
-                        uint16 Word;
-	} reg16bit;
+    //union para registo 16bit com accesso 8bit
+    typedef union
+    {
+        struct
+        {
+#ifndef B_ENDIAN
+            uint8 l,h; /* ...in little-endian architecture */
+#else
+            uint8 h, l; /* ...in big-endian architecture */
+#endif
+        } Byte;
+        uint16 Word;
+    } reg16bit;
 
-	typedef union
-	{
-		struct
-		{
-                        #ifndef B_ENDIAN
-                        uint16 l,h; /* ...in little-endian architecture */
-			#else
-                        uint16 h, l; /* ...in big-endian architecture */
-			#endif
-		} W;
-                uint32 DW;
-	} reg32bit;
+    typedef union
+    {
+        struct
+        {
+#ifndef B_ENDIAN
+            uint16 l,h; /* ...in little-endian architecture */
+#else
+            uint16 h, l; /* ...in big-endian architecture */
+#endif
+        } W;
+        uint32 DW;
+    } reg32bit;
 
-	typedef struct
-	{
-			reg16bit af, bc, de, hl, sp, pc;
-                        int ime;
-                        int cyclecounter;
-			int pause;
-			int halt;
-                        Memory * mem;
+    typedef struct
+    {
+        reg16bit af, bc, de, hl, sp, pc;
+        int ime;
+        int cyclecounter;
+        int pause;
+        int halt;
+        Memory * mem;
 
-                        int timer1;
-                        int timer2;
+        int timer1;
+        int timer2;
 
-	} Z80;
-	extern Z80 gbcpu;
+    } Z80;
+    extern Z80 gbcpu;
 
-        void resetZ80(Memory * mem); //      -> resets the CPU core
-	int execute(int nclyces);//   -> the core executes n cycles
-        void interruptZ80(int type); //      -> sends an interrupt signal
-	void printStatusZ80();
-        void execOpcode(uint8 opcode);
+    void resetZ80(Memory * mem); //      -> resets the CPU core
+    int execute(int nclyces);//   -> the core executes n cycles
+    void interruptZ80(int type); //      -> sends an interrupt signal
+    void printStatusZ80();
+    void execOpcode(uint8 opcode);
 
-        static INLINE void updatetimers(int cycles);
+    INLINE void updatetimers(int cycles);
+    INLINE void cyclictasks(int cylces);
 
 
 #ifdef __cplusplus

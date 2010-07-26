@@ -213,13 +213,14 @@ void resetZ80(Memory * mem)
     gbcpu.cyclecounter = 0;
     SP = 0xFFFE;
     //todo: verificar
-    gbcpu.ime=1;
+    gbcpu.ime=0;
 
     gbcpu.mem=mem;
 
     mem->IO[0x05] = 0x00   ;// TIMA
     mem->IO[0x06] = 0x00   ;// TMA
     mem->IO[0x07] = 0x00   ;// TAC
+    mem->IO[0x0F] = 0x01   ;// IF
     mem->IO[0x10] = 0x80   ;// NR10
     mem->IO[0x11] = 0xBF   ;// NR11
     mem->IO[0x12] = 0xF3   ;// NR12
@@ -238,9 +239,11 @@ void resetZ80(Memory * mem)
     mem->IO[0x24] = 0x77   ;// NR50
     mem->IO[0x25] = 0xF3   ;// NR51
     mem->IO[0x26] = 0xF1   ;// -GB, $F0-SGB ; NR52
-    mem->IO[0x40] = 0x91   ;// LCDC
+    mem->IO[0x40] = 0x91   ;// LCD
+    mem->IO[0x41] = 0x84   ;// STAT
     mem->IO[0x42] = 0x00   ;// SCY
     mem->IO[0x43] = 0x00   ;// SCX
+    mem->IO[0x44] = 0x00   ;// LY
     mem->IO[0x45] = 0x00   ;// LYC
     mem->IO[0x47] = 0xFC   ;// BGP
     mem->IO[0x48] = 0xFF   ;// OBP0
@@ -343,6 +346,7 @@ int execute(int ncycles)
         Counter-=usedcycles;
         gbcpu.cyclecounter += usedcycles;
         updatetimers(usedcycles);
+        cyclictasks(usedcycles);
 
 
 	if (Counter <= 0)
@@ -377,7 +381,7 @@ void execOpcode(uint8 OpCode){
 
 }
 
-static INLINE void updatetimers(int cycles){
+INLINE void updatetimers(int cycles){
 
     //DIV
     gbcpu.timer1 += cycles;
@@ -404,6 +408,24 @@ static INLINE void updatetimers(int cycles){
             }
         }
 
+    }
+}
+
+
+#define STAT gbcpu.mem->IO[0x41]
+#define LYC gbcpu.mem->IO[0x45]
+#define LY gbcpu.mem->IO[0x44]
+INLINE void cyclictasks(int cycles){
+
+    //TODO: verify this
+    //LY=LYC?
+    if (LY == LYC){
+        //STAT
+        STAT |= 0x2;
+        if (STAT & 0x40)
+            interruptZ80(I_LCD_STAT);
+    }else{
+        STAT &= ~0x2;
     }
 }
 

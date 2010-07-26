@@ -395,7 +395,7 @@ extern INLINE void writeMem(uint16 address, uint8 value,Memory * mem)
             }
              mem->IO[addr]=value;
              break;
-        }
+         }
 
         //FFFF  Interrupt Enable Register
         if (address == 0xFFFF){
