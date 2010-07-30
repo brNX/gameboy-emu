@@ -203,9 +203,7 @@ extern INLINE uint8 readMem(uint16 address,Memory * mem)
 
 extern INLINE void writeMem(uint16 address, uint8 value,Memory * mem)
 {
-    uint16 x;
     uint16 addr;
-    uint16 change;
 
 
     switch (address >> 12){
@@ -219,91 +217,14 @@ extern INLINE void writeMem(uint16 address, uint8 value,Memory * mem)
     //2000<= adress <= 3FFF
     case 0x2:
     case 0x3:
-        switch (mem->cart->type.index){
-
-            //MBC1
-        case 0x1:
-        case 0x2:
-        case 0x3:
-            //00 -> 01, 20 -> 21 , 40 -> 41 , 60 -> 61
-            addr = value&0x1F;
-            addr+=(addr==0)?1:0;
-            mem->cart->rombank=(mem->cart->rombank&0xE0) | addr;
-            break;
-
-            //MBC2
-        case 0x5:
-        case 0x6:
-            mem->cart->rombank=value&0xF;
-            break;
-
-            //MBC3
-        case 0xF:
-        case 0x10:
-        case 0x11:
-        case 0x12:
-        case 0x13:
-            addr = value&0x7F;
-            addr+=(addr==0)?1:0;
-            mem->cart->rombank=value;
-            break;
-
-        default :
-                break;
-
-        }
+        romBankSwitch(address,value,mem);
         break;
 
     /*4000-5FFF - RAM Bank Number (MBC 1/3) - or - Upper Bits of ROM Bank Number (Write Only) (MBC 1)
     -or - RTC Register Select (Write Only) (MBC 3)*/
     case 0x4:
     case 0x5:
-
-        //MBC1
-        /*0x1 <= index <= 0x3*/
-        x= mem->cart->type.index - 0x1;
-        if (x <= 0x2){
-
-            change = value&0x3; //2 bit register
-
-            /*if rom mode*/
-            if (mem->cart->mbc1mode==0)
-                mem->cart->rombank=(mem->cart->rombank&0x1F) | (change<<5);
-            else
-                mem->cart->rambank= change;
-            return;
-        }
-
-        //MBC3
-        /*0xF <= index <= 0x13*/
-        x= mem->cart->type.index - 0xF;
-        if (x <= 0x4){
-            change = value & 0xF;
-            switch(change){
-
-                /*ram bank change*/
-            case 0x0:
-            case 0x1:
-            case 0x2:
-            case 0x3:
-                mem->cart->rambank= change;
-                break;
-
-                /*rtc*/
-            case 0x8:
-            case 0x9:
-            case 0xA:
-            case 0xB:
-            case 0xC:
-                mem->cart->mbc3rtc=change;
-                break;
-
-            default:
-                break;
-            }
-            return;
-        }
-
+        ramBankSwitch(address,value,mem);
         break;
 
     case 0x6:
@@ -349,76 +270,9 @@ extern INLINE void writeMem(uint16 address, uint8 value,Memory * mem)
         mem->wram[addr] = value;
         break;
 
-
-    //E000-FDFF   Same as C000-DDFF (ECHO)    (typically not used)
-    //FE00-FE9F   Sprite Attribute Table (OAM)
-    //FEA0-FEFF   Not Usable
-    //FF00-FF7F   I/O Ports
-    //FF80-FFFE   High RAM (HRAM)
-    //FFFF        Interrupt Enable Register
+    //I/O Zone
     case 0xF:
-
-
-
-        //FE00-FE9F   Sprite Attribute Table (OAM)
-        /*FE00 <= addr <= 0xFE9F*/
-        addr = address - 0xFE00;
-
-        if (addr <= 0x9F){
-            mem->OAM[addr]=value;
-            break;
-        }
-
-        //FF80-FFFE   High RAM (HRAM)
-        /*FF80 <= addr <= 0xFFFE*/
-        addr = address - 0xFF80;
-        if (addr <= 0x7E){
-            mem->hram[addr]=value;
-            break;
-        }
-
-//       TODO: FF46 - DMA - DMA Transfer and Start Address (W)
-//        Writing to this register launches a DMA transfer from ROM or RAM to OAM memory (sprite attribute table). The written value specifies the transfer source address divided by 100h, ie. source & destination are:
-//          Source:      XX00-XX9F   ;XX in range from 00-F1h
-//          Destination: FE00-FE9F
-//        FF04 - DIV - Divider Register (R/W)
-//        This register is incremented at rate of 16384Hz (~16779Hz on SGB). In CGB Double Speed Mode it is incremented twice as fast, ie. at 32768Hz. Writing any value to this register resets it to 00h.
-
-        //FF00-FF7F   I/O Ports
-        addr= address - 0xFF00;
-        /*FF00 <= addr <= 0xFF7F*/
-        if (addr <= 0x7F){
-
-            //FF04 - DIV - Divider Register (R/W)
-            if (addr == 04){
-                mem->IO[addr]=0;
-                break;
-            }
-
-            //FF46 - DMA - DMA Transfer and Start Address (W)
-            if (addr == 46){
-                lcdDMA(value,mem);
-                break;
-            }
-
-            mem->IO[addr]=value;
-            break;
-        }
-
-        //FFFF  Interrupt Enable Register
-        if (address == 0xFFFF){
-            mem->ie=value;
-            break;
-        }
-
-        //echo ram
-        /*F000 <= addr <= 0xFDFF*/
-        addr= address - 0xF000;
-        if (addr <= 0xDFF){
-            mem->wram[0X1000|addr] = value;
-            break;
-        }
-
+        writeToIOZone(address,value,mem);
         break;
     }
 
@@ -480,6 +334,158 @@ void initMemory(Memory * mem,Cartridge * cart){
 
 }
 
+INLINE void romBankSwitch(uint16 address, uint8 value,Memory * mem){
+    uint16 addr;
+
+    switch (mem->cart->type.index){
+
+        //MBC1
+    case 0x1:case 0x2: case 0x3:
+        //00 -> 01, 20 -> 21 , 40 -> 41 , 60 -> 61
+        addr = value&0x1F;
+        addr+=(addr==0)?1:0;
+        mem->cart->rombank=(mem->cart->rombank&0xE0) | addr;
+        break;
+
+        //MBC2
+    case 0x5: case 0x6:
+        mem->cart->rombank=value&0xF;
+        break;
+
+        //MBC3
+    case 0xF: case 0x10: case 0x11:
+    case 0x12: case 0x13:
+        addr = value&0x7F;
+        addr+=(addr==0)?1:0;
+        mem->cart->rombank=value;
+        break;
+
+    default :
+            break;
+
+    }
+
+}
+
+INLINE void ramBankSwitch(uint16 address, uint8 value,Memory * mem){
+
+    uint16 x,change;
+
+    //MBC1
+    /*0x1 <= index <= 0x3*/
+    x= mem->cart->type.index - 0x1;
+    if (x <= 0x2){
+
+        change = value&0x3; //2 bit register
+
+        /*if rom mode*/
+        if (mem->cart->mbc1mode==0)
+            mem->cart->rombank=(mem->cart->rombank&0x1F) | (change<<5);
+        else
+            mem->cart->rambank= change;
+        return;
+    }
+
+    //MBC3
+    /*0xF <= index <= 0x13*/
+    x= mem->cart->type.index - 0xF;
+    if (x <= 0x4){
+        change = value & 0xF;
+        switch(change){
+
+            /*ram bank change*/
+        case 0x0:
+        case 0x1:
+        case 0x2:
+        case 0x3:
+            mem->cart->rambank= change;
+            break;
+
+            /*rtc*/
+        case 0x8:
+        case 0x9:
+        case 0xA:
+        case 0xB:
+        case 0xC:
+            mem->cart->mbc3rtc=change;
+            break;
+
+        default:
+            break;
+        }
+        return;
+    }
+}
+
+
+
+
+INLINE void writeToIOZone(uint16 address, uint8 value,Memory * mem){
+
+    uint16 addr;
+
+    //FE00-FE9F   Sprite Attribute Table (OAM)
+    /*FE00 <= addr <= 0xFE9F*/
+    addr = address - 0xFE00;
+
+    if (addr <= 0x9F){
+        mem->OAM[addr]=value;
+        return;
+    }
+
+    //FF80-FFFE   High RAM (HRAM)
+    /*FF80 <= addr <= 0xFFFE*/
+    addr = address - 0xFF80;
+    if (addr <= 0x7E){
+        mem->hram[addr]=value;
+        return;
+    }
+
+    //FF00-FF7F   I/O Ports
+    addr= address - 0xFF00;
+    /*FF00 <= addr <= 0xFF7F*/
+    if (addr <= 0x7F){
+
+        //FF04 - DIV - Divider Register (R/W)
+        if (addr == 04){
+            mem->IO[addr]=0;
+            return;
+        }
+
+        //FF46 - DMA - DMA Transfer and Start Address (W)
+        if (addr == 46){
+            lcdDMA(value,mem);
+            return;
+        }
+
+        mem->IO[addr]=value;
+        return;
+    }
+
+    //FFFF  Interrupt Enable Register
+    if (address == 0xFFFF){
+        mem->ie=value;
+        return;
+    }
+
+    //echo ram
+    /*F000 <= addr <= 0xFDFF*/
+    addr= address - 0xF000;
+    if (addr <= 0xDFF){
+        mem->wram[0X1000|addr] = value;
+        return;
+    }
+
+
+}
+
+
+INLINE void lcdDMA(uint8 value,Memory * mem){
+    int i=0;
+    uint16 addr = value << 8;
+    for (; i < 0xA0; i++)
+        writeMem(0xFE00+i, readMem(addr+i,mem),mem);
+}
 
 void destroyMemory(Memory * mem){
 
@@ -491,11 +497,4 @@ void destroyMemory(Memory * mem){
         free(mem->rombanks);
     mem->rombanks=NULL;
 
-}
-
-INLINE void lcdDMA(uint8 value,Memory * mem){
-    int i=0;
-    uint16 addr = value << 8;
-    for (; i < 0xA0; i++)
-        writeMem(0xFE00+i, readMem(addr+i,mem),mem);
 }

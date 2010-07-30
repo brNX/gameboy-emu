@@ -40,6 +40,9 @@ extern "C"
     INLINE uint8 readMem(uint16 address,Memory * mem);
     INLINE void writeMem(uint16 address, uint8 value,Memory * mem);
     INLINE void lcdDMA(uint8 value,Memory * mem);
+    INLINE void writeToIOZone(uint16 address, uint8 value,Memory * mem);
+    INLINE void romBankSwitch(uint16 address, uint8 value,Memory * mem);
+    INLINE void ramBankSwitch(uint16 address, uint8 value,Memory * mem);
     void printMEMStatus(Memory * mem);
     void initMemory(Memory* mem,Cartridge * cart);
     void destroyMemory(Memory * mem);
