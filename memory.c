@@ -388,21 +388,22 @@ extern INLINE void writeMem(uint16 address, uint8 value,Memory * mem)
         addr= address - 0xFF00;
         /*FF00 <= addr <= 0xFF7F*/
         if (addr <= 0x7F){
+
             //FF04 - DIV - Divider Register (R/W)
             if (addr == 04){
                 mem->IO[addr]=0;
                 break;
             }
 
-        //FF46 - DMA - DMA Transfer and Start Address (W)
+            //FF46 - DMA - DMA Transfer and Start Address (W)
             if (addr == 46){
-                //todo: finish this
+                lcdDMA(value,mem);
                 break;
             }
 
-             mem->IO[addr]=value;
-             break;
-         }
+            mem->IO[addr]=value;
+            break;
+        }
 
         //FFFF  Interrupt Enable Register
         if (address == 0xFFFF){
@@ -490,4 +491,11 @@ void destroyMemory(Memory * mem){
         free(mem->rombanks);
     mem->rombanks=NULL;
 
+}
+
+INLINE void lcdDMA(uint8 value,Memory * mem){
+    int i=0;
+    uint16 addr = value << 8;
+    for (; i < 0xA0; i++)
+        writeMem(0xFE00+i, readMem(addr+i,mem),mem);
 }
