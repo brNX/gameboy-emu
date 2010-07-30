@@ -393,6 +393,13 @@ extern INLINE void writeMem(uint16 address, uint8 value,Memory * mem)
                 mem->IO[addr]=0;
                 break;
             }
+
+        //FF46 - DMA - DMA Transfer and Start Address (W)
+            if (addr == 46){
+                //todo: finish this
+                break;
+            }
+
              mem->IO[addr]=value;
              break;
          }

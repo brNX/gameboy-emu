@@ -4443,7 +4443,7 @@ break;
                 break;
 
             case 0x76://HALT
-                //TODO: fazer algo ou nao
+                gbcpu.halt=1;
 #ifdef DEBUG
                     printf("\nmnemonic:HALT\n");
                     printf("**************************\n");

@@ -284,6 +284,7 @@ int execute(int ncycles)
                IF&= ~(0x1);
                PUSHPC();
                PC=0x40;
+               gbcpu.halt=0;
            }else
            //LCD STAT
            if (IE & IF & 0x2){
@@ -291,6 +292,7 @@ int execute(int ncycles)
                IF&= ~(0x2);
                PUSHPC();
                PC=0x48;
+               gbcpu.halt=0;
            }else
            //Timer
            if (IE & IF & 0x4){
@@ -298,6 +300,7 @@ int execute(int ncycles)
                IF&= ~(0x4);
                PUSHPC();
                PC=0x50;
+               gbcpu.halt=0;
            }else
            //Serial
            if (IE & IF & 0x8){
@@ -305,6 +308,7 @@ int execute(int ncycles)
                 IF&= ~(0x8);
                 PUSHPC();
                 PC=0x58;
+                gbcpu.halt=0;
            }else
            //Joypad
            if (IE & IF & 0x10){
@@ -312,8 +316,11 @@ int execute(int ncycles)
                 IF&= ~(0x1<<4);
                 PUSHPC();
                 PC=0x60;
+                gbcpu.halt=0;
             }
        }
+
+       if(!gbcpu.halt){
 
         OpCode = readMem(PC++, gbcpu.mem);
         usedcycles += Cycles[OpCode];
@@ -331,6 +338,9 @@ int execute(int ncycles)
         default:
             break;
         }
+    }else
+        //halt
+        usedcycles=4;
 
 #ifdef DEBUG
 	printf("Press <ENTER> to Continue\n\n");
