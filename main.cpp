@@ -23,7 +23,8 @@ int main()
         initMemory(&mem,&cart);
         for(int i=0;i<5;i++){
             execute(69905);
-            interruptZ80(I_V_BLANK);
+            //renderscreen();
+            //sleep
         }
 
         destroyMemory(&mem);
