@@ -47,7 +47,7 @@ void resetstring(char * string){
 void printMEMStatus(Memory * mem)
 {
     
-    char string[8];
+    char string[15];
     uint8 c0,c1,c2,c3;
 
     printf("*******MEM Status*********\n");
