@@ -360,6 +360,7 @@ int execute(int ncycles)
         Counter-=usedcycles;
         gbcpu.cyclecounter += usedcycles;
         updatetimers(usedcycles);
+        updateLCDStatus(usedcycles);
         cyclictasks(usedcycles);
 
 
@@ -451,8 +452,33 @@ INLINE void cyclictasks(int cycles){
 
 //update lcdstatus
 INLINE void updateLCDStatus(int cycles){
-    if (LCDC&0x80){
 
+
+    //TODO: change mode  depending on scanlinecyclecounter
+
+
+    if (LCDC&0x80){
+        gbcpu.lcd->scanlinecyclecounter -= cycles;
+
+        //move to next scanline
+        if (gbcpu.lcd->scanlinecyclecounter <=0)
+        {
+          LY+=1;
+          gbcpu.lcd->scanlinecyclecounter=456;
+
+          if (LY==144){
+              interruptZ80(I_V_BLANK);
+              return;
+          }
+
+          if(LY <144){
+              //drawScanline();
+              return;
+          }
+
+          LY=LY%154;
+
+        }
     }
 }
 

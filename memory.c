@@ -453,6 +453,12 @@ INLINE void writeToIOZone(uint16 address, uint8 value,Memory * mem){
             return;
         }
 
+        //FF44 - LY - LCDC Y-Coordinate (R)
+        if (addr == 44){
+            mem->IO[addr]=0;
+            return;
+        }
+
         //FF46 - DMA - DMA Transfer and Start Address (W)
         if (addr == 46){
             lcdDMA(value,mem);
