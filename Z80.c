@@ -454,31 +454,46 @@ INLINE void cyclictasks(int cycles){
 INLINE void updateLCDStatus(int cycles){
 
 
-    //TODO: change mode  depending on scanlinecyclecounter
-
-
     if (LCDC&0x80){
+
         gbcpu.lcd->scanlinecyclecounter -= cycles;
+
+
+
 
         //move to next scanline
         if (gbcpu.lcd->scanlinecyclecounter <=0)
         {
-          LY+=1;
-          gbcpu.lcd->scanlinecyclecounter=456;
+            LY+=1;
+            gbcpu.lcd->scanlinecyclecounter=456;
 
-          if (LY==144){
-              interruptZ80(I_V_BLANK);
-              return;
-          }
+            //starting vsync period
+            if (LY==144){
 
-          if(LY <144){
-              //drawScanline();
-              return;
-          }
+                //request vblank
+                interruptZ80(I_V_BLANK);
 
-          LY=LY%154;
+                //set mode to 1
+                STAT=(STAT&0xFC) | 0x1;
+                return;
+            }
+
+            if(LY <144){
+                //drawScanline()
+                ;
+            }
+
+            LY=LY%154;
 
         }
+
+        //TODO: mode 0,2,3 cycling
+
+    }else{
+        //set mode to 1
+        STAT=(STAT&0xFC) | 0x1;
+        //reset counter
+        gbcpu.lcd->scanlinecyclecounter=456;
     }
 }
 
