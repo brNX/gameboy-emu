@@ -10,7 +10,7 @@
 
 void LD_Test::initTestCase()
 {
-        resetZ80(&mem);
+        resetZ80(&mem,&lcd);
         //srand(time(NULL));
         read_cart_file("MEGANIME.GB",&cart);
         parse_cart_Header(EGB,&cart);

@@ -14,7 +14,8 @@ int main()
 
         Cartridge cart;
         Memory mem;
-        resetZ80(&mem);
+        LCD lcd;
+        resetZ80(&mem,&lcd);
         //read_cart_file("killer_instinct.gb",&cart);
         //read_cart_file("motocross_maniacs.gb",&cart);
         //read_cart_file("MEGANIME.GB",&cart);

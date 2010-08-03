@@ -10,6 +10,7 @@
 
 #include "types.h"
 #include "memory.h"
+#include "lcd.h"
 
 //macros para aceder facilmente ao cpu
 #define A gbcpu.af.Byte.h
@@ -83,6 +84,7 @@ extern "C"
         int pause;
         int halt;
         Memory * mem;
+        LCD * lcd;
 
         int timer1;
         int timer2;
@@ -90,7 +92,7 @@ extern "C"
     } Z80;
     extern Z80 gbcpu;
 
-    void resetZ80(Memory * mem); //      -> resets the CPU core
+    void resetZ80(Memory * mem,LCD * lcd); //      -> resets the CPU core
     int execute(int nclyces);//   -> the core executes n cycles
     void interruptZ80(int type); //      -> sends an interrupt signal
     void printStatusZ80();
@@ -98,6 +100,7 @@ extern "C"
 
     INLINE void updatetimers(int cycles);
     INLINE void cyclictasks(int cylces);
+    INLINE void updateLCDStatus(int cycles);
 
 
 #ifdef __cplusplus

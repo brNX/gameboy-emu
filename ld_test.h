@@ -5,6 +5,7 @@
 #include <QtDebug>
 #include "cartridge.h"
 #include "memory.h"
+#include "lcd.h"
 
 class LD_Test : public QObject
 {
@@ -24,6 +25,7 @@ private slots:
 private :
         Cartridge cart;
         Memory mem;
+        LCD lcd;
 
 };
 

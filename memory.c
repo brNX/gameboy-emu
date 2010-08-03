@@ -58,7 +58,8 @@ void printMEMStatus(Memory * mem)
     byte2String(string,mem->IO[0x40],8);
     printf("LCDC: %s \n",string);
     byte2String(string,mem->IO[0x41],7);
-    printf("STAT: %s \n",string);
+    printf("STAT: %s ",string);
+    printf("mode: %u \n",mem->IO[0x41]&0x3);
     printf("SCY: %u \n",mem->IO[0x42]);
     printf("SCX: %u \n",mem->IO[0x43]);
     printf("LY: %u \n",mem->IO[0x44]);

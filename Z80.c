@@ -199,7 +199,7 @@ Z80 gbcpu;
 
 
 
-void resetZ80(Memory * mem)
+void resetZ80(Memory * mem,LCD * lcd)
 {
     gbcpu.pause = 1;
     gbcpu.halt = 0;
@@ -216,6 +216,10 @@ void resetZ80(Memory * mem)
     gbcpu.ime=0;
 
     gbcpu.mem=mem;
+    gbcpu.lcd=lcd;
+
+    //time for 1 line
+    lcd->scanlinecyclecounter=456;
 
     mem->IO[0x05] = 0x00   ;// TIMA
     mem->IO[0x06] = 0x00   ;// TMA
@@ -249,8 +253,8 @@ void resetZ80(Memory * mem)
     mem->IO[0x48] = 0xFF   ;// OBP0
     mem->IO[0x49] = 0xFF   ;// OBP1
     mem->IO[0x4A] = 0x00   ;// WY
-    mem->IO[0x4B]= 0;   //    [$FF4B] = $00   ; WX
-    mem->ie=0;          //    [$FFFF] = $00   ; IE
+    mem->IO[0x4B]= 0;   // WX
+    mem->ie=0;          // IE
 }
 
 int execute(int ncycles)
@@ -391,6 +395,15 @@ void execOpcode(uint8 OpCode){
 
 }
 
+#define STAT gbcpu.mem->IO[0x41]
+#define LYC gbcpu.mem->IO[0x45]
+#define LY gbcpu.mem->IO[0x44]
+#define LCDC gbcpu.mem->IO[0x40]
+#define DIV gbcpu.mem->IO[0x04]
+#define TIMA gbcpu.mem->IO[0x05]
+#define TMA gbcpu.mem->IO[0x06]
+#define TAC gbcpu.mem->IO[0x07]
+
 INLINE void updatetimers(int cycles){
 
     //DIV
@@ -398,23 +411,23 @@ INLINE void updatetimers(int cycles){
 
     if (gbcpu.timer1 >= 256 ){
         gbcpu.timer1=0;
-        gbcpu.mem->IO[04]+=1;
+        DIV+=1;
     }
 
     //TIMA
-    if (gbcpu.mem->IO[07] & 0x4){
+    if (TAC & 0x4){
 
         gbcpu.timer2 += cycles;
 
-        if( gbcpu.timer2 >= TACCycles[gbcpu.mem->IO[07]&0x3]){
+        if( gbcpu.timer2 >= TACCycles[TAC&0x3]){
 
             gbcpu.timer2=0;
-            gbcpu.mem->IO[05]+=1;
+            TIMA+=1;
 
             //overflow
-            if (gbcpu.mem->IO[05]==0){
+            if (TIMA==0){
                 interruptZ80(I_TIMER);
-                gbcpu.mem->IO[05]=gbcpu.mem->IO[06];
+                TIMA=TMA;
             }
         }
 
@@ -422,20 +435,24 @@ INLINE void updatetimers(int cycles){
 }
 
 
-#define STAT gbcpu.mem->IO[0x41]
-#define LYC gbcpu.mem->IO[0x45]
-#define LY gbcpu.mem->IO[0x44]
 INLINE void cyclictasks(int cycles){
 
     //TODO: verify this
     //LY=LYC?
     if (LY == LYC){
         //STAT
-        STAT |= 0x2;
+        STAT |= 0x4;
         if (STAT & 0x40)
             interruptZ80(I_LCD_STAT);
     }else{
-        STAT &= ~0x2;
+        STAT &= ~0x4;
+    }
+}
+
+//update lcdstatus
+INLINE void updateLCDStatus(int cycles){
+    if (LCDC&0x80){
+
     }
 }
 
@@ -462,6 +479,7 @@ void interruptZ80(int type)
     }
 
 }
+
 
 void printStatusZ80(){
     printf("*******Z80 Status*********\n");
