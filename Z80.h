@@ -28,6 +28,16 @@
 #define SP gbcpu.sp.Word
 #define PC gbcpu.pc.Word
 
+/*LCD and timer registers*/
+#define STAT gbcpu.mem->IO[0x41]
+#define LYC gbcpu.mem->IO[0x45]
+#define LY gbcpu.mem->IO[0x44]
+#define LCDC gbcpu.mem->IO[0x40]
+#define DIV gbcpu.mem->IO[0x04]
+#define TIMA gbcpu.mem->IO[0x05]
+#define TMA gbcpu.mem->IO[0x06]
+#define TAC gbcpu.mem->IO[0x07]
+
 /*interupts registers*/
 #define IME gbcpu.ime
 #define IE  gbcpu.mem->ie
