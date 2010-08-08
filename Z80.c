@@ -224,7 +224,7 @@ void resetZ80(Memory * mem,LCD * lcd)
     mem->IO[0x05] = 0x00   ;// TIMA
     mem->IO[0x06] = 0x00   ;// TMA
     mem->IO[0x07] = 0x00   ;// TAC
-    mem->IO[0x0F] = 0x01   ;// IF
+    //mem->IO[0x0F] = 0x01   ;// IF
     mem->IO[0x10] = 0x80   ;// NR10
     mem->IO[0x11] = 0xBF   ;// NR11
     mem->IO[0x12] = 0xF3   ;// NR12
@@ -243,11 +243,11 @@ void resetZ80(Memory * mem,LCD * lcd)
     mem->IO[0x24] = 0x77   ;// NR50
     mem->IO[0x25] = 0xF3   ;// NR51
     mem->IO[0x26] = 0xF1   ;// -GB, $F0-SGB ; NR52
-    mem->IO[0x40] = 0x91   ;// LCD
-    mem->IO[0x41] = 0x84   ;// STAT
+    mem->IO[0x40] = 0x91   ;// LCDC
+    //mem->IO[0x41] = 0x84   ;// STAT
     mem->IO[0x42] = 0x00   ;// SCY
     mem->IO[0x43] = 0x00   ;// SCX
-    mem->IO[0x44] = 0x00   ;// LY
+   // mem->IO[0x44] = 0x00   ;// LY
     mem->IO[0x45] = 0x00   ;// LYC
     mem->IO[0x47] = 0xFC   ;// BGP
     mem->IO[0x48] = 0xFF   ;// OBP0
@@ -277,6 +277,9 @@ int execute(int ncycles)
         printStatusZ80();
         printf("**************************\n");
         printMEMStatus(gbcpu.mem);
+        /*misc*/
+        printf("lcd cyclecounter: %d\n",gbcpu.lcd->scanlinecyclecounter);
+        printf("**************************\n");
 #endif
 
         /*interupts*/
