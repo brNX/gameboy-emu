@@ -355,13 +355,13 @@ int execute(int ncycles)
 	}
 #endif
 
-        //update timers and update cyclecount
-
+        //update timers,lcd status and cyclecount
         Counter-=usedcycles;
         gbcpu.cyclecounter += usedcycles;
+
         updatetimers(usedcycles);
         updateLCDStatus(usedcycles);
-        cyclictasks(usedcycles);
+        LY_LYC();
 
 
 	if (Counter <= 0)
@@ -431,14 +431,12 @@ INLINE void updatetimers(int cycles){
                 TIMA=TMA;
             }
         }
-
     }
 }
 
 
-INLINE void cyclictasks(int cycles){
+INLINE void LY_LYC(){
 
-    //TODO: verify this
     //LY=LYC?
     if (LY == LYC){
         //STAT
@@ -458,8 +456,38 @@ INLINE void updateLCDStatus(int cycles){
 
         gbcpu.lcd->scanlinecyclecounter -= cycles;
 
+        //setting modes and requesting interrupts when switching
+        if(LY>=144){
+            //set mode to 1
+            STAT=(STAT&0xFC) | 0x1;
+        }else{
 
+            int previousmode = STAT & 0x3;
+            int requestinterrupt = 0;
 
+            if (gbcpu.lcd->scanlinecyclecounter >= 376)
+            {
+                //set mode to 2 (OAM-RAM search)
+                STAT=(STAT&0xFC) | 0x2; 
+                requestinterrupt  = STAT & 0x20;
+            }
+            else if(gbcpu.lcd->scanlinecyclecounter >= 204)
+            {
+                //set mode to 3 (Data Transfer)
+                STAT=(STAT&0xFC) | 0x3;
+            }
+            else
+            {
+                //set to mode 0 (H-Blank)
+                STAT&=0xFC;
+                requestinterrupt  = STAT & 0x8;
+            }
+
+            //request interrupt when mode changed for the 1st time
+            if (requestinterrupt && (previousmode != (STAT & 0x3)))
+                interruptZ80(I_LCD_STAT);
+
+        }
 
         //move to next scanline
         if (gbcpu.lcd->scanlinecyclecounter <=0)
@@ -479,15 +507,13 @@ INLINE void updateLCDStatus(int cycles){
             }
 
             if(LY <144){
-                //drawScanline()
+                //TODO : drawScanline()
                 ;
             }
 
             LY=LY%154;
 
         }
-
-        //TODO: mode 0,2,3 cycling
 
     }else{
         //set mode to 1

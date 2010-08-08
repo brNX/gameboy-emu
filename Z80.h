@@ -99,7 +99,7 @@ extern "C"
     void execOpcode(uint8 opcode);
 
     INLINE void updatetimers(int cycles);
-    INLINE void cyclictasks(int cylces);
+    INLINE void LY_LYC();
     INLINE void updateLCDStatus(int cycles);
 
 
