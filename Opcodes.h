@@ -1,3 +1,6 @@
+//TODO: change readmem(PC++ ... to readmem(PC
+
+
 /*Ordem opcodes do livro "Z80 Family CPU User Manual" */
 
 /*nop*/
@@ -1065,7 +1068,8 @@ break;
         break;
         /*SUB A,n*/
     case 0xD6:
-        SUB_A(readMem(PC++,gbcpu.mem));
+        SUB_A(readMem(PC,gbcpu.mem));
+        PC++;
 #ifdef DEBUG
         printf("%02x",readMem(PC-1,gbcpu.mem));
         printf("\nmnemonic:SUB A,%02x\n",readMem(PC-1,gbcpu.mem));
@@ -1141,7 +1145,8 @@ break;
         break;
         /*SBC A,n*/
     case 0xDE:
-        SBC_A(readMem(PC++,gbcpu.mem));
+        SBC_A(readMem(PC,gbcpu.mem));
+        PC++;
 #ifdef DEBUG
         printf("%02x",readMem(PC-1,gbcpu.mem));
         printf("\nmnemonic:SBC A,%02x\n",readMem(PC-1,gbcpu.mem));
@@ -1217,7 +1222,8 @@ break;
         break;
         /*AND A,n*/
     case 0xE6:
-        AND_A(readMem(PC++,gbcpu.mem));
+        AND_A(readMem(PC,gbcpu.mem));
+        PC++;
 #ifdef DEBUG
         printf("%02x",readMem(PC-1,gbcpu.mem));
         printf("\nmnemonic:AND A,%02x\n",readMem(PC-1,gbcpu.mem));
@@ -1293,7 +1299,8 @@ break;
         break;
         /*XOR A,n*/
     case 0xEE:
-        XOR_A(readMem(PC++,gbcpu.mem));
+        XOR_A(readMem(PC,gbcpu.mem));
+        PC++;
 #ifdef DEBUG
         printf("%02x",readMem(PC-1,gbcpu.mem));
         printf("\nmnemonic:XOR A,%02x\n",readMem(PC-1,gbcpu.mem));
@@ -1370,7 +1377,8 @@ break;
 
         /*OR A,n*/
     case 0xF6:
-        OR_A(readMem(PC++,gbcpu.mem));
+        OR_A(readMem(PC,gbcpu.mem));
+        PC++;
 #ifdef DEBUG
         printf("%02x",readMem(PC-1,gbcpu.mem));
         printf("\nmnemonic:OR A,%02x\n",readMem(PC-1,gbcpu.mem));
@@ -1447,7 +1455,8 @@ break;
 
         /*CP A,n*/
     case 0xFE:
-        CP_A(readMem(PC++,gbcpu.mem));
+        CP_A(readMem(PC,gbcpu.mem));
+        PC++;
 #ifdef DEBUG
         printf("%02x",readMem(PC-1,gbcpu.mem));
         printf("\nmnemonic:CP A,%02x\n",readMem(PC-1,gbcpu.mem));
