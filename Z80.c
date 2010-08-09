@@ -5,7 +5,7 @@
  *      Author: brNX
  */
 
-#define DEBUG
+//#define DEBUG
 
 #ifdef _MSC_VER
 #include "no_sillywarnings.h"
@@ -13,6 +13,7 @@
 
 #include "Z80.h"
 #include "memory.h"
+#include "lcd.h"
 
 #include "lookuptables.h"
 #include <stdio.h>
@@ -275,6 +276,7 @@ int execute(int ncycles)
 
 #ifdef DEBUG
         printStatusZ80();
+        printf("Counter: %u \n",Counter);
         printf("**************************\n");
         printMEMStatus(gbcpu.mem);
         /*misc*/
@@ -283,7 +285,7 @@ int execute(int ncycles)
 #endif
 
         /*interupts*/
-       if ((IE && IF) && IME){
+       if (IME && (IE && IF)){
 
            //v-sync
            if (IE & IF & 0x1){
@@ -329,7 +331,8 @@ int execute(int ncycles)
 
        if(!gbcpu.halt){
 
-        OpCode = readMem(PC++, gbcpu.mem);
+        OpCode = readMem(PC, gbcpu.mem);
+        PC++;
         usedcycles += Cycles[OpCode];
 
 #ifdef DEBUG
@@ -350,12 +353,12 @@ int execute(int ncycles)
         usedcycles=4;
 
 #ifdef DEBUG
-	printf("Press <ENTER> to Continue\n\n");
-	for(;;){
-	    char c=getchar();
+        printf("Press <ENTER> to Continue\n\n");
+        for(;;){
+            char c=getchar();
 	    if (c == '\n')
 		break;
-	}
+        }
 #endif
 
         //update timers,lcd status and cyclecount
@@ -501,8 +504,7 @@ INLINE void updateLCDStatus(int cycles){
             }
 
             if(LY <144){
-                //TODO : drawScanline()
-                ;
+               drawScanline();
             }
 
             LY=LY%154;

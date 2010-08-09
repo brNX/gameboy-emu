@@ -2,6 +2,12 @@
 #define TYPES_H
 
 #ifdef _MSC_VER
+    #define INLINE __inline
+#else
+    #define INLINE inline
+#endif
+
+#ifdef _MSC_VER
 // Define it from MSVC's internal type
 typedef unsigned __int8 uint8;
 typedef unsigned __int16 uint16;

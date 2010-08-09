@@ -7,4 +7,6 @@ typedef struct {
     int scanlinecyclecounter;
 }LCD;
 
+INLINE void drawScanline();
+
 #endif // LCD_H
