@@ -5,7 +5,7 @@
  *      Author: brNX
  */
 
-//#define DEBUG
+#define DEBUG
 
 #ifdef _MSC_VER
 #include "no_sillywarnings.h"
@@ -322,7 +322,7 @@ int execute(int ncycles)
            //Joypad
            if (IE & IF & 0x10){
                 IME=0;
-                IF&= ~(0x1<<4);
+                IF&= ~(0x10);
                 PUSHPC();
                 PC=0x60;
                 gbcpu.halt=0;
@@ -372,8 +372,7 @@ int execute(int ncycles)
 
 	if (Counter <= 0)
 	{
-            Counter += ncycles;
-	    break;
+            return 0;
 	}
     }
     return 0;
@@ -409,7 +408,7 @@ INLINE void updatetimers(int cycles){
 
     if (gbcpu.timer1 >= 256 ){
         gbcpu.timer1=0;
-        DIV+=1;
+        DIV++;
     }
 
     //TIMA
@@ -420,7 +419,7 @@ INLINE void updatetimers(int cycles){
         if( gbcpu.timer2 >= TACCycles[TAC&0x3]){
 
             gbcpu.timer2=0;
-            TIMA+=1;
+            TIMA++;
 
             //overflow
             if (TIMA==0){

@@ -8,5 +8,7 @@ typedef struct {
 }LCD;
 
 INLINE void drawScanline();
+INLINE void drawBG();
+INLINE void drawSprites();
 
 #endif // LCD_H

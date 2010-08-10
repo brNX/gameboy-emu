@@ -37,13 +37,14 @@ FIND_PACKAGE( Qt4 REQUIRED )
 INCLUDE( ${QT_USE_FILE} )
 
 # additional compiler flags
-add_definitions(-Wall )
+#add_definitions(-Wall )
 
 if (UNIX)
-    set (CMAKE_C_FLAGS_DEBUG "-g3 -O0 -Wall")
+    set (CMAKE_C_FLAGS_DEBUG "-g3 -Wall -pg")
     set (CMAKE_C_FLAGS_RELEASE "-march=native -03")
-    set (CMAKE_CXX_FLAGS_DEBUG "-g3 -O0 -Wall")
+    set (CMAKE_CXX_FLAGS_DEBUG "-g3 -Wall -pg")
     set (CMAKE_CXX_FLAGS_RELEASE "-march=native -03")
+    set (CMAKE_LD_FLAGS_DEBUG "-g3 -Wall -pg")
 endif(UNIX)
 
 #set (CMAKE_C_COMPILER "clang")
