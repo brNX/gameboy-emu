@@ -49,7 +49,7 @@ INLINE void drawBG(){
             backgroundAddress=0x9800;
     }
 
-     //TODO: testing divide by 8 == multiply by 0.125
+    //TODO: testing divide by 8 == multiply by 0.125
     //rowPos o current scanline (of the 8 pixels)
     rowPos = (((uint8)(yPos/8))*32);
 
@@ -60,9 +60,9 @@ INLINE void drawBG(){
             xPos[z] = i+z+SCX;
 
         if(useWindow){
-             uint8 rWX = WX -7;
+            uint8 rWX = WX -7;
 
-             for(z=0;z<4;z++)
+            for(z=0;z<4;z++)
                 if ((i+z) >= rWX)
                     xPos[z] = (i+z) - rWX;
         }
@@ -141,17 +141,55 @@ INLINE void drawSprites(){
 //mode 2 - OBP1 FF49
 INLINE RGB getColor(int number,int mode){
 
-    RGB color={0,0,0};
+    RGB white = {255,255,255};
+    RGB light_gray = {190,190,190};
+    RGB dark_gray = {90,90,90};
+    RGB black = {0,0,0};
 
-    //TODO: finish this
+    int hi,lo;
+    //white
+    RGB color=white;
+
+
+    switch(number){
+        case 0: hi = 1 ; lo = 0 ;break ;
+        case 1: hi = 3 ; lo = 2 ;break ;
+        case 2: hi = 5 ; lo = 4 ;break ;
+        case 3: hi = 7 ; lo = 6 ;break ;
+    }
+
+    int colorindex = 0;
+    uint8 palette;
+
     switch(mode){
     case 0:
+        palette=BGP;
         break;
     case 1:
+        palette=OBP0;
         break;
     case 2:
+        palette= OBP1;
         break;
     }
+
+    colorindex = (palette & (1<<hi))?0x2:0;
+    colorindex |= (palette & (1<<lo))?0x1:0;
+
+    switch(colorindex){
+        //white
+        case 0: break ;
+
+        //light gray
+        case 1: color=light_gray; break ;
+
+        //dark gray
+        case 2: color=dark_gray;break ;
+
+        //black
+        case 3: color=black;break ;
+    }
+
     return color;
 
 }

@@ -41,6 +41,9 @@
 #define SCX gbcpu.mem->IO[0x43]
 #define WY gbcpu.mem->IO[0x4A]
 #define WX gbcpu.mem->IO[0x4B]
+#define BGP gbcpu.mem->IO[0x47]
+#define OBP0 gbcpu.mem->IO[0x48]
+#define OBP1 gbcpu.mem->IO[0x49]
 
 /*interupts registers*/
 #define IME gbcpu.ime
