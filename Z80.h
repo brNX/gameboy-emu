@@ -37,6 +37,10 @@
 #define TIMA gbcpu.mem->IO[0x05]
 #define TMA gbcpu.mem->IO[0x06]
 #define TAC gbcpu.mem->IO[0x07]
+#define SCY gbcpu.mem->IO[0x42]
+#define SCX gbcpu.mem->IO[0x43]
+#define WY gbcpu.mem->IO[0x4A]
+#define WX gbcpu.mem->IO[0x4B]
 
 /*interupts registers*/
 #define IME gbcpu.ime
