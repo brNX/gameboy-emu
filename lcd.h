@@ -4,11 +4,20 @@
 #include "types.h"
 
 typedef struct {
+    int r;
+    int g;
+    int b;
+}RGB;
+
+typedef struct {
     int scanlinecyclecounter;
+    RGB display[160][144];
 }LCD;
+
 
 INLINE void drawScanline();
 INLINE void drawBG();
 INLINE void drawSprites();
+INLINE RGB getColor(int number,int mode);
 
 #endif // LCD_H
