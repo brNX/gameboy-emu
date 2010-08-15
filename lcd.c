@@ -16,11 +16,11 @@ extern INLINE void drawScanline(){
 
 INLINE void drawBG(){
 
-    int i,z;
+    int i;
     int useWindow = 0;
-    uint8 yPos,xPos[4];
-    uint16 rowPos=0,colPos[4];
-    uint16 tileAddress[4];
+    uint8 yPos,xPos;
+    uint16 rowPos=0,colPos;
+    uint16 tileAddress;
     uint16 backgroundAddress = 0;
 
 
@@ -54,31 +54,27 @@ INLINE void drawBG(){
     //rowPos o current scanline (of the 8 pixels)
     rowPos = (((uint8)(yPos/8))*32);
 
-    //draw de 160 pixels in current line (4 by 4)
-    for (i=0;i<160;i=+4){
+    //draw de 160 pixels in current line  TODO: (4 by 4)
+    for (i=0;i<160;i++){
 
-		uint8 line;
-		uint8 data1[4];
-        uint8 data2[4];
-		int colorBit[4];
-        int colorNumber[4];
-		RGB color[4];
+        uint8 line;
+        uint8 data1;
+        uint8 data2;
+        int colorBit;
+        int colorNumber;
+        RGB color;
 
-
-        for(z=0;z<4;z++)
-            xPos[z] = i+z+SCX;
+        xPos = i+SCX;
 
         if(useWindow){
             uint8 rWX = WX -7;
 
-            for(z=0;z<4;z++)
-                if ((i+z) >= rWX)
-                    xPos[z] = (i+z) - rWX;
-        }
+            if (i >= rWX)
+                xPos = i - rWX;
+
 
         //TODO: testing divide by 8 == multiply by 0.125
-        for(z=0;z<4;z++)
-            colPos[z]=(xPos[z]/8);
+        colPos=(xPos/8);
 
 
         // get the tile identity number
@@ -87,51 +83,43 @@ INLINE void drawBG(){
         {
             uint8 tilenumber;
 
-            for(z=0;z<4;z++){
-                tileAddress[z] = 0x8000 ;
-                tilenumber= readMem(backgroundAddress+rowPos+colPos[z],gbcpu.mem);
-                tileAddress[z]+=(tilenumber*16);
-            }
+            tileAddress = 0x8000 ;
+            tilenumber= readMem(backgroundAddress+rowPos+colPos,gbcpu.mem);
+            tileAddress+=(tilenumber*16);
+
 
         }
         else
         {
             int8 tilenumber;
 
-            for(z=0;z<4;z++){
-                tileAddress[z] = 0x8800 ;
-                tilenumber= readMem(backgroundAddress+rowPos+colPos[z],gbcpu.mem);
-                tileAddress[z]+=((tilenumber+128)*16);
-            }
+            tileAddress = 0x8800 ;
+            tilenumber= readMem(backgroundAddress+rowPos+colPos,gbcpu.mem);
+            tileAddress+=((tilenumber+128)*16);
+
 
         }
 
         line = (yPos % 8) *2;
 
 
-        for(z=0;z<4;z++){
-            data1[z]=readMem(tileAddress[z]+line,gbcpu.mem);
-            data2[z]=readMem(tileAddress[z]+line+1,gbcpu.mem);
-        }
+        data1=readMem(tileAddress+line,gbcpu.mem);
+        data2=readMem(tileAddress+line+1,gbcpu.mem);
 
+        colorBit = ((xPos % 8)-7)*-1;
+        // combine data 2 and data 1 to get the colour id for this pixel
+        colorNumber = (data2 & (1<<colorBit))?0x2:0;
+        colorNumber |= (data1 & (1<<colorBit))?1:0;
 
-        for(z=0;z<4;z++){
-            colorBit[z] = ((xPos[z] % 8)-7)*-1;
-            // combine data 2 and data 1 to get the colour id for this pixel
-            colorNumber[z] = (data2[z] & (1<<colorBit[z]))?0x2:0;
-            colorNumber[z] |= (data1[z] & (1<<colorBit[z]))?1:0;
-        }
 
         //finaly get color from palette and draw
-        for(z=0;z<4;z++){
-            color[z] = getColor(colorNumber[z],0);
+        color = getColor(colorNumber,0);
 
-            //draw
-            gbcpu.lcd->display[i+z][LY]=color[z];
-
-        }
+        //draw
+        gbcpu.lcd->display[i][LY]=color;
 
     }
+   }
 
 }
 

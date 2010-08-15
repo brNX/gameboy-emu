@@ -22,7 +22,7 @@ int main()
         //read_cart_file("super_mario_land.gb",&cart);
         parse_cart_Header(EGB,&cart);
         initMemory(&mem,&cart);
-        for(int i=0;i<2;i++){
+        for(int i=0;i<500;i++){
             execute(69905);
             //renderscreen();
             //sleep

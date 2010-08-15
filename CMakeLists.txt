@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 2.6)
 
 project (Gameboy-Emu)
 
+include (CTest)
+
 # another list, this time it includes all header files that should be treated with moc
 SET( MOC_HDRS
      mainwindow.h
@@ -40,11 +42,11 @@ INCLUDE( ${QT_USE_FILE} )
 #add_definitions(-Wall )
 
 if (UNIX)
-    set (CMAKE_C_FLAGS_DEBUG "-g3 -Wall ")
+    set (CMAKE_C_FLAGS_DEBUG "-g3 -Wall -fprofile-arcs -ftest-coverage")
     set (CMAKE_C_FLAGS_RELEASE "-march=native -O3")
-    set (CMAKE_CXX_FLAGS_DEBUG "-g3 -Wall ")
+    set (CMAKE_CXX_FLAGS_DEBUG "-g3 -Wall -fprofile-arcs -ftest-coverage")
     set (CMAKE_CXX_FLAGS_RELEASE "-march=native -O3")
-    set (CMAKE_LD_FLAGS_DEBUG "-g3 -Wall ")
+    set (CMAKE_LD_FLAGS_DEBUG "-g3 -Wall -fprofile-arcs -ftest-coverage")
 endif(UNIX)
 
 #set (CMAKE_C_COMPILER "clang")
@@ -80,12 +82,14 @@ QT4_WRAP_CPP( MOC_SRCS ${MOC_HDRS} )
 # here we instruct CMake to build "sample" executable from all of the source files
 add_executable(Gameboy-Emu ${MOC_SRCS} ${RC_SRCS} ${UI_HDRS} mainwindow.h mainwindow.cpp lcd.h lcd.c no_sillywarnings.h types.h Z80.c Z80.h memory.c memory.h cartridge.h cartridge.c lookuptables.h debugcounters.h Opcodes.h main.cpp)
 
+add_test(Gameboy-Emu_test ${EXECUTABLE_OUTPUT_PATH}/Gameboy-Emu)
+
 # last thing we have to do is to tell CMake what libraries our executable needs,
 # luckily FIND_PACKAGE prepared QT_LIBRARIES variable for us:
 TARGET_LINK_LIBRARIES(Gameboy-Emu ${QT_LIBRARIES})
 
 ADD_DEFINITIONS(-DQT_DEBUG)
-ADD_DEFINITIONS(-DDEBUG)
+#ADD_DEFINITIONS(-DDEBUG)
 
 ###########unit testing###############
 
