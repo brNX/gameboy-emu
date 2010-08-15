@@ -100,8 +100,8 @@ INLINE void drawBG(){
 
         }
 
+        // each vertical line takes up two bytes of memory
         line = (yPos % 8) *2;
-
 
         data1=readMem(tileAddress+line,gbcpu.mem);
         data2=readMem(tileAddress+line+1,gbcpu.mem);
@@ -126,7 +126,76 @@ INLINE void drawBG(){
 
 
 INLINE void drawSprites(){
-	;
+
+    int i,sizeY;
+
+    //loop throught the 40 sprites
+    for(i=0;i<40;i++){
+
+        //4 bytes in OAM (Sprite attribute table)
+        uint8 index = i*4;
+        uint8 posY = gbcpu.mem->OAM[index]-16;
+        uint8 posX = gbcpu.mem->OAM[index+1]-8;
+        uint8 tileLocation = gbcpu.mem->OAM[index+2];
+        uint8 attributes = gbcpu.mem->OAM[index+3];
+
+        //check y - Size in LCDC
+        if (LCDC & 0x4)
+          sizeY = 16;
+        else
+          sizeY = 8;
+
+
+        //check if sprite is in current Scanline
+        if ((LY >= posY) && (LY < (posY+sizeY)))
+        {
+            int pixel;
+            uint8 data1,data2;
+            uint16 dataaddress;
+            int line = LY - posY ;
+
+            //flip y-axis ?
+            if (attributes & 0x40)
+                line = (line - sizeY)*-1;
+
+            // each vertical line takes up two bytes of memory
+            line *=2;
+
+            //vram (0x8000 +(tileLocation*16))+line
+            dataaddress=(tileLocation*16) +line;
+            data1=gbcpu.mem->vram[dataaddress];
+            data2=gbcpu.mem->vram[dataaddress+1];
+
+            for(pixel=7;pixel>=0;pixel--){
+
+                RGB color;
+                int colorNumber;
+                int colorBit=pixel;
+
+
+                 //flip x-axis ?
+                if (attributes & 0x20)
+                    colorBit = (colorBit -7)*-1;
+
+                // combine data 2 and data 1 to get the colour id for this pixel
+                colorNumber = (data2 & (1<<colorBit))?0x2:0;
+                colorNumber |= (data1 & (1<<colorBit))?1:0;
+
+                //get color from palette
+                color = getColor(colorNumber, ((attributes & 0x10)>>4)+1);
+
+                //white = transparent for sprites
+                if (color.r==255)
+                    continue;
+
+                //draw
+                gbcpu.lcd->display[7-pixel+posX][LY]=color;
+
+            }
+
+        }
+
+    }
 }
 
 //mode 0 - BGP FF47
@@ -139,7 +208,7 @@ INLINE RGB getColor(int number,int mode){
     RGB dark_gray = {90,90,90};
     RGB black = {0,0,0};
 	
-	int colorindex = 0;
+    int colorindex;
     uint8 palette;
 
     int hi,lo;
@@ -147,23 +216,19 @@ INLINE RGB getColor(int number,int mode){
     RGB color=white;
 
 
-    switch(number){
+    switch(number)
+    {
         case 0: hi = 1 ; lo = 0 ;break ;
         case 1: hi = 3 ; lo = 2 ;break ;
         case 2: hi = 5 ; lo = 4 ;break ;
         case 3: hi = 7 ; lo = 6 ;break ;
     }
 
-    switch(mode){
-    case 0:
-        palette=BGP;
-        break;
-    case 1:
-        palette=OBP0;
-        break;
-    case 2:
-        palette= OBP1;
-        break;
+    switch(mode)
+    {
+        case 0: palette=BGP ;  break;
+        case 1: palette=OBP0;  break;
+        case 2: palette=OBP1;  break;
     }
 
     colorindex = (palette & (1<<hi))?0x2:0;
