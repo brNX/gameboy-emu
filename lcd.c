@@ -2,7 +2,7 @@
 #include "Z80.h"
 
 
-INLINE void drawScanline(){
+extern INLINE void drawScanline(){
 
     if (LCDC & 0x1)
         drawBG();
@@ -56,6 +56,14 @@ INLINE void drawBG(){
     //draw de 160 pixels in current line (4 by 4)
     for (i=0;i<160;i=+4){
 
+		uint8 line;
+		uint8 data1[4];
+        uint8 data2[4];
+		int colorBit[4];
+        int colorNumber[4];
+		RGB color[4];
+
+
         for(z=0;z<4;z++)
             xPos[z] = i+z+SCX;
 
@@ -97,19 +105,16 @@ INLINE void drawBG(){
 
         }
 
-        uint8 line = (yPos % 8) *2;
-        uint8 data1[4];
-        uint8 data2[4];
+        line = (yPos % 8) *2;
+
 
         for(z=0;z<4;z++){
             data1[z]=readMem(tileAddress[z]+line,gbcpu.mem);
             data2[z]=readMem(tileAddress[z]+line+1,gbcpu.mem);
         }
 
-        int colorBit[4];
-        int colorNumber[4];
-        for(z=0;z<4;z++){
 
+        for(z=0;z<4;z++){
             colorBit[z] = ((xPos[z] % 8)-7)*-1;
             // combine data 2 and data 1 to get the colour id for this pixel
             colorNumber[z] = (data2[z] & (1<<colorBit[z]))?0x2:0;
@@ -117,7 +122,6 @@ INLINE void drawBG(){
         }
 
         //finaly get color from palette and draw
-        RGB color[4];
         for(z=0;z<4;z++){
             color[z] = getColor(colorNumber[z],0);
 
@@ -133,7 +137,7 @@ INLINE void drawBG(){
 
 
 INLINE void drawSprites(){
-
+	;
 }
 
 //mode 0 - BGP FF47
@@ -145,6 +149,9 @@ INLINE RGB getColor(int number,int mode){
     RGB light_gray = {190,190,190};
     RGB dark_gray = {90,90,90};
     RGB black = {0,0,0};
+	
+	int colorindex = 0;
+    uint8 palette;
 
     int hi,lo;
     //white
@@ -157,9 +164,6 @@ INLINE RGB getColor(int number,int mode){
         case 2: hi = 5 ; lo = 4 ;break ;
         case 3: hi = 7 ; lo = 6 ;break ;
     }
-
-    int colorindex = 0;
-    uint8 palette;
 
     switch(mode){
     case 0:
