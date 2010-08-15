@@ -40,11 +40,11 @@ INCLUDE( ${QT_USE_FILE} )
 #add_definitions(-Wall )
 
 if (UNIX)
-    set (CMAKE_C_FLAGS_DEBUG "-g3 -Wall -pg")
-    set (CMAKE_C_FLAGS_RELEASE "-march=native -03")
-    set (CMAKE_CXX_FLAGS_DEBUG "-g3 -Wall -pg")
-    set (CMAKE_CXX_FLAGS_RELEASE "-march=native -03")
-    set (CMAKE_LD_FLAGS_DEBUG "-g3 -Wall -pg")
+    set (CMAKE_C_FLAGS_DEBUG "-g3 -Wall ")
+    set (CMAKE_C_FLAGS_RELEASE "-march=native -O3")
+    set (CMAKE_CXX_FLAGS_DEBUG "-g3 -Wall ")
+    set (CMAKE_CXX_FLAGS_RELEASE "-march=native -O3")
+    set (CMAKE_LD_FLAGS_DEBUG "-g3 -Wall ")
 endif(UNIX)
 
 #set (CMAKE_C_COMPILER "clang")
@@ -85,7 +85,7 @@ add_executable(Gameboy-Emu ${MOC_SRCS} ${RC_SRCS} ${UI_HDRS} mainwindow.h mainwi
 TARGET_LINK_LIBRARIES(Gameboy-Emu ${QT_LIBRARIES})
 
 ADD_DEFINITIONS(-DQT_DEBUG)
-
+ADD_DEFINITIONS(-DDEBUG)
 
 ###########unit testing###############
 

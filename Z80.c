@@ -5,8 +5,6 @@
  *      Author: brNX
  */
 
-#define DEBUG
-
 #ifdef _MSC_VER
 #include "no_sillywarnings.h"
 #endif
@@ -248,7 +246,7 @@ void resetZ80(Memory * mem,LCD * lcd)
     //mem->IO[0x41] = 0x84   ;// STAT
     mem->IO[0x42] = 0x00   ;// SCY
     mem->IO[0x43] = 0x00   ;// SCX
-   // mem->IO[0x44] = 0x00   ;// LY
+    mem->IO[0x44] = 0x00   ;// LY
     mem->IO[0x45] = 0x00   ;// LYC
     mem->IO[0x47] = 0xFC   ;// BGP
     mem->IO[0x48] = 0xFF   ;// OBP0

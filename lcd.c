@@ -1,5 +1,6 @@
 #include "lcd.h"
 #include "Z80.h"
+#include <stdio.h>
 
 
 extern INLINE void drawScanline(){
