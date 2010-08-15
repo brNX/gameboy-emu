@@ -283,7 +283,7 @@ int execute(int ncycles)
 #endif
 
         /*interupts*/
-       if (IME && (IE && IF)){
+       if (IME && (IE & IF)){
 
            //v-sync
            if (IE & IF & 0x1){
