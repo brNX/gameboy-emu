@@ -351,12 +351,12 @@ int execute(int ncycles)
         usedcycles=4;
 
 #ifdef DEBUG
-        printf("Press <ENTER> to Continue\n\n");
+        /*printf("Press <ENTER> to Continue\n\n");
         for(;;){
             char c=getchar();
 	    if (c == '\n')
 		break;
-        }
+        }*/
 #endif
 
         //update timers,lcd status and cyclecount

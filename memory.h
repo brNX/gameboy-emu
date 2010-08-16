@@ -17,7 +17,7 @@ extern "C"
 {
 #endif
 
-    typedef struct
+    typedef struct _Memory
     {
         uint8 * rombanks;
         uint8 * rambanks;

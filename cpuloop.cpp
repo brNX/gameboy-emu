@@ -2,7 +2,7 @@
 #include "Z80.h"
 #include <QTime>
 
-#define FRAMETIME 1000
+#define FRAMETIME 1000/60
 
 CpuLoop::CpuLoop(QObject *parent):QThread(parent)
 {

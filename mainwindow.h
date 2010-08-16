@@ -4,11 +4,15 @@
 #include <QMainWindow>
 #include <QImage>
 
+
 namespace Ui {
     class MainWindow;
 }
 
 class CpuLoop;
+typedef struct _Cartridge Cartridge;
+typedef struct _Memory Memory;
+typedef struct _LCD LCD;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -24,6 +28,9 @@ private:
     Ui::MainWindow *ui;
     void mainloop();
     CpuLoop * loop;
+    Cartridge * cart;
+    Memory * mem;
+    LCD * lcd;
 public slots:
     void renderScreen();
 private slots:

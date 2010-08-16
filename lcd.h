@@ -9,7 +9,7 @@ typedef struct _RGB{
     int b;
 }RGB;
 
-typedef struct {
+typedef struct _LCD{
     int scanlinecyclecounter;
     RGB display[160][144];
 }LCD;

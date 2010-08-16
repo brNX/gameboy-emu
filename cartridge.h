@@ -26,7 +26,7 @@ extern "C"
         int nbanks;
     }Cart_size_mode;
 
-    typedef struct
+    typedef struct _Cartridge
     {
         uint8 * gbcart;
         char name[17];
