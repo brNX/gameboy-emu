@@ -1,5 +1,6 @@
 #include "cpuloop.h"
 #include "Z80.h"
+#include <cstdio>
 #include <QTime>
 
 #define FRAMETIME 1000/60

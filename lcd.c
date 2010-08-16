@@ -16,6 +16,8 @@ extern INLINE void drawScanline(){
 
 INLINE void drawBG(){
 
+
+
     int i;
     int useWindow = 0;
     uint8 yPos,xPos;
@@ -39,7 +41,6 @@ INLINE void drawBG(){
         useWindow=1;
     }
     else //not using window
-
     {
         yPos=LY-WY;
 
@@ -49,6 +50,7 @@ INLINE void drawBG(){
         else
             backgroundAddress=0x9800;
     }
+
 
     //TODO: testing divide by 8 == multiply by 0.125
     //rowPos o current scanline (of the 8 pixels)
@@ -68,10 +70,9 @@ INLINE void drawBG(){
 
         if(useWindow){
             uint8 rWX = WX -7;
-
             if (i >= rWX)
-                xPos = i - rWX;
-
+                 xPos = i - rWX;
+        }
 
         //TODO: testing divide by 8 == multiply by 0.125
         colPos=(xPos/8);
@@ -119,7 +120,6 @@ INLINE void drawBG(){
         gbcpu.lcd->display[i][LY]=color;
 
     }
-   }
 
 }
 
