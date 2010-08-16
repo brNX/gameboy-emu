@@ -1,17 +1,12 @@
-#include "Z80.h"
-#include "memory.h"
-#include "cartridge.h"
-
-#include "lookuptables.h"
-
-#include <cstdio>
+#include <QApplication>
+#include "mainwindow.h"
 
 
-//cpucycles between lcd interupts =~ 69905
 
-int main()
+
+int main(int argc, char *argv[])
 {
-
+        /*cpucycles between lcd interupts =~ 69905
         Cartridge cart;
         Memory mem;
         LCD lcd;
@@ -28,7 +23,9 @@ int main()
             //sleep
         }
 
-        destroyMemory(&mem);
-
-	return 0;
+        destroyMemory(&mem);*/
+    QApplication app(argc, argv);
+    MainWindow w;
+    w.show();
+    return app.exec();
 }

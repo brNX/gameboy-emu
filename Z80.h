@@ -93,7 +93,7 @@ extern "C"
         uint32 DW;
     } reg32bit;
 
-    typedef struct
+    typedef struct _Z80
     {
         reg16bit af, bc, de, hl, sp, pc;
         int ime;

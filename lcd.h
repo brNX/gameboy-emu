@@ -3,7 +3,7 @@
 
 #include "types.h"
 
-typedef struct {
+typedef struct _RGB{
     int r;
     int g;
     int b;
