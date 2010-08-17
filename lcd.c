@@ -14,6 +14,7 @@ extern INLINE void drawScanline(){
 
 }
 
+
 INLINE void drawBG(){
 
 
@@ -251,3 +252,4 @@ INLINE RGB getColor(int number,int mode){
     return color;
 
 }
+

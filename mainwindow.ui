@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>533</width>
-    <height>477</height>
+    <width>873</width>
+    <height>485</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -65,8 +65,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>319</width>
-            <height>378</height>
+            <width>424</width>
+            <height>386</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout">
@@ -209,28 +209,28 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_7">
                 <item>
-                 <widget class="QCheckBox" name="checkBox_2">
+                 <widget class="QCheckBox" name="zflagBox">
                   <property name="text">
                    <string>Zero</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QCheckBox" name="checkBox_3">
+                 <widget class="QCheckBox" name="addflagBox">
                   <property name="text">
                    <string>Add/Sub</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QCheckBox" name="checkBox_4">
+                 <widget class="QCheckBox" name="hcarryflagBox">
                   <property name="text">
                    <string>HCarry</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QCheckBox" name="checkBox">
+                 <widget class="QCheckBox" name="carryflagBox">
                   <property name="text">
                    <string>Carry</string>
                   </property>
@@ -254,7 +254,7 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_8">
                 <item>
-                 <widget class="QCheckBox" name="checkBox_5">
+                 <widget class="QCheckBox" name="imeflagBox">
                   <property name="text">
                    <string>IME</string>
                   </property>
@@ -283,11 +283,18 @@
              <property name="title">
               <string>I/O</string>
              </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_9">
+             <layout class="QVBoxLayout" name="verticalLayout_11">
               <item>
                <widget class="QPushButton" name="runButton">
                 <property name="text">
-                 <string>Run</string>
+                 <string>&amp;Run</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="stepButton">
+                <property name="text">
+                 <string>&amp;Step</string>
                 </property>
                </widget>
               </item>
@@ -301,6 +308,18 @@
       </layout>
      </widget>
     </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox_5">
+      <property name="title">
+       <string>Mem</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_10">
+       <item>
+        <widget class="QListWidget" name="memoryList"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -308,7 +327,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>533</width>
+     <width>873</width>
      <height>22</height>
     </rect>
    </property>

@@ -22,10 +22,8 @@ LcdUi::~LcdUi()
 void LcdUi::paintEvent(QPaintEvent *event)
 {
     QPainter painter;
-    QColor background(255, 255, 255);
-
     painter.begin(this);
-    painter.fillRect(event->rect(), background);
+    //painter.fillRect(event->rect(), background);
     painter.drawImage(QPoint(0,0),*image);
     //painter.fillRect(0,0,160,144,);
     painter.end();
@@ -34,7 +32,7 @@ void LcdUi::paintEvent(QPaintEvent *event)
 void LcdUi::drawBlank()
 {
     printf("blank\n");
-    image->fill(0);
+    image->fill(qRgb(255,255,255));
     this->update();
 }
 

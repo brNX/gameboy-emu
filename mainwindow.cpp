@@ -16,6 +16,20 @@ MainWindow::MainWindow(QWidget *parent) :
     mem = new Memory();
     lcd = new LCD();
     cart = new Cartridge();
+
+    //cpucycles between lcd interupts =~ 69905
+    resetZ80(mem,lcd);
+
+    //read_cart_file("killer_instinct.gb",cart);
+    //read_cart_file("motocross_maniacs.gb",cart);
+    read_cart_file("MEGANIME.GB",cart);
+    //read_cart_file("super_mario_land.gb",&cart);
+    parse_cart_Header(EGB,cart);
+    initMemory(mem,cart);
+
+    loop = new CpuLoop(this);
+    connect(loop,SIGNAL(iterationfinished()),this,SLOT(renderScreen()));
+
 }
 
 MainWindow::~MainWindow()
@@ -52,34 +66,38 @@ void MainWindow::renderScreen()
     }else{
         ui->lcd->drawBlank();
     }
+    
+    
 }
 
 void MainWindow::mainloop(){
-    //cpucycles between lcd interupts =~ 69905
-    resetZ80(mem,lcd);
-
-    //read_cart_file("killer_instinct.gb",cart);
-    read_cart_file("motocross_maniacs.gb",cart);
-    //read_cart_file("MEGANIME.GB",cart);
-    //read_cart_file("super_mario_land.gb",&cart);
-    parse_cart_Header(EGB,cart);
-    initMemory(mem,cart);
-
-    loop = new CpuLoop(this);
-    connect(loop,SIGNAL(iterationfinished()),this,SLOT(renderScreen()));
 
     loop->start(QThread::LowPriority);
+    while(!(LCDC & 0x80))
+        loop->start(QThread::LowPriority);
 
-
-
-    /*for(int i=0;i<20000;i++){
-        execute(69905);
-        renderScreen();
-        //sleep
-    }*/
 }
 
 void MainWindow::on_runButton_clicked()
 {
     mainloop();
+}
+
+void MainWindow::on_stepButton_clicked()
+{
+    execute(1);
+    renderScreen();
+    ui->afEdit->setText(QString("%1").arg(AF,4,16,QChar('0')));
+    ui->bcEdit->setText(QString("%1").arg(BC,4,16,QChar('0')));
+    ui->deEdit->setText(QString("%1").arg(DE,4,16,QChar('0')));
+    ui->hlEdit->setText(QString("%1").arg(HL,4,16,QChar('0')));
+    ui->pcEdit->setText(QString("%1").arg(PC,4,16,QChar('0')));
+    ui->spEdit->setText(QString("%1").arg(SP,4,16,QChar('0')));
+    ui->zflagBox->setCheckState((F&Z_FLAG)?Qt::Checked:Qt::Unchecked);
+    ui->addflagBox->setCheckState((F&N_FLAG)?Qt::Checked:Qt::Unchecked);
+    ui->hcarryflagBox->setCheckState((F&H_FLAG)?Qt::Checked:Qt::Unchecked);
+    ui->carryflagBox->setCheckState((F&C_FLAG)?Qt::Checked:Qt::Unchecked);
+    ui->carryflagBox->setCheckState((F&C_FLAG)?Qt::Checked:Qt::Unchecked);
+    ui->imeflagBox->setCheckState(IME?Qt::Checked:Qt::Unchecked);
+
 }

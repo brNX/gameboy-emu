@@ -14,10 +14,13 @@ typedef struct _LCD{
     RGB display[160][144];
 }LCD;
 
+enum COLOR {WHITE,LGRAY,DGRAY,BLACK};
 
 INLINE void drawScanline();
 INLINE void drawBG();
 INLINE void drawSprites();
+
 INLINE RGB getColor(int number,int mode);
+
 
 #endif // LCD_H
