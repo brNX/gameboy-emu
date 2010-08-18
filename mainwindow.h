@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QImage>
+#include "types.h"
 
 
 namespace Ui {
@@ -20,6 +21,8 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
    // friend class CpuLoop;
+    void fillList();
+    QString parseOpcode(int index);
 
 protected:
     void changeEvent(QEvent *e);

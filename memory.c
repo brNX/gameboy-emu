@@ -285,6 +285,7 @@ void initMemory(Memory * mem,Cartridge * cart){
     
     cart->rambank=0;
     cart->rombank=1;
+
     cart->mbc1mode=0;
 
     mem->cart=cart;
