@@ -113,10 +113,9 @@ extern INLINE uint8 readMem(uint16 address,Memory * mem)
         break;
 
     /*********VRAM**************/
-    //TODO: verificar
     case 0x8:
     case 0x9:
-        return mem->wram[address-0x8000];
+        return mem->vram[address-0x8000];
         break;
 
     /*********external ram*********/
@@ -236,7 +235,7 @@ extern INLINE void writeMem(uint16 address, uint8 value,Memory * mem)
     /*******Video Ram*********/
     case 0x8:
     case 0x9:
-        mem->vram[address -0x8000]=value;
+        mem->vram[address-0x8000]=value;
         break;
 
     /*******external ram********/

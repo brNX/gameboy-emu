@@ -19,9 +19,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	resetZ80(mem, lcd);
 
 	//read_cart_file("killer_instinct.gb",cart);
-	//read_cart_file("motocross_maniacs.gb",cart);
-	read_cart_file("MEGANIME.GB", cart);
-	//read_cart_file("super_mario_land.gb",&cart);
+        //read_cart_file("motocross_maniacs.gb",cart);
+        read_cart_file("MEGANIME.GB", cart);
+        //read_cart_file("super_mario_land.gb",cart);
 	parse_cart_Header(EGB, cart);
 	initMemory(mem, cart);
         //for now no rom banking
@@ -147,7 +147,7 @@ void MainWindow::fillList() {
 
     ui->vramList->clear();
     for (int i = 0; i < (8192); i++) {
-        ui->vramList->addItem(QString("%1:\tVRAM : %2").arg(i+2*16384, 4, 16, QChar('0')).arg(gbcpu.mem->rombanks[i],2,16,QChar('0')));
+        ui->vramList->addItem(QString("%1:\tVRAM : %2").arg(i+2*16384, 4, 16, QChar('0')).arg(gbcpu.mem->vram[i],2,16,QChar('0')));
     }
 
     ui->wramList->clear();
