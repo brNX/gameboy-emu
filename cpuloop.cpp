@@ -20,7 +20,7 @@ void CpuLoop::run()
         //scanline
         //execute(22850);
         emit iterationfinished();
-        int elapsed = timer.elapsed();
+       int elapsed = timer.elapsed();
        if (elapsed>0)
             this->msleep(FRAMETIME-elapsed);
 

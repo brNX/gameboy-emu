@@ -272,6 +272,9 @@ extern INLINE void writeMem(uint16 address, uint8 value,Memory * mem)
 
     //I/O Zone
     case 0xF:
+#ifdef DEBUG
+    printf("write to iozone\n");
+#endif
         writeToIOZone(address,value,mem);
         break;
     }
@@ -430,6 +433,9 @@ INLINE void writeToIOZone(uint16 address, uint8 value,Memory * mem){
     addr = address - 0xFE00;
 
     if (addr <= 0x9F){
+#ifdef DEBUG
+    printf("write to oam\n");
+#endif
         mem->OAM[addr]=value;
         return;
     }
@@ -438,6 +444,9 @@ INLINE void writeToIOZone(uint16 address, uint8 value,Memory * mem){
     /*FF80 <= addr <= 0xFFFE*/
     addr = address - 0xFF80;
     if (addr <= 0x7E){
+#ifdef DEBUG
+    printf("write to hram\n");
+#endif
         mem->hram[addr]=value;
         return;
     }
@@ -445,25 +454,46 @@ INLINE void writeToIOZone(uint16 address, uint8 value,Memory * mem){
     //FF00-FF7F   I/O Ports
     addr= address - 0xFF00;
     /*FF00 <= addr <= 0xFF7F*/
+
+#ifdef DEBUG
+    printf("write to iozone\n");
+#endif
     if (addr <= 0x7F){
 
+#ifdef DEBUG
+    printf("write to io ports\n");
+#endif
+
         //FF04 - DIV - Divider Register (R/W)
-        if (addr == 04){
+        if (addr == 0x04){
+#ifdef DEBUG
+    printf("write to div\n");
+#endif
             mem->IO[addr]=0;
             return;
         }
 
         //FF44 - LY - LCDC Y-Coordinate (R)
-        if (addr == 44){
+        if (addr == 0x44){
+#ifdef DEBUG
+    printf("write to LY\n");
+#endif
             mem->IO[addr]=0;
             return;
         }
 
         //FF46 - DMA - DMA Transfer and Start Address (W)
-        if (addr == 46){
+        if (addr == 0x46){
+#ifdef DEBUG
+    printf("DMA transfer\n");
+#endif
             lcdDMA(value,mem);
             return;
         }
+
+#ifdef DEBUG
+    printf("write to default zone\n");
+#endif
 
         mem->IO[addr]=value;
         return;
@@ -471,6 +501,9 @@ INLINE void writeToIOZone(uint16 address, uint8 value,Memory * mem){
 
     //FFFF  Interrupt Enable Register
     if (address == 0xFFFF){
+#ifdef DEBUG
+    printf("write to ie\n");
+#endif
         mem->ie=value;
         return;
     }
@@ -479,6 +512,9 @@ INLINE void writeToIOZone(uint16 address, uint8 value,Memory * mem){
     /*F000 <= addr <= 0xFDFF*/
     addr= address - 0xF000;
     if (addr <= 0xDFF){
+#ifdef DEBUG
+    printf("write to echo ram\n");
+#endif
         mem->wram[0X1000|addr] = value;
         return;
     }
