@@ -47,6 +47,7 @@
 
 /*interupts registers*/
 #define IME gbcpu.ime
+#define SET_IME gbcpu.set_ime
 #define IE  gbcpu.mem->ie
 #define IF  gbcpu.mem->IO[0x0F]
 
@@ -97,6 +98,7 @@ extern "C"
     {
         reg16bit af, bc, de, hl, sp, pc;
         int ime;
+        int set_ime;
         int cyclecounter;
         int pause;
         int halt;

@@ -488,6 +488,9 @@ INLINE void writeToIOZone(uint16 address, uint8 value,Memory * mem){
 
 
 INLINE void lcdDMA(uint8 value,Memory * mem){
+#ifdef DEBUG
+    printf("DMA transfer: from adress %04x \n",value << 8);
+#endif
     int i=0;
     uint16 addr = value << 8;
     for (; i < 0xA0; i++)

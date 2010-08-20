@@ -20,7 +20,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	//read_cart_file("killer_instinct.gb",cart);
         //read_cart_file("motocross_maniacs.gb",cart);
-        read_cart_file("MEGANIME.GB", cart);
+        //read_cart_file("MEGANIME.GB", cart);
+        read_cart_file("tetris.gb", cart);
         //read_cart_file("super_mario_land.gb",cart);
 	parse_cart_Header(EGB, cart);
 	initMemory(mem, cart);
@@ -89,6 +90,19 @@ void MainWindow::on_stepButton_clicked() {
         fillList();
 }
 
+void MainWindow::on_runtoButton_clicked() {
+    bool ok;
+    printf("cenbas ?\n");
+    uint16 address = ui->runtoEdit->text().toUInt(&ok,16);
+    if(ok){
+        while (PC != address){
+            execute(1);
+        }
+        renderScreen();
+        fillList();
+    }
+}
+
 void MainWindow::fillList() {
 
     ui->afEdit->setText(QString("%1").arg(AF, 4, 16, QChar('0')));
@@ -97,6 +111,24 @@ void MainWindow::fillList() {
     ui->hlEdit->setText(QString("%1").arg(HL, 4, 16, QChar('0')));
     ui->pcEdit->setText(QString("%1").arg(PC, 4, 16, QChar('0')));
     ui->spEdit->setText(QString("%1").arg(SP, 4, 16, QChar('0')));
+
+     ui->ifEdit->setText(QString("%1").arg(IF, 2, 16, QChar('0')));
+     ui->ieEdit->setText(QString("%1").arg(IE, 2, 16, QChar('0')));
+
+     ui->ieBox0->setCheckState((IE & 1)? Qt::Checked : Qt::Unchecked);
+     ui->ieBox1->setCheckState((IE &(1<<1))? Qt::Checked : Qt::Unchecked);
+     ui->ieBox2->setCheckState((IE &(1<<2))? Qt::Checked : Qt::Unchecked);
+     ui->ieBox3->setCheckState((IE &(1<<3))? Qt::Checked : Qt::Unchecked);
+     ui->ieBox4->setCheckState((IE &(1<<4))? Qt::Checked : Qt::Unchecked);
+
+     ui->ifBox0->setCheckState((IF & 1)? Qt::Checked : Qt::Unchecked);
+     ui->ifBox1->setCheckState((IF &(1<<1))? Qt::Checked : Qt::Unchecked);
+     ui->ifBox2->setCheckState((IF &(1<<2))? Qt::Checked : Qt::Unchecked);
+     ui->ifBox3->setCheckState((IF &(1<<3))? Qt::Checked : Qt::Unchecked);
+     ui->ifBox4->setCheckState((IF &(1<<4))? Qt::Checked : Qt::Unchecked);
+
+     ui->imeflagBox->setCheckState(IME? Qt::Checked : Qt::Unchecked);
+
 
     ui->zflagBox->setCheckState((F>>7) ? Qt::Checked : Qt::Unchecked);
     ui->addflagBox->setCheckState((F & N_FLAG) ? Qt::Checked : Qt::Unchecked);
@@ -124,12 +156,12 @@ void MainWindow::fillList() {
     ui->statmodeEdit->setText(QString().number(STAT&0x3));
 
 
-    ui->scyEdit->setText(QString().number(SCY));
-    ui->scxEdit->setText(QString().number(SCX));
-    ui->wyEdit->setText(QString().number(WY));
-    ui->wxEdit->setText(QString().number(WX));
-    ui->lyEdit->setText(QString().number(LY));
-    ui->lycEdit->setText(QString().number(LYC));
+    ui->scyEdit->setText(QString("%1").arg(SCY, 2, 16, QChar('0')));
+    ui->scxEdit->setText(QString("%1").arg(SCX, 2, 16, QChar('0')));
+    ui->wyEdit->setText(QString("%1").arg(WY, 2, 16, QChar('0')));
+    ui->wxEdit->setText(QString("%1").arg(WX, 2, 16, QChar('0')));
+    ui->lyEdit->setText(QString("%1").arg(LY, 2, 16, QChar('0')));
+    ui->lycEdit->setText(QString("%1").arg(LYC, 2, 16, QChar('0')));
 
     ui->bgpEdit->setText(QString("%1").arg(BGP, 2, 16, QChar('0')));
     ui->obp0Edit->setText(QString("%1").arg(OBP0, 2, 16, QChar('0')));

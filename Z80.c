@@ -211,8 +211,9 @@ void resetZ80(Memory * mem,LCD * lcd)
     HL = 0x014D;
     gbcpu.cyclecounter = 0;
     SP = 0xFFFE;
-    //todo: verificar
+
     gbcpu.ime=0;
+    gbcpu.set_ime=0;
 
     gbcpu.mem=mem;
     gbcpu.lcd=lcd;
@@ -326,6 +327,12 @@ int execute(int ncycles)
                 gbcpu.halt=0;
             }
        }
+
+       if (SET_IME){
+        IME=1;
+        SET_IME=0;
+       }
+
 
        if(!gbcpu.halt){
 

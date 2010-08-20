@@ -39,6 +39,7 @@ public slots:
 private slots:
     void on_runButton_clicked();
     void on_stepButton_clicked();
+    void on_runtoButton_clicked();
 
 
 };

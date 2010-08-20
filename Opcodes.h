@@ -4050,7 +4050,7 @@ case 0x2E: //LD L,n
                 printf("\nmnemonic:JP NZ,%04x\n",readMem(PC,gbcpu.mem)|(readMem(PC+1,gbcpu.mem)<<8));
                 printf("**************************\n");
 #endif
-                if ((F & Z_FLAG)==0 ) {
+                if (!(F & Z_FLAG)) {
                     opAux.Byte.l=readMem(PC,gbcpu.mem);
                     PC++;
                     opAux.Byte.h= readMem(PC,gbcpu.mem);
@@ -4068,7 +4068,7 @@ case 0x2E: //LD L,n
                 printf("\nmnemonic:JP Z,%04x\n",readMem(PC,gbcpu.mem)|(readMem(PC+1,gbcpu.mem)<<8));
                 printf("**************************\n");
 #endif
-                if ((F & Z_FLAG)==1 ) {
+                if (F & Z_FLAG) {
                     opAux.Byte.l=readMem(PC,gbcpu.mem);
                     PC++;
                     opAux.Byte.h= readMem(PC,gbcpu.mem);
@@ -4087,7 +4087,7 @@ case 0x2E: //LD L,n
                 printf("\nmnemonic:JP NC,%04x\n",readMem(PC,gbcpu.mem)|(readMem(PC+1,gbcpu.mem)<<8));
                 printf("**************************\n");
 #endif
-                if ((F & C_FLAG)==0 ) {
+                if (!(F & C_FLAG)) {
                     opAux.Byte.l=readMem(PC,gbcpu.mem);
                     PC++;
                     opAux.Byte.h= readMem(PC,gbcpu.mem);
@@ -4106,7 +4106,7 @@ case 0x2E: //LD L,n
                 printf("\nmnemonic:JP C,%04x\n",readMem(PC,gbcpu.mem)|(readMem(PC+1,gbcpu.mem)<<8));
                 printf("**************************\n");
 #endif
-                if ((F & C_FLAG)==1 ){
+                if (F & C_FLAG){
                     opAux.Byte.l=readMem(PC,gbcpu.mem);
                     PC++;
                     opAux.Byte.h= readMem(PC,gbcpu.mem);
@@ -4127,7 +4127,7 @@ case 0x2E: //LD L,n
 #ifdef DEBUG
                 signedtempbyte=readMem(PC-1,gbcpu.mem);
                 printf(" %02x",readMem(PC-1,gbcpu.mem));
-                printf("\nmnemonic:JP PC+%d\n",signedtempbyte);
+                printf("\nmnemonic:JR PC+%d\n",signedtempbyte);
                 printf("**************************\n");
 #endif
                 break;
@@ -4137,10 +4137,10 @@ case 0x2E: //LD L,n
 #ifdef DEBUG
                 signedtempbyte=readMem(PC,gbcpu.mem);
                 printf(" %02x",readMem(PC,gbcpu.mem));
-                printf("\nmnemonic:JP NZ,PC+%d\n",signedtempbyte);
+                printf("\nmnemonic:JR NZ,PC+%d\n",signedtempbyte);
                 printf("**************************\n");
 #endif
-                if ((F & Z_FLAG)==0 ) {
+                if (!(F & Z_FLAG)) {
                     signedtempbyte=readMem(PC,gbcpu.mem);
                     PC++;
                     PC+=signedtempbyte;
@@ -4154,10 +4154,10 @@ case 0x2E: //LD L,n
 #ifdef DEBUG
                 signedtempbyte=readMem(PC,gbcpu.mem);
                 printf(" %02x",readMem(PC,gbcpu.mem));
-                printf("\nmnemonic:JP Z,PC+%d\n",signedtempbyte);
+                printf("\nmnemonic:JR Z,PC+%d\n",signedtempbyte);
                 printf("**************************\n");
 #endif
-                if ((F & Z_FLAG)==1 ) {
+                if (F & Z_FLAG) {
                     signedtempbyte=readMem(PC,gbcpu.mem);
                     PC++;
                     PC+=signedtempbyte;
@@ -4171,10 +4171,10 @@ case 0x2E: //LD L,n
 #ifdef DEBUG
                 signedtempbyte=readMem(PC,gbcpu.mem);
                 printf(" %02x",readMem(PC,gbcpu.mem));
-                printf("\nmnemonic:JP NC,PC+%d\n",signedtempbyte);
+                printf("\nmnemonic:JR NC,PC+%d\n",signedtempbyte);
                 printf("**************************\n");
 #endif
-                if ((F & C_FLAG)==0 ) {
+                if (!(F & C_FLAG) ) {
                     signedtempbyte=readMem(PC,gbcpu.mem);
                     PC++;
                     PC+=signedtempbyte;
@@ -4188,10 +4188,10 @@ case 0x2E: //LD L,n
 #ifdef DEBUG
                 signedtempbyte=readMem(PC,gbcpu.mem);
                 printf(" %02x",readMem(PC,gbcpu.mem));
-                printf("\nmnemonic:JP C,PC+%d\n",signedtempbyte);
+                printf("\nmnemonic:JR C,PC+%d\n",signedtempbyte);
                 printf("**************************\n");
 #endif
-                if ((F & C_FLAG)==1 ){
+                if (F & C_FLAG){
                     signedtempbyte=readMem(PC,gbcpu.mem);
                     PC++;
                     PC+=signedtempbyte;
@@ -4227,7 +4227,7 @@ case 0x2E: //LD L,n
                 printf("\nmnemonic:CALL NZ,%04x\n",opAux.Word);
                 printf("**************************\n");
 #endif
-                if ((F & Z_FLAG)==0 ) {
+                if (!(F & Z_FLAG)) {
                     opAux.Byte.l = readMem(PC,gbcpu.mem);
                     PC++;
                     opAux.Byte.h = readMem(PC,gbcpu.mem);
@@ -4250,7 +4250,7 @@ case 0x2E: //LD L,n
                 printf("\nmnemonic:CALL Z,%04x\n",opAux.Word);
                 printf("**************************\n");
 #endif
-                if ((F & Z_FLAG)==1 ) {
+                if (F & Z_FLAG) {
                     opAux.Byte.l = readMem(PC,gbcpu.mem);
                     PC++;
                     opAux.Byte.h = readMem(PC,gbcpu.mem);
@@ -4273,7 +4273,7 @@ case 0x2E: //LD L,n
                 printf("\nmnemonic:CALL NC,%04x\n",opAux.Word);
                 printf("**************************\n");
 #endif
-                if ((F & C_FLAG)==0 ) {
+                if (!(F & C_FLAG)) {
                     opAux.Byte.l = readMem(PC,gbcpu.mem);
                     PC++;
                     opAux.Byte.h = readMem(PC,gbcpu.mem);
@@ -4296,7 +4296,7 @@ case 0x2E: //LD L,n
                 printf("\nmnemonic:CALL C,%04x\n",opAux.Word);
                 printf("**************************\n");
 #endif
-                if ((F & C_FLAG)==1 ) {
+                if (F & C_FLAG) {
                     opAux.Byte.l = readMem(PC,gbcpu.mem);
                     PC++;
                     opAux.Byte.h = readMem(PC,gbcpu.mem);
@@ -4325,7 +4325,7 @@ case 0x2E: //LD L,n
 
                 /*RET cc*/
             case 0xC0://RET NZ
-                if ((F & Z_FLAG)==0 ) {
+                if (!(F & Z_FLAG)) {
                     opAux.Byte.l = readMem(SP,gbcpu.mem);
                     opAux.Byte.h = readMem(SP+1,gbcpu.mem);
                     SP+=2;
@@ -4339,7 +4339,7 @@ case 0x2E: //LD L,n
 #endif
                 break;
             case 0xC8://RET Z
-                if ((F & Z_FLAG)==1 ) {
+                if (F & Z_FLAG) {
                     opAux.Byte.l = readMem(SP,gbcpu.mem);
                     opAux.Byte.h = readMem(SP+1,gbcpu.mem);
                     SP+=2;
@@ -4353,7 +4353,7 @@ case 0x2E: //LD L,n
 #endif
                 break;
             case 0xD0://RET NC
-                if ((F & C_FLAG)==0 ) {
+                if (!(F & C_FLAG)) {
                     opAux.Byte.l = readMem(SP,gbcpu.mem);
                     opAux.Byte.h = readMem(SP+1,gbcpu.mem);
                     SP+=2;
@@ -4367,7 +4367,7 @@ case 0x2E: //LD L,n
 #endif
                 break;
             case 0xD8://RET C
-                if ((F & C_FLAG)==1 ){
+                if (F & C_FLAG){
                     opAux.Byte.l = readMem(SP,gbcpu.mem);
                     opAux.Byte.h = readMem(SP+1,gbcpu.mem);
                     SP+=2;
@@ -4517,7 +4517,7 @@ case 0x2E: //LD L,n
 #endif
                 break;
             case 0xFB: //EI
-                IME=1;
+                SET_IME=1;
 #ifdef DEBUG
                 printf("\nmnemonic:EI\n");
                 printf("**************************\n");

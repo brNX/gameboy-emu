@@ -16,9 +16,9 @@ void CpuLoop::run()
     QTime timer;
     for(;;){
         timer.restart();
-        execute(69905);
+        execute(70221);
         //scanline
-        //execute(457);
+        //execute(22850);
         emit iterationfinished();
         int elapsed = timer.elapsed();
        if (elapsed>0)
