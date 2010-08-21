@@ -34,6 +34,11 @@ SET( QT_USE_QTGUI TRUE )
 # this command finds Qt4 libraries and sets all required variables
 # note that it's Qt4, not QT4 or qt4
 FIND_PACKAGE( Qt4 REQUIRED )
+Find_Package ( SDL REQUIRED )
+
+if ( NOT SDL_FOUND )
+   message ( FATAL_ERROR "SDL not found!" )
+endif ( NOT SDL_FOUND )
 
 
 # add some useful macros and variables
@@ -91,7 +96,7 @@ add_test(Gameboy-Emu_test ${EXECUTABLE_OUTPUT_PATH}/Gameboy-Emu)
 TARGET_LINK_LIBRARIES(Gameboy-Emu ${QT_LIBRARIES})
 
 ADD_DEFINITIONS(-DQT_DEBUG)
-ADD_DEFINITIONS(-DDEBUG)
+#ADD_DEFINITIONS(-DDEBUG)
 
 ###########unit testing###############
 

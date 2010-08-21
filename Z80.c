@@ -520,6 +520,8 @@ INLINE void updateLCDStatus(int cycles){
         STAT=(STAT&0xFC) | 0x1;
         //reset counter
         gbcpu.lcd->scanlinecyclecounter=456;
+        //reset LY
+        LY=0;
     }
 }
 

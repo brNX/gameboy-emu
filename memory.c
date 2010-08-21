@@ -152,6 +152,13 @@ extern INLINE uint8 readMem(uint16 address,Memory * mem)
     //FFFF        Interrupt Enable Register
     case 0xF:
 
+         //FFFF  Interrupt Enable Register
+         if (address == 0xFF00){
+             return 0xFF;
+             break;
+         }
+
+
          //FE00-FE9F   Sprite Attribute Table (OAM)
          /*FE00 <= addr <= 0xFE9F*/
          addr= address - 0xFE00;
