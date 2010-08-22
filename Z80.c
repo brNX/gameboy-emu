@@ -452,7 +452,7 @@ INLINE void LY_LYC(){
 //update lcdstatus
 INLINE void updateLCDStatus(int cycles){
 
-
+    //lcd enabled
     if (LCDC&0x80){
 
         gbcpu.lcd->scanlinecyclecounter -= cycles;

@@ -314,13 +314,16 @@ void initMemory(Memory * mem,Cartridge * cart){
     if (cart->ramsize == 3)
         ramsize=32*1024*sizeof(uint8);
 
-    //TODO : read and write ram from/to file  (savegame)
-   // if (ramsize > 0)
-   mem->rambanks=(uint8 *) malloc (ramsize);
-
     //MBC2
     if (cart->type.index == 0x06 || cart->type.index == 0x05)
         mem->rambanks=(uint8 *) malloc (512*sizeof(uint8));
+    else{
+
+        //TODO : read and write ram from/to file  (savegame)
+        // if (ramsize > 0)
+        mem->rambanks=(uint8 *) malloc (ramsize);
+        memset(mem->rambanks,0xFF,ramsize);
+    }
 
 
     /*copy rom from file*/
@@ -508,7 +511,7 @@ INLINE void writeToIOZone(uint16 address, uint8 value,Memory * mem){
 #ifdef DEBUG
     printf("write to echo ram\n");
 #endif
-        mem->wram[0X1000|addr] = value;
+        mem->wram[0x1000|addr] = value;
         return;
     }
 
