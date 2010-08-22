@@ -130,6 +130,8 @@ INLINE void drawSprites(){
 
     int i,sizeY;
 
+    //printf("printsprites at %04x\n",PC);
+
     //loop throught the 40 sprites
     for(i=0;i<40;i++){
 

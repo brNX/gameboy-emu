@@ -4,6 +4,7 @@
  *  Created on: 2010/06/18
  *      Author: brNX
  */
+#include "Z80.h"
 #include "memory.h"
 #include <stdio.h>
 #include <string.h>
@@ -308,29 +309,14 @@ void initMemory(Memory * mem,Cartridge * cart){
     mem->rombanks=(uint8 *) malloc (romsize);
 
 
+    ramsize=8*1024*sizeof(uint8);
     /*rambanks*/
-    switch (cart->ramsize)
-    {
-    case 0:
-        ramsize=0;
-        mem->rambanks=NULL;
-        break;
-    case 1:
-        ramsize=2*1024*sizeof(uint8);
-        break;
-    case 2:
-        ramsize=8*1024*sizeof(uint8);
-        break;
-    case 3:
+    if (cart->ramsize == 3)
         ramsize=32*1024*sizeof(uint8);
-        break;
-    default:
-        break;
-    }
 
     //TODO : read and write ram from/to file  (savegame)
-    if (ramsize > 0)
-        mem->rambanks=(uint8 *) malloc (ramsize);
+   // if (ramsize > 0)
+   mem->rambanks=(uint8 *) malloc (ramsize);
 
     //MBC2
     if (cart->type.index == 0x06 || cart->type.index == 0x05)

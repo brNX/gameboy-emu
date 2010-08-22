@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 
+set (CMAKE_BUILD_TYPE Debug)
+
 project (Gameboy-Emu)
 
 #include (CTest)
@@ -58,8 +60,6 @@ endif(UNIX)
 
 #set (CMAKE_C_COMPILER "clang")
 #set (CMAKE_CXX_COMPILER "clang++")
-
-set (CMAKE_BUILD_TYPE Debug)
 
 # configure a header file to pass some of the CMake settings
 # to the source code

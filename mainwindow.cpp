@@ -18,11 +18,13 @@ MainWindow::MainWindow(QWidget *parent) :
 	//cpucycles between lcd interupts =~ 69905
 	resetZ80(mem, lcd);
 
-	//read_cart_file("killer_instinct.gb",cart);
+        //read_cart_file("killer_instinct.gb",cart);
         //read_cart_file("motocross_maniacs.gb",cart);
         //read_cart_file("MEGANIME.GB", cart);
-        read_cart_file("tetris.gb", cart);
-        //read_cart_file("super_mario_land.gb",cart);
+        read_cart_file("Public Domain/Joypad Test V0.1 (PD).gb", cart);
+        //read_cart_file("tetris.gb", cart);
+        //read_cart_file("alleyway.gb",cart);
+        //read_cart_file("super_mario_land2.gb",cart);
 	parse_cart_Header(EGB, cart);
 	initMemory(mem, cart);
         //for now no rom banking

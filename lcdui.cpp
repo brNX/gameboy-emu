@@ -31,14 +31,14 @@ void LcdUi::paintEvent(QPaintEvent *event)
 
 void LcdUi::drawBlank()
 {
-    printf("blank\n");
+    //printf("blank\n");
     image->fill(qRgb(255,255,255));
     this->update();
 }
 
 void LcdUi::drawImage(RGB lcdimage[][144])
 {
-    printf("not blank\n");
+    //printf("not blank\n");
     QRgb value;
     for (int i=0;i<160;i++)
         for (int j=0;j<144;j++){
