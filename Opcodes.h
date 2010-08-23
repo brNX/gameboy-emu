@@ -1760,11 +1760,10 @@ case 0x2E: //LD L,n
         break;
 
         /*LD HL,SP+n*/
-        //TODO: por verificar (signed byte)
     case 0xF8:
         signedtempbyte=readMem(PC,gbcpu.mem);
-        PC++;
         LD_HLSP(signedtempbyte);
+        PC++;
 #ifdef DEBUG
         printf("%02x",signedtempbyte);
         printf("\nmnemonic:LD HL,SP+%d\n",signedtempbyte);

@@ -120,15 +120,13 @@ Z80 gbcpu;
 
 #define ADD_SP(val) \
         opAux32.DW = SP + val;\
-        F = 0;\
-        CHECK_H16(val);\
+        F = (H_FLAG & ((SP ^ (val) ^ opAux32.W.l) >> 7));\
         CHECK_C_ADD16(val);\
         SP=opAux32.W.l
 
 #define LD_HLSP(val) \
         opAux32.DW = SP + val;\
-        F = 0;\
-        CHECK_H16(val);\
+        F = (H_FLAG & ((SP ^ (val) ^ opAux32.W.l) >> 7));\
         CHECK_C_ADD16(val);\
         HL=opAux32.W.l
 
