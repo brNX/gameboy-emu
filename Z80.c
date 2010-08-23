@@ -134,11 +134,10 @@ Z80 gbcpu;
 #define RLC(val) \
         F=0;\
         val = (val << 1) | (val >> 7);\
-        CHECK_ZL(val);\
-        F = (val & 0x1) << 4
+        F = (val & 0x1) << 4;\
+        CHECK_ZL(val)
 
 #define RL(val) \
-        F=0;\
         opAux.Byte.l=val;\
         opAux.Byte.h=(F&C_FLAG)>>4;\
         opAux.Word = ((opAux.Word << 1)|(opAux.Word >> 8)) & 0x1FF;\
@@ -147,13 +146,11 @@ Z80 gbcpu;
         CHECK_ZL(val)
 
 #define RRC(val)\
-         F=0;\
          F = (val & 0x1) << 4;\
          val = (val >> 1) | (val << 7);\
          CHECK_ZL(val)
 
 #define RR(val)\
-        F=0;\
         opAux.Word =  (val << 1) | ((F & C_FLAG) >> 4);\
         opAux.Word = ((opAux.Word >> 1) | (opAux.Word << 8)) & 0x1FF; \
         F = (opAux.Word & 0x1) << 4 ; \
