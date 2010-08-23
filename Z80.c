@@ -15,6 +15,7 @@
 
 #include "lookuptables.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 #ifdef DEBUG
 #include "debugcounters.h"
@@ -242,7 +243,7 @@ void resetZ80(Memory * mem,LCD * lcd)
     mem->IO[0x25] = 0xF3   ;// NR51
     mem->IO[0x26] = 0xF1   ;// -GB, $F0-SGB ; NR52
     mem->IO[0x40] = 0x91   ;// LCDC
-    //mem->IO[0x41] = 0x84   ;// STAT
+    mem->IO[0x41] = 0x84   ;// STAT
     mem->IO[0x42] = 0x00   ;// SCY
     mem->IO[0x43] = 0x00   ;// SCX
     mem->IO[0x44] = 0x00   ;// LY
@@ -349,6 +350,8 @@ int execute(int ncycles)
         #include "Opcodes.h"
 
         default:
+            printf("error undefined opcode");
+            exit(-1);
             break;
         }
     }else
@@ -370,7 +373,6 @@ int execute(int ncycles)
 
         updatetimers(usedcycles);
         updateLCDStatus(usedcycles);
-        LY_LYC();
 
 
 	if (Counter <= 0)
@@ -449,6 +451,8 @@ INLINE void LY_LYC(){
 
 //update lcdstatus
 INLINE void updateLCDStatus(int cycles){
+    
+    STAT |= 0x80;
 
     //lcd enabled
     if (LCDC&0x80){
@@ -513,9 +517,11 @@ INLINE void updateLCDStatus(int cycles){
 
         }
 
+        LY_LYC();
+
     }else{
-        //set mode to 1
-        STAT=(STAT&0xFC) | 0x1;
+        //set mode to 0
+        STAT=(STAT&0xF8);
         //reset counter
         gbcpu.lcd->scanlinecyclecounter=456;
         //reset LY

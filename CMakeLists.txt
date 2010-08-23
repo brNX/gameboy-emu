@@ -96,7 +96,7 @@ add_test(Gameboy-Emu_test ${EXECUTABLE_OUTPUT_PATH}/Gameboy-Emu)
 TARGET_LINK_LIBRARIES(Gameboy-Emu ${QT_LIBRARIES})
 
 ADD_DEFINITIONS(-DQT_DEBUG)
-ADD_DEFINITIONS(-DDEBUG)
+#ADD_DEFINITIONS(-DDEBUG)
 
 ###########unit testing###############
 

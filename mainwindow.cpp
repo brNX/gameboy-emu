@@ -313,7 +313,10 @@ QString MainWindow::parseOpcode(int index) {
 		break;
 	case 0x67: ////LD H,A
 		opcode.append("LD H,A");
-		break;
+		break;    
+        case 0x6F: ////LD L,A
+                opcode.append("LD L,A");
+                break;
 	case 0x68: ////LD L,B
 		opcode.append("LD L,B");
 		break;

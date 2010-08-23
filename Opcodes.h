@@ -258,6 +258,15 @@ case 0x67: ////LD H,A
 #endif
     H = A;
     break;
+case 0x6F: ////LD L,A
+
+#ifdef DEBUG
+    printf("\n mnemonic:LD L,A\n");
+    printf("**************************\n");
+#endif
+    L = A;
+    break;
+
 case 0x68: ////LD L,B
 
 #ifdef DEBUG
