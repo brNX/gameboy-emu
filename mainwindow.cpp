@@ -7,6 +7,7 @@
 #include "lookuptables.h"
 #include "cpuloop.h"
 #include <cstdio>
+#include <SDL/SDL.h>
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -15,16 +16,18 @@ MainWindow::MainWindow(QWidget *parent) :
 	lcd = new LCD();
 	cart = new Cartridge();
 
+
+
 	//cpucycles between lcd interupts =~ 69905
 	resetZ80(mem, lcd);
 
         //read_cart_file("killer_instinct.gb",cart);
         //read_cart_file("motocross_maniacs.gb",cart);
-        //read_cart_file("MEGANIME.GB", cart);
+       //read_cart_file("MEGANIME.GB", cart);
         //read_cart_file("Public Domain/Joypad Test V0.1 (PD).gb", cart);
         //read_cart_file("testroms/Filltest Demo (PD).gb", cart);
-        read_cart_file("testroms/RAM Function Test (PD).gb", cart);
-        //read_cart_file("tetris.gb", cart);
+        //read_cart_file("testroms/RAM Function Test (PD).gb", cart);
+        read_cart_file("tetris.gb", cart);
         //read_cart_file("alleyway.gb",cart);
         //read_cart_file("super_mario_land.gb",cart);
 	parse_cart_Header(EGB, cart);
@@ -78,14 +81,14 @@ void MainWindow::renderScreen() {
 
 void MainWindow::mainloop() {
 
-	loop->start(QThread::LowPriority);
-	while (!(LCDC & 0x80))
-		loop->start(QThread::LowPriority);
+	//loop->start(QThread::LowPriority);
+	//while (!(LCDC & 0x80))
+	//	loop->start(QThread::LowPriority);
 
 }
 
 void MainWindow::on_runButton_clicked() {
-	mainloop();
+	loop->start(QThread::NormalPriority);
 }
 
 void MainWindow::on_stepButton_clicked() {

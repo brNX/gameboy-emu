@@ -29,7 +29,6 @@ protected:
 
 private:
     Ui::MainWindow *ui;
-    void mainloop();
     CpuLoop * loop;
     Cartridge * cart;
     Memory * mem;
