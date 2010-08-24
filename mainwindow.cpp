@@ -57,6 +57,7 @@ MainWindow::~MainWindow() {
 	delete lcd;
 	delete cart;
 	delete ui;
+	SDL_Quit();
 
 }
 
