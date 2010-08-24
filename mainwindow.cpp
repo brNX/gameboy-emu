@@ -15,11 +15,17 @@ MainWindow::MainWindow(QWidget *parent) :
 	mem = new Memory();
 	lcd = new LCD();
 	cart = new Cartridge();
-
-
-
-	//cpucycles between lcd interupts =~ 69905
 	resetZ80(mem, lcd);
+
+	SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_TIMER);
+
+	printf("%i joysticks were found.\n\n", SDL_NumJoysticks() );
+    printf("The names of the joysticks are:\n");
+	
+    for(int i=0; i < SDL_NumJoysticks(); i++ ) 
+    {
+        printf("    %s\n", SDL_JoystickName(i));
+    }
 
         //read_cart_file("killer_instinct.gb",cart);
         //read_cart_file("motocross_maniacs.gb",cart);
@@ -27,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
         //read_cart_file("Public Domain/Joypad Test V0.1 (PD).gb", cart);
         //read_cart_file("testroms/Filltest Demo (PD).gb", cart);
         //read_cart_file("testroms/RAM Function Test (PD).gb", cart);
-        read_cart_file("tetris.gb", cart);
+       read_cart_file("tetris.gb", cart);
         //read_cart_file("alleyway.gb",cart);
         //read_cart_file("super_mario_land.gb",cart);
 	parse_cart_Header(EGB, cart);
@@ -76,14 +82,6 @@ void MainWindow::renderScreen() {
 	} else {
 		ui->lcd->drawBlank();
 	}
-
-}
-
-void MainWindow::mainloop() {
-
-	//loop->start(QThread::LowPriority);
-	//while (!(LCDC & 0x80))
-	//	loop->start(QThread::LowPriority);
 
 }
 

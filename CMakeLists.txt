@@ -93,7 +93,7 @@ add_test(Gameboy-Emu_test ${EXECUTABLE_OUTPUT_PATH}/Gameboy-Emu)
 
 # last thing we have to do is to tell CMake what libraries our executable needs,
 # luckily FIND_PACKAGE prepared QT_LIBRARIES variable for us:
-TARGET_LINK_LIBRARIES(Gameboy-Emu ${QT_LIBRARIES})
+TARGET_LINK_LIBRARIES(Gameboy-Emu ${QT_LIBRARIES}  ${SDL_LIBRARY} ${SDLIMAGE_LIBRARY} SDLmain )
 
 ADD_DEFINITIONS(-DQT_DEBUG)
 #ADD_DEFINITIONS(-DDEBUG)
