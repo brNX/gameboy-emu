@@ -37,6 +37,7 @@ extern "C"
     INLINE void writeToIOZone(uint16 address, uint8 value,Memory * mem);
     INLINE void romBankSwitch(uint16 address, uint8 value,Memory * mem);
     INLINE void ramBankSwitch(uint16 address, uint8 value,Memory * mem);
+    INLINE uint8 getJoypadState(Memory * mem);
     void printMEMStatus(Memory * mem);
     void initMemory(Memory* mem,Cartridge * cart);
     void destroyMemory(Memory * mem);

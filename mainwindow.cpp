@@ -11,43 +11,43 @@
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent), ui(new Ui::MainWindow) {
-	ui->setupUi(this);
-	mem = new Memory();
-	lcd = new LCD();
-	cart = new Cartridge();
-	resetZ80(mem, lcd);
+    ui->setupUi(this);
+    mem = new Memory();
+    lcd = new LCD();
+    cart = new Cartridge();
+    resetZ80(mem, lcd);
 
-	SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_TIMER);
+    SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_TIMER);
 
-	printf("%i joysticks were found.\n\n", SDL_NumJoysticks() );
+    printf("%i joysticks were found.\n\n", SDL_NumJoysticks() );
     printf("The names of the joysticks are:\n");
-	
+
     for(int i=0; i < SDL_NumJoysticks(); i++ ) 
     {
         printf("    %s\n", SDL_JoystickName(i));
     }
 
-        //read_cart_file("killer_instinct.gb",cart);
-        //read_cart_file("motocross_maniacs.gb",cart);
-       //read_cart_file("MEGANIME.GB", cart);
-        //read_cart_file("Public Domain/Joypad Test V0.1 (PD).gb", cart);
-        //read_cart_file("testroms/Filltest Demo (PD).gb", cart);
-        //read_cart_file("testroms/RAM Function Test (PD).gb", cart);
-       read_cart_file("tetris.gb", cart);
-        //read_cart_file("alleyway.gb",cart);
-        //read_cart_file("super_mario_land.gb",cart);
-	parse_cart_Header(EGB, cart);
-	initMemory(mem, cart);
-        //for now no rom banking
-        for (int i = 0; i < (2 * 16384); i++) {
-            QString line=QString("%1:\tROM 0: %2\t").arg(i, 4, 16, QChar('0')).arg(gbcpu.mem->rombanks[i],2,16,QChar('0'));
-            line.append(parseOpcode(i));
-            ui->romList->addItem(line);
-        }
-        fillList();
+    //read_cart_file("killer_instinct.gb",cart);
+    //read_cart_file("motocross_maniacs.gb",cart);
+    //read_cart_file("MEGANIME.GB", cart);
+    //read_cart_file("Public Domain/Joypad Test V0.1 (PD).gb", cart);
+    //read_cart_file("testroms/Filltest Demo (PD).gb", cart);
+    //read_cart_file("testroms/RAM Function Test (PD).gb", cart);
+    //read_cart_file("tetris.gb", cart);
+    //read_cart_file("alleyway.gb",cart);
+    read_cart_file("super_mario_land.gb",cart);
+    parse_cart_Header(EGB, cart);
+    initMemory(mem, cart);
+    //for now no rom banking
+    for (int i = 0; i < (2 * 16384); i++) {
+        QString line=QString("%1:\tROM 0: %2\t").arg(i, 4, 16, QChar('0')).arg(gbcpu.mem->rombanks[i],2,16,QChar('0'));
+        line.append(parseOpcode(i));
+        ui->romList->addItem(line);
+    }
+    fillList();
 
-	loop = new CpuLoop(this);
-	connect(loop, SIGNAL(iterationfinished()), this, SLOT(renderScreen()));
+    loop = new CpuLoop(this);
+    connect(loop, SIGNAL(iterationfinished()), this, SLOT(renderScreen()));
 
 }
 
@@ -108,6 +108,76 @@ void MainWindow::on_runtoButton_clicked() {
         fillList();
     }
 }
+
+
+void MainWindow::keyPressEvent ( QKeyEvent * event )
+{
+    int key;
+    if (!event->isAutoRepeat()){
+        switch (event->key()) {
+
+        case Qt::Key_A: key = 1; break;
+        case Qt::Key_D: key = 0; break;
+        case Qt::Key_S: key = 3; break;
+        case Qt::Key_W: key = 2; break;
+        case Qt::Key_K: key = 4; break;
+        case Qt::Key_L: key = 5; break;
+        case Qt::Key_N: key = 6; break;
+        case Qt::Key_M: key = 7; break;
+
+        default:
+            event->ignore();
+            return;
+        }
+
+        bool unset=false;
+
+        //already set ?
+        if(!(gbcpu.joypad & (1<<key)))
+            unset=true;
+
+        //set key to 0
+        gbcpu.joypad &= ~(1<<key);
+
+        //Direction or button keys?
+        if (key > 3)//buttons
+        {
+            if ( (!(JOYP & (1<<5)) && !unset))
+                interruptZ80(I_JOYPAD); //request interrupt
+        }
+        else //Direction
+        {
+            if ( (!(JOYP & (1<<4)) && !unset))
+                interruptZ80(I_JOYPAD); //request interrupt
+        }
+
+    }
+
+}
+
+void MainWindow::keyReleaseEvent( QKeyEvent * event )
+{
+    int key;
+    if (!event->isAutoRepeat()){
+        switch (event->key()) {
+
+        case Qt::Key_A: key = 1; break;
+        case Qt::Key_D: key = 0; break;
+        case Qt::Key_S: key = 3; break;
+        case Qt::Key_W: key = 2; break;
+        case Qt::Key_K: key = 4; break;
+        case Qt::Key_L: key = 5; break;
+        case Qt::Key_N: key = 6; break;
+        case Qt::Key_M: key = 7; break;
+
+        default:
+            event->ignore();
+            return;
+        }
+          gbcpu.joypad |= (1<<key);
+    }
+}
+
 
 void MainWindow::fillList() {
 

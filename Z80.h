@@ -45,6 +45,9 @@
 #define OBP0 gbcpu.mem->IO[0x48]
 #define OBP1 gbcpu.mem->IO[0x49]
 
+/*joypad register*/
+#define JOYP gbcpu.mem->IO[00]
+
 /*interupts registers*/
 #define IME gbcpu.ime
 #define SET_IME gbcpu.set_ime
@@ -104,6 +107,7 @@ extern "C"
         int halt;
         Memory * mem;
         LCD * lcd;
+        uint8 joypad;
 
         int timer1;
         int timer2;

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QImage>
+#include <QKeyEvent>
 #include "types.h"
 
 
@@ -20,12 +21,13 @@ class MainWindow : public QMainWindow {
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
-   // friend class CpuLoop;
     void fillList();
     QString parseOpcode(int index);
 
 protected:
     void changeEvent(QEvent *e);
+    void keyPressEvent ( QKeyEvent * event );
+    void keyReleaseEvent( QKeyEvent * event );
 
 private:
     Ui::MainWindow *ui;

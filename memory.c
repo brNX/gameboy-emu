@@ -153,9 +153,9 @@ extern INLINE uint8 readMem(uint16 address,Memory * mem)
     //FFFF        Interrupt Enable Register
     case 0xF:
 
-         //FFFF  Interrupt Enable Register
+         //FF00  joypad
          if (address == 0xFF00){
-             return 0xFF;
+             return getJoypadState(mem);
              break;
          }
 
@@ -289,6 +289,25 @@ extern INLINE void writeMem(uint16 address, uint8 value,Memory * mem)
 
 
 }
+
+INLINE uint8 getJoypadState(Memory * mem){
+    
+    uint8 state = ~JOYP;
+
+    //directional keys
+    if (!(state & (1<<4))){
+
+        state &= ((gbcpu.joypad  >> 4) | 0xF0);
+
+    }
+    //button keys
+    else if (!(state & (1<<5))){
+        state &= ((gbcpu.joypad & 0xF) | 0xF0);
+    }
+
+    return state;
+}
+
 
 void initMemory(Memory * mem,Cartridge * cart){
     int romsize,ramsize;

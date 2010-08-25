@@ -208,6 +208,8 @@ void resetZ80(Memory * mem,LCD * lcd)
     gbcpu.cyclecounter = 0;
     SP = 0xFFFE;
 
+    gbcpu.joypad=0xFF;
+
     gbcpu.ime=0;
     gbcpu.set_ime=0;
 
