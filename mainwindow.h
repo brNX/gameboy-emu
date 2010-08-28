@@ -12,6 +12,8 @@ namespace Ui {
 }
 
 class CpuLoop;
+class OamDialog;
+
 typedef struct _Cartridge Cartridge;
 typedef struct _Memory Memory;
 typedef struct _LCD LCD;
@@ -35,6 +37,7 @@ private:
     Cartridge * cart;
     Memory * mem;
     LCD * lcd;
+    OamDialog * oamdialog;
 public slots:
     void renderScreen();
 private slots:

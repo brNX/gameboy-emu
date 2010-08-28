@@ -10,7 +10,7 @@ LcdUi::LcdUi(QWidget *parent) :
     QWidget(parent)
 {
     image = new QImage(160,144,QImage::Format_RGB32);
-    image->fill(0);
+    image->fill(qRgb(255,255,255));
 }
 
 LcdUi::~LcdUi()

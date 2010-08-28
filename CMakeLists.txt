@@ -9,13 +9,17 @@ project (Gameboy-Emu)
 # another list, this time it includes all header files that should be treated with moc
 SET( MOC_HDRS
      mainwindow.h
+     oamdialog.h
      cpuloop.h
      lcdui.h
+     tilemap.h
+     background.h
 )
 
 ## some .ui files
 SET( UIS
     mainwindow.ui
+    oamDialog.ui
 )
 
 ## and finally an resource file
@@ -29,7 +33,6 @@ set (Gameboy-Emu_VERSION_MINOR 0)
 
 # by default only QtCore and QtGui modules are enabled
 # other modules must be enabled like this:
-#SET( QT_USE_QT3SUPPORT TRUE )
 SET( QT_USE_QTTEST TRUE )
 SET( QT_USE_QTGUI TRUE )
 
@@ -87,7 +90,7 @@ QT4_WRAP_UI( UI_HDRS ${UIS} )
 QT4_WRAP_CPP( MOC_SRCS ${MOC_HDRS} )
 
 # here we instruct CMake to build "sample" executable from all of the source files
-add_executable(Gameboy-Emu ${MOC_SRCS} ${RC_SRCS} ${UI_HDRS} lcdui.h lcdui.cpp cpuloop.h cpuloop.cpp mainwindow.h mainwindow.cpp lcd.h lcd.c no_sillywarnings.h types.h Z80.c Z80.h memory.c memory.h cartridge.h cartridge.c lookuptables.h debugcounters.h Opcodes.h main.cpp)
+add_executable(Gameboy-Emu ${MOC_SRCS} ${RC_SRCS} ${UI_HDRS} background.h background.cpp tilemap.h tilemap.cpp oamdialog.h oamdialog.cpp lcdui.h lcdui.cpp cpuloop.h cpuloop.cpp mainwindow.h mainwindow.cpp lcd.h lcd.c no_sillywarnings.h types.h Z80.c Z80.h memory.c memory.h cartridge.h cartridge.c lookuptables.h debugcounters.h Opcodes.h main.cpp)
 
 add_test(Gameboy-Emu_test ${EXECUTABLE_OUTPUT_PATH}/Gameboy-Emu)
 
