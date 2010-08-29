@@ -35,9 +35,9 @@ MainWindow::MainWindow(QWidget *parent) :
     //read_cart_file("Public Domain/Joypad Test V0.1 (PD).gb", cart);
     //read_cart_file("testroms/Filltest Demo (PD).gb", cart);
     //read_cart_file("testroms/RAM Function Test (PD).gb", cart);
-    read_cart_file("tetris.gb", cart);
+    //read_cart_file("tetris.gb", cart);
     //read_cart_file("alleyway.gb",cart);
-    //read_cart_file("super_mario_land.gb",cart);
+    read_cart_file("super_mario_land.gb",cart);
     parse_cart_Header(EGB, cart);
     initMemory(mem, cart);
     //for now no rom banking

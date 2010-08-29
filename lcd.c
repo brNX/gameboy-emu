@@ -9,15 +9,13 @@ extern INLINE void drawScanline(){
         drawBG();
 
     if (LCDC & 0x2)
-        drawSprites();
+       drawSprites();
 
 
 }
 
 
 INLINE void drawBG(){
-
-
 
     int i;
     int useWindow = 0;
@@ -27,14 +25,13 @@ INLINE void drawBG(){
     uint16 backgroundAddress = 0;
 
 
-
     //window enabled and scanline within window ?
-    if ((LCDC & 0x20) && ( WY <= LY ))
+    if ((LCDC & (1<<5)) && ( WY <= LY ))
     {
-        yPos=SCY+LY;
+        yPos=LY-WY;
 
         //Window Tile Map Display Select
-        if(LCDC & 0x40)
+        if(LCDC & (1<<6))
             //0x9c00
             backgroundAddress=0x1C00;
         else
@@ -45,10 +42,10 @@ INLINE void drawBG(){
     }
     else //not using window
     {
-        yPos=LY-WY;
+        yPos=SCY+LY;
 
         //Window Tile Map Display Select
-        if(LCDC & 0x8)
+        if(LCDC & (1<<3))
             //0x9c00
             backgroundAddress=0x1C00;
         else
@@ -57,9 +54,14 @@ INLINE void drawBG(){
     }
 
 
+
+
     //TODO: testing divide by 8 == multiply by 0.125
     //rowPos o current scanline (of the 8 pixels)
     rowPos = (((uint8)(yPos/8))*32);
+
+
+
 
     //draw de 160 pixels in current line  TODO: (4 by 4)
     for (i=0;i<160;i++){
@@ -85,7 +87,7 @@ INLINE void drawBG(){
 
         // get the tile identity number
         // which tile data are we using?
-        if (LCDC & 0x10)
+        if (LCDC & (1<<4))
         {
             uint8 tilenumber;
 
