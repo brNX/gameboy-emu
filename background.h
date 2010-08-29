@@ -11,7 +11,7 @@ class Background : public QWidget
 public:
     explicit Background(QWidget *parent = 0);
     ~Background();
-    void draw(uint8 map[]);
+    void draw();
 protected:
     void paintEvent(QPaintEvent *event);
 

@@ -5,6 +5,9 @@
 #include <QImage>
 #include "types.h"
 
+
+
+
 class TileMap : public QWidget
 {
     Q_OBJECT
@@ -12,13 +15,15 @@ class TileMap : public QWidget
 public:
     explicit TileMap(QWidget *parent = 0);
     ~TileMap();
+     void draw();
 
 protected:
     void paintEvent(QPaintEvent *event);
-    void draw(uint8 map []);
 
 private:
         QImage * image;
+        INLINE RGB getColor(int,int);
+
 };
 
 #endif // TILEMAP_H

@@ -14,8 +14,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
 
-    oamdialog = new OamDialog(this);
-
     mem = new Memory();
     lcd = new LCD();
     cart = new Cartridge();
@@ -53,6 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
     loop = new CpuLoop(this);
     connect(loop, SIGNAL(iterationfinished()), this, SLOT(renderScreen()));
 
+    oamdialog = new OamDialog(this);
     oamdialog->show();
 }
 
@@ -99,6 +98,7 @@ void MainWindow::on_stepButton_clicked() {
 	execute(1);
 	renderScreen();
         fillList();
+        oamdialog->refreshPanels();
 }
 
 void MainWindow::on_runtoButton_clicked() {
@@ -111,6 +111,7 @@ void MainWindow::on_runtoButton_clicked() {
         }
         renderScreen();
         fillList();
+        oamdialog->refreshPanels();
     }
 }
 

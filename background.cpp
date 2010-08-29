@@ -27,8 +27,8 @@ void Background::paintEvent(QPaintEvent *event)
     painter.end();
 }
 
-void Background::draw(uint8 map[]){
-    QRgb value;
+void Background::draw(){
+
     for (int i=0;i<32;i++)
         for (int j=0;j<32;j++){
 

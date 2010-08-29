@@ -3,12 +3,6 @@
 
 #include "types.h"
 
-typedef struct _RGB{
-    int r;
-    int g;
-    int b;
-}RGB;
-
 typedef struct _LCD{
     int scanlinecyclecounter;
     RGB display[160][144];

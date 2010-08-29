@@ -25,5 +25,11 @@ typedef int16_t int16;
 typedef int32_t int32;
 #endif
 
+typedef struct _RGB{
+    int r;
+    int g;
+    int b;
+}RGB;
+
 
 #endif // TYPES_H

@@ -16,8 +16,9 @@ OamDialog::~OamDialog()
 
 void OamDialog::refreshPanels()
 {
-
+    ui->tileMap->draw();
 }
+
 void OamDialog::changeEvent(QEvent *e)
 {
     QDialog::changeEvent(e);
