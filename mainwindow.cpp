@@ -38,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //read_cart_file("tetris.gb", cart);
     //read_cart_file("alleyway.gb",cart);
     read_cart_file("super_mario_land.gb",cart);
+    //read_cart_file("drmario.gb",cart);
     parse_cart_Header(EGB, cart);
     initMemory(mem, cart);
     //for now no rom banking

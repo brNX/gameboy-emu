@@ -10,8 +10,6 @@ extern INLINE void drawScanline(){
 
     if (LCDC & 0x2)
        drawSprites();
-
-
 }
 
 
@@ -54,13 +52,9 @@ INLINE void drawBG(){
     }
 
 
-
-
     //TODO: testing divide by 8 == multiply by 0.125
     //rowPos o current scanline (of the 8 pixels)
     rowPos = (((uint8)(yPos/8))*32);
-
-
 
 
     //draw de 160 pixels in current line  TODO: (4 by 4)
@@ -90,22 +84,16 @@ INLINE void drawBG(){
         if (LCDC & (1<<4))
         {
             uint8 tilenumber;
-
             tileAddress = 0x0 ;
             tilenumber= gbcpu.mem->vram[backgroundAddress+rowPos+colPos];
             tileAddress+=(tilenumber*16);
-
-
         }
         else
         {
             int8 tilenumber;
-
             tileAddress = 0x800 ;
             tilenumber= gbcpu.mem->vram[backgroundAddress+rowPos+colPos];
             tileAddress+=((tilenumber+128)*16);
-
-
         }
 
         // each vertical line takes up two bytes of memory
@@ -181,7 +169,6 @@ INLINE void drawSprites(){
                 int colorNumber;
                 int colorBit=pixel;
 
-
                  //flip x-axis ?
                 if (attributes & 0x20)
                     colorBit = (colorBit -7)*-1;
@@ -197,13 +184,12 @@ INLINE void drawSprites(){
                 if (color.r==255)
                     continue;
 
-                //draw
-                gbcpu.lcd->display[7-pixel+posX][LY]=color;
+                //dont' draw if behind backgound
+                if(!(attributes & (1<<7)) || (gbcpu.lcd->display[7-pixel+posX][LY].r == 255))
+                    gbcpu.lcd->display[7-pixel+posX][LY]=color;
 
             }
-
         }
-
     }
 }
 
