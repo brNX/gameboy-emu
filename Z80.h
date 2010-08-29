@@ -112,6 +112,8 @@ extern "C"
         int timer1;
         int timer2;
 
+        int forcequit;
+
     } Z80;
     extern Z80 gbcpu;
 

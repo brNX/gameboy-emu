@@ -17,6 +17,7 @@ protected:
 
 private:
         QImage * image;
+        INLINE QRgb getColor(int,int);
 };
 
 #endif // BACKGROUND_H

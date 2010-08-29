@@ -42,8 +42,10 @@ public slots:
     void renderScreen();
 private slots:
     void on_runButton_clicked();
+    void on_stopButton_clicked();
     void on_stepButton_clicked();
     void on_runtoButton_clicked();
+
 
 
 };

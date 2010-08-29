@@ -35,9 +35,11 @@ INLINE void drawBG(){
 
         //Window Tile Map Display Select
         if(LCDC & 0x40)
-            backgroundAddress=0x9C00;
+            //0x9c00
+            backgroundAddress=0x1C00;
         else
-            backgroundAddress=0x9800;
+            //0x9800
+            backgroundAddress=0x1800;
 
         useWindow=1;
     }
@@ -47,9 +49,11 @@ INLINE void drawBG(){
 
         //Window Tile Map Display Select
         if(LCDC & 0x8)
-            backgroundAddress=0x9C00;
+            //0x9c00
+            backgroundAddress=0x1C00;
         else
-            backgroundAddress=0x9800;
+            //0x9800
+            backgroundAddress=0x1800;
     }
 
 
@@ -85,8 +89,8 @@ INLINE void drawBG(){
         {
             uint8 tilenumber;
 
-            tileAddress = 0x8000 ;
-            tilenumber= readMem(backgroundAddress+rowPos+colPos,gbcpu.mem);
+            tileAddress = 0x0 ;
+            tilenumber= gbcpu.mem->vram[backgroundAddress+rowPos+colPos];
             tileAddress+=(tilenumber*16);
 
 
@@ -95,8 +99,8 @@ INLINE void drawBG(){
         {
             int8 tilenumber;
 
-            tileAddress = 0x8800 ;
-            tilenumber= readMem(backgroundAddress+rowPos+colPos,gbcpu.mem);
+            tileAddress = 0x800 ;
+            tilenumber= gbcpu.mem->vram[backgroundAddress+rowPos+colPos];
             tileAddress+=((tilenumber+128)*16);
 
 
@@ -105,8 +109,8 @@ INLINE void drawBG(){
         // each vertical line takes up two bytes of memory
         line = (yPos % 8) *2;
 
-        data1=readMem(tileAddress+line,gbcpu.mem);
-        data2=readMem(tileAddress+line+1,gbcpu.mem);
+        data1=gbcpu.mem->vram[tileAddress+line];
+        data2=gbcpu.mem->vram[tileAddress+line+1];
 
         colorBit = ((xPos % 8)-7)*-1;
         // combine data 2 and data 1 to get the colour id for this pixel

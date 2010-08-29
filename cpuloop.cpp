@@ -23,6 +23,8 @@ void CpuLoop::run()
        int elapsed = timer.elapsed();
        if (elapsed>0)
             this->msleep(FRAMETIME-elapsed);
+       if(gbcpu.forcequit==1)
+           break;
 
     }
 

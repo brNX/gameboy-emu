@@ -22,7 +22,7 @@ protected:
 
 private:
         QImage * image;
-        INLINE RGB getColor(int,int);
+        INLINE QRgb getColor(int,int);
 
 };
 

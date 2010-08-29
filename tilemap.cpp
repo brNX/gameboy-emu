@@ -34,30 +34,30 @@ void TileMap::draw(){
 
     int x=16,y=16;
 
-    /*
+
     for (int i=0 ; i<15;i++ ){
         for (int j=0;j<407;j++){
-             image->setPixel(x,j,qRgb(0,0,0));
+            image->setPixel(x,j,qRgb(50,50,50));
         }
         x+=17;
     }
 
     for (int i=0 ; i<23;i++ ){
         for (int j=0;j<271;j++){
-             image->setPixel(j,y,qRgb(0,0,0));
+            image->setPixel(j,y,qRgb(50,50,50));
         }
         y+=17;
     }
-*/
+
 
     x=0;
     y=0;
     int address = 0;
     //16 bytes(0x10) per tile
     for(int line=0;line <24;line++){
-        y=line*16;
+        y=line*16+line;
         for (int row = 0 ; row <16;row++){
-            x=row*16;
+            x=row*16+row;
 
 
             //8 2bytes pairs
@@ -71,50 +71,34 @@ void TileMap::draw(){
                     int colorNumber = (data2 & (1<<j))?0x2:0;
                     colorNumber |= (data1 & (1<<j))?1:0;
 
-                    //QRgb value = getColor(colorNumber,0);
-
-                    RGB value = getColor(colorNumber,0);
-                    //printf("r:%d g:%d b:%d\n",value.r,value.g,value.b);
-
-                    image->setPixel(x+pixelx,y+pixely,qRgb(value.r,value.g,value.b));
-                    image->setPixel(x+pixelx+1,y+pixely,qRgb(value.r,value.g,value.b));
-                    image->setPixel(x+pixelx,y+pixely+1,qRgb(value.r,value.g,value.b));
-                    image->setPixel(x+pixelx+1,y+pixely+1,qRgb(value.r,value.g,value.b));
+                    QRgb value = getColor(colorNumber,0);
 
 
-                    // printf("X:%d Y: %d\n",x+pixelx,y+pixely);
-
-
-
+                    image->setPixel(x+pixelx,y+pixely,value);
+                    image->setPixel(x+pixelx+1,y+pixely,value);
+                    image->setPixel(x+pixelx,y+pixely+1,value);
+                    image->setPixel(x+pixelx+1,y+pixely+1,value);
                 }
-
             }
-
             address+=16;
-            //            printf("address: %04x\n",address);
-            //            printf("line:%d row:%d\n",line,row);
-            //            printf("x:%d y:%d\n",x,y);
         }
     }
-
     update();
-
-
 }
 
 
-INLINE RGB TileMap::getColor(int number,int mode){
-    RGB white = {255,255,255};
-    RGB light_gray = {190,190,190};
-    RGB dark_gray = {90,90,90};
-    RGB black = {0,0,0};
+INLINE QRgb TileMap::getColor(int number,int mode){
+    QRgb white = qRgb(255,255,255);
+    QRgb light_gray = qRgb(190,190,190);
+    QRgb dark_gray = qRgb(90,90,90);
+    QRgb black = qRgb(0,0,0);
 
     int colorindex;
     uint8 palette;
 
     int hi,lo;
     //white
-    RGB color=white;
+    QRgb color=white;
 
 
     switch(number)

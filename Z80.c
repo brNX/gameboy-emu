@@ -258,6 +258,7 @@ void resetZ80(Memory * mem,LCD * lcd)
 int execute(int ncycles)
 {
     int Counter = ncycles;
+    gbcpu.forcequit=0;
 
     //emulation loop
     for (;;)
@@ -374,10 +375,16 @@ int execute(int ncycles)
         updateLCDStatus(usedcycles);
 
 
-	if (Counter <= 0)
+        if (Counter <= 0)
 	{
             return 0;
 	}
+
+        if (gbcpu.forcequit == 1)
+        {
+            return 0;
+        }
+
     }
     return 0;
 }

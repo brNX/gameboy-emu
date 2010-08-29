@@ -94,6 +94,13 @@ void MainWindow::on_runButton_clicked() {
 	loop->start(QThread::NormalPriority);
 }
 
+void MainWindow::on_stopButton_clicked() {
+        gbcpu.forcequit=1;
+        renderScreen();
+        fillList();
+        oamdialog->refreshPanels();
+}
+
 void MainWindow::on_stepButton_clicked() {
 	execute(1);
 	renderScreen();
