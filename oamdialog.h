@@ -17,6 +17,7 @@ public:
 
 protected:
     void changeEvent(QEvent *e);
+    void closeEvent(QCloseEvent *event);
 
  private:
     Ui::OamDialog * ui;

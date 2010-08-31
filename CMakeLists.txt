@@ -14,12 +14,14 @@ SET( MOC_HDRS
      lcdui.h
      tilemap.h
      background.h
+     debugdialog.h
 )
 
 ## some .ui files
 SET( UIS
     mainwindow.ui
     oamDialog.ui
+    debugDialog.ui
 )
 
 ## and finally an resource file
@@ -76,7 +78,6 @@ configure_file (
 INCLUDE_DIRECTORIES(
    ${PROJECT_BINARY_DIR}
    ${QT_INCLUDE_DIR}
-   ${QT_QTTEST_INCLUDE_DIR}
 )
 
 # this command will generate rules that will run rcc on all files from SAMPLE_RCS
@@ -90,7 +91,7 @@ QT4_WRAP_UI( UI_HDRS ${UIS} )
 QT4_WRAP_CPP( MOC_SRCS ${MOC_HDRS} )
 
 # here we instruct CMake to build "sample" executable from all of the source files
-add_executable(Gameboy-Emu ${MOC_SRCS} ${RC_SRCS} ${UI_HDRS} background.h background.cpp tilemap.h tilemap.cpp oamdialog.h oamdialog.cpp lcdui.h lcdui.cpp cpuloop.h cpuloop.cpp mainwindow.h mainwindow.cpp lcd.h lcd.c no_sillywarnings.h types.h Z80.c Z80.h memory.c memory.h cartridge.h cartridge.c lookuptables.h debugcounters.h Opcodes.h main.cpp)
+add_executable(Gameboy-Emu ${MOC_SRCS} ${RC_SRCS} ${UI_HDRS} debugdialog.h debugdialog.cpp background.h background.cpp tilemap.h tilemap.cpp oamdialog.h oamdialog.cpp lcdui.h lcdui.cpp cpuloop.h cpuloop.cpp mainwindow.h mainwindow.cpp lcd.h lcd.c no_sillywarnings.h types.h Z80.c Z80.h memory.c memory.h cartridge.h cartridge.c lookuptables.h debugcounters.h Opcodes.h main.cpp)
 
 add_test(Gameboy-Emu_test ${EXECUTABLE_OUTPUT_PATH}/Gameboy-Emu)
 
@@ -99,25 +100,4 @@ add_test(Gameboy-Emu_test ${EXECUTABLE_OUTPUT_PATH}/Gameboy-Emu)
 TARGET_LINK_LIBRARIES(Gameboy-Emu ${QT_LIBRARIES}  ${SDL_LIBRARY} ${SDLIMAGE_LIBRARY} SDLmain )
 
 ADD_DEFINITIONS(-DQT_DEBUG)
-#ADD_DEFINITIONS(-DDEBUG)
 
-###########unit testing###############
-
-SET( SAMPLE_SRCS_UNIT
-    ld_test.cpp
-)
-
-SET( SAMPLE_MOC_HDRS_UNIT
-     ld_test.h
-)
-
-# and finally this will run moc:
-QT4_WRAP_CPP( SAMPLE_MOC_SRCS_UNIT ${SAMPLE_MOC_HDRS_UNIT} )
-
-add_executable(Gameboy-Unit ${SAMPLE_SRCS_UNIT} ${SAMPLE_MOC_SRCS_UNIT} ${SAMPLE_RC_SRCS_UNIT} lcd.h lcd.c no_sillywarnings.h types.h Z80.c Z80.h cartridge.h cartridge.c memory.c memory.h lookuptables.h debugcounters.h Opcodes.h)
-
-TARGET_LINK_LIBRARIES(
-   Gameboy-Unit
-   ${QT_LIBRARIES}
-   ${QT_QTTEST_LIBRARIES}
-)

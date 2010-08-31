@@ -47,7 +47,7 @@ extern "C"
     void parse_cart_type(Cartridge * cart);
     void parse_cart_size(Cartridge * cart);
     void parse_cart_ramsize(Cartridge * cart);
-    void parse_cart_notimportant(Cartridge * cart);
+    void parse_cart_unimportant(Cartridge * cart);
 
 
 

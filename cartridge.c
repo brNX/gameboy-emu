@@ -79,7 +79,7 @@ void parse_cart_Header(GBMODE mode,Cartridge * cart){
     parse_cart_type(cart);
     parse_cart_size(cart);
     parse_cart_ramsize(cart);
-    parse_cart_notimportant(cart);
+    parse_cart_unimportant(cart);
 }
 
 //SGB capable ?
@@ -173,8 +173,8 @@ void parse_cart_Name(GBMODE mode,Cartridge * cart){
     }
 }
 
-//random not important info
-void parse_cart_notimportant(Cartridge * cart){
+//random unimportant info
+void parse_cart_unimportant(Cartridge * cart){
     //destination
     printf("Destination : %s\n",(cart->gbcart[0x014A]==00)?"Japanese":"Non Japanese");
     printf("Version: %u\n",cart->gbcart[0x014C]);

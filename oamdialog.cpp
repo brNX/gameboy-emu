@@ -1,5 +1,6 @@
 #include "oamdialog.h"
 #include "ui_oamDialog.h"
+#include <QCloseEvent>
 
 OamDialog::OamDialog(QWidget *parent) :
         QDialog(parent),ui(new Ui::OamDialog){
@@ -30,4 +31,8 @@ void OamDialog::changeEvent(QEvent *e)
     default:
         break;
     }
+}
+
+void OamDialog::closeEvent(QCloseEvent *event){
+    event->ignore();
 }

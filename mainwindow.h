@@ -13,6 +13,7 @@ namespace Ui {
 
 class CpuLoop;
 class OamDialog;
+class DebugDialog;
 
 typedef struct _Cartridge Cartridge;
 typedef struct _Memory Memory;
@@ -23,8 +24,6 @@ class MainWindow : public QMainWindow {
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void fillList();
-    QString parseOpcode(int index);
 
 protected:
     void changeEvent(QEvent *e);
@@ -38,16 +37,25 @@ private:
     Memory * mem;
     LCD * lcd;
     OamDialog * oamdialog;
+    DebugDialog * debugDialog;
+
+    bool running;
+    bool romloaded;
+    bool debug;
+
+    void loadRom(QString filename);
+
 public slots:
     void renderScreen();
+
 private slots:
     void on_runButton_clicked();
     void on_stopButton_clicked();
+    void on_actionOpen_Rom_activated();
+    void on_actionShow_Debug_Panels_toggled(bool );
     void on_stepButton_clicked();
     void on_runtoButton_clicked();
-
-
-
+    void resizeMainwindow();
 };
 
 #endif // MAINWINDOW_H

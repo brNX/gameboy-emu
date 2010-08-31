@@ -20,11 +20,11 @@ void CpuLoop::run()
         //scanline
         //execute(22850);
         emit iterationfinished();
-       int elapsed = timer.elapsed();
-       if (elapsed>0)
+        int elapsed = timer.elapsed();
+        if (elapsed>0)
             this->msleep(FRAMETIME-elapsed);
-       if(gbcpu.forcequit==1)
-           break;
+        if(gbcpu.forcequit==1)
+            break;
 
     }
 
