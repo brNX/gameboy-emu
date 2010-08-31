@@ -40,32 +40,11 @@ MainWindow::MainWindow(QWidget *parent) :
         printf("    %s\n", SDL_JoystickName(i));
     }
 
-    //read_cart_file("killer_instinct.gb",cart);
-    //read_cart_file("motocross_maniacs.gb",cart);
-    //read_cart_file("MEGANIME.GB", cart);
-    //read_cart_file("Public Domain/Joypad Test V0.1 (PD).gb", cart);
-    //read_cart_file("testroms/Filltest Demo (PD).gb", cart);
-    //read_cart_file("testroms/RAM Function Test (PD).gb", cart);
-    //read_cart_file("tetris.gb", cart);
-    //read_cart_file("alleyway.gb",cart);
-    /*read_cart_file("super_mario_land.gb",cart);
-    //read_cart_file("zelda.gb",cart);
-    //read_cart_file("drmario.gb",cart);
-    parse_cart_Header(EGB, cart);
-    initMemory(mem, cart);
-    //for now no rom banking
-    for (int i = 0; i < (2 * 16384); i++) {
-        QString line=QString("%1:\tROM 0: %2\t").arg(i, 4, 16, QChar('0')).arg(gbcpu.mem->rombanks[i],2,16,QChar('0'));
-        line.append(parseOpcode(i));
-        ui->romList->addItem(line);
-    }
-    fillList();
-    */
-
     loop = new CpuLoop(this);
     connect(loop, SIGNAL(iterationfinished()), this, SLOT(renderScreen()));
 
     oamdialog = NULL ;
+    debugDialog = NULL;
 
     QTimer::singleShot( 0, this, SLOT(resizeMainwindow()) );
 
@@ -99,7 +78,7 @@ void MainWindow::loadRom(QString filename)
     }
 
     if(romloaded){
-        //TODO: cleanup
+        destroyMemory(mem);
     }
 
     read_cart_file(filename.toStdString().c_str(),cart);
@@ -200,6 +179,33 @@ void MainWindow::on_runtoButton_clicked() {
 void MainWindow::on_actionShow_Debug_Panels_toggled(bool toggled)
 {
 
+    debug=toggled;
+    if (toggled){
+
+        debugDialog = new DebugDialog(this);
+        oamdialog= new OamDialog(this);
+
+        debugDialog->show();
+        oamdialog->show();
+
+        oamdialog->refreshPanels();
+        debugDialog->refreshPanels();
+
+        int wheight=height();
+        int cheight=ui->debugBox->height();
+        setMaximumHeight(wheight+cheight);
+        setMinimumHeight(wheight+cheight);
+        ui->debugBox->setVisible(true);
+
+    }else{
+        debugDialog->close();
+        oamdialog->close();
+        debugDialog->deleteLater();
+        oamdialog->deleteLater();
+        debugDialog=NULL;
+        oamdialog=NULL;
+        resizeMainwindow();
+    }
 }
 
 void MainWindow::keyPressEvent ( QKeyEvent * event )

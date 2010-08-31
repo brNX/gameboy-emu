@@ -8,6 +8,12 @@ DebugDialog::DebugDialog(QWidget *parent):
 
      ui->setupUi(this);
 
+     //for now no rom banking
+     for (int i = 0; i < (2 * 16384); i++) {
+         QString line=QString("%1:\tROM 0: %2\t").arg(i, 4, 16, QChar('0')).arg(gbcpu.mem->rombanks[i],2,16,QChar('0'));
+         line.append(parseOpcode(i));
+         ui->romList->addItem(line);
+     }
 }
 
 DebugDialog::~DebugDialog()
