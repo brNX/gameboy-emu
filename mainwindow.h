@@ -56,6 +56,8 @@ private slots:
     void on_stepButton_clicked();
     void on_runtoButton_clicked();
     void resizeMainwindow();
+protected slots:
+   void closeEvent(QCloseEvent *event);
 };
 
 #endif // MAINWINDOW_H

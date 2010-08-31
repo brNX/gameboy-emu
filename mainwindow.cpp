@@ -10,6 +10,7 @@
 
 #include <QTimer>
 #include <QFileDialog>
+#include <QCloseEvent>
 #include <iostream>
 
 
@@ -60,7 +61,9 @@ void MainWindow::resizeMainwindow()
 }
 
 MainWindow::~MainWindow() {
-        destroyMemory(mem);
+	if(romloaded){
+	       destroyMemory(mem);
+	}
 	delete mem;
 	delete lcd;
 	delete cart;
@@ -97,6 +100,16 @@ void MainWindow::loadRom(QString filename)
 
 
 /********************************Slots************************************************/
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+   if (running){
+	   gbcpu.forcequit=1;
+	   running=false;
+   }
+   event->accept();
+}
+
 
 void MainWindow::changeEvent(QEvent *e) {
 	QMainWindow::changeEvent(e);
