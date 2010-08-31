@@ -104,8 +104,9 @@ void MainWindow::loadRom(QString filename)
 void MainWindow::closeEvent(QCloseEvent *event)
 {
    if (running){
-	   gbcpu.forcequit=1;
-	   running=false;
+           gbcpu.forcequit=1;
+           running=false;
+           loop->wait();
    }
    event->accept();
 }
@@ -154,6 +155,7 @@ void MainWindow::on_runButton_clicked() {
 void MainWindow::on_stopButton_clicked() {
     if(romloaded && running){
         gbcpu.forcequit=1;
+        loop->wait();
         renderScreen();
         if (debug)
         {
