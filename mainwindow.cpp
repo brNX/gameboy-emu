@@ -85,6 +85,7 @@ void MainWindow::loadRom(QString filename)
     parse_cart_Header(EGB, cart);
     initMemory(mem, cart);
     romloaded=true;
+    resetZ80(mem,lcd);
 
 
     if(debug)

@@ -151,6 +151,7 @@ INLINE void drawSprites(){
             uint16 dataaddress;
             int line = LY - posY ;
 
+
             //flip y-axis ?
             if (attributes & 0x40)
                 line = (line - sizeY)*-1;
@@ -169,6 +170,10 @@ INLINE void drawSprites(){
                 int colorNumber;
                 int colorBit=pixel;
 
+                int pos= 7-pixel+posX;
+                if(pos > 159 || pos < 0)
+                	continue;
+
                  //flip x-axis ?
                 if (attributes & 0x20)
                     colorBit = (colorBit -7)*-1;
@@ -185,8 +190,9 @@ INLINE void drawSprites(){
                     continue;
 
                 //dont' draw if behind backgound
-                if(!(attributes & (1<<7)) || (gbcpu.lcd->display[7-pixel+posX][LY].r == 255))
-                    gbcpu.lcd->display[7-pixel+posX][LY]=color;
+                if(!(attributes & (1<<7)) || (gbcpu.lcd->display[pos][LY].r == 255)){
+                	gbcpu.lcd->display[pos][LY]=color;
+                }
 
             }
         }
