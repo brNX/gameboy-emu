@@ -1,0 +1,10 @@
+Gameboy emulator , core written in C , using Qt for the GUI
+
+Still pretty raw (super mario land runs though) , no sound support
+
+Documentation used :
+
+http://www.codeslinger.co.uk/pages/projects/gameboy.html (gameboy emulation explained, very nice)
+http://nocash.emubase.de/pandocs.htm (Everything You Always Wanted To Know About GAMEBOY)
+http://www.docstoc.com/docs/20246782/GameBoy-CPU-Manual (Gameboy CPU Manual)
+http://www.zilog.com/docs/z80/um0080.pdf (Z80 Family CPU User Manual)
