@@ -23,6 +23,8 @@
 
 Z80 gbcpu;
 
+
+
 //is 0 ?
 //if (val==0) F |= Z_FLAG; else F &= ~Z_FLAG;
 #define CHECK_Z(val) \
@@ -40,12 +42,12 @@ Z80 gbcpu;
 //Set if no borrow (0001 no opAux.Byte.h , logo 0001 << 4 = 0001 0000 = 0x10 = C_FLAG)
 #define CHECK_C_SUB(val) F |= ((uint8) (-(int8)opAux.Byte.h) << 4);
 
+//se houve carry (0001 no opAux32.W.h , logo 0001 << 4 = 0001 0000 = 0x10 = C_FLAG) 16bit
+#define CHECK_C_ADD16(val) F |= (uint8)(opAux32.W.h << 4);
+
 //se houve halfcarry 16bit
 #define CHECK_H16(val) \
         F |= (H_FLAG & ((HL ^ (val) ^ opAux32.W.l) >> 7));
-
-//se houve carry (0001 no opAux32.W.h , logo 0001 << 4 = 0001 0000 = 0x10 = C_FLAG) 16bit
-#define CHECK_C_ADD16(val) F |= (uint8)(opAux32.W.h << 4);
 
 
 #define ADD_A(val) \
@@ -112,6 +114,7 @@ Z80 gbcpu;
         val=opAux.Byte.l;\
         F=(F&C_FLAG) | DECLookup[val]
 
+
 #define ADD_HL(val) \
         opAux32.DW = HL + val;\
         F =(F&Z_FLAG);\
@@ -121,14 +124,17 @@ Z80 gbcpu;
 
 #define ADD_SP(val) \
         opAux32.DW = SP + val;\
-        F = (H_FLAG & ((SP ^ (val) ^ opAux32.W.l) >> 7));\
-        CHECK_C_ADD16(val);\
+        temp32 = SP ^ (val) ^ opAux32.DW;\
+        F = ((temp32 & 0x100) >>  4);\
+        F |= ((temp32 & 0x10) << 1);\
         SP=opAux32.W.l
+
 
 #define LD_HLSP(val) \
         opAux32.DW = SP + val;\
-        F = (H_FLAG & ((SP ^ (val) ^ opAux32.W.l) >> 7));\
-        CHECK_C_ADD16(val);\
+        temp32 = SP ^ (val) ^ opAux32.DW;\
+        F = ((temp32 & 0x100) >>  4);\
+        F |= ((temp32 & 0x10) << 1);\
         HL=opAux32.W.l
 
 #define RLC(val) \
@@ -221,8 +227,7 @@ void resetZ80(Memory * mem,LCD * lcd)
 
     mem->IO[0x05] = 0x00   ;// TIMA
     mem->IO[0x06] = 0x00   ;// TMA
-    mem->IO[0x07] = 0x00   ;// TAC
-    //mem->IO[0x0F] = 0x01   ;// IF
+    mem->IO[0x07] = 0xF8   ;// TAC
     mem->IO[0x10] = 0x80   ;// NR10
     mem->IO[0x11] = 0xBF   ;// NR11
     mem->IO[0x12] = 0xF3   ;// NR12
@@ -252,11 +257,17 @@ void resetZ80(Memory * mem,LCD * lcd)
     mem->IO[0x49] = 0xFF   ;// OBP1
     mem->IO[0x4A] = 0x00   ;// WY
     mem->IO[0x4B]= 0;   // WX
-    mem->ie=0;          // IE
+    mem->rie=0;          // IE
+    mem->rif = 0xE0;     // IF
 }
 
 int execute(int ncycles)
 {
+
+//    FILE *fp;
+
+//    fp = fopen("log.txt","a");
+
     int Counter = ncycles;
     gbcpu.forcequit=0;
 
@@ -269,6 +280,7 @@ int execute(int ncycles)
         uint8 tempbyte;
         int8 signedtempbyte;
         reg32bit opAux32;
+        uint32_t temp32;
         uint8 OpCode;
         int usedcycles=0;
 
@@ -281,9 +293,10 @@ int execute(int ncycles)
         printf("lcd cyclecounter: %d\n",gbcpu.lcd->scanlinecyclecounter);
         printf("**************************\n");
 #endif
-
-        /*interupts*/
-       if (IME && (IE & IF)){
+    if(IE & IF){
+       gbcpu.halt=0;
+       /*interupts*/
+       if (IME){
 
            //v-sync
            if (IE & IF & 0x1){
@@ -291,7 +304,7 @@ int execute(int ncycles)
                IF&= ~(0x1);
                PUSHPC();
                PC=0x40;
-               gbcpu.halt=0;
+
            }else
            //LCD STAT
            if (IE & IF & 0x2){
@@ -299,7 +312,7 @@ int execute(int ncycles)
                IF&= ~(0x2);
                PUSHPC();
                PC=0x48;
-               gbcpu.halt=0;
+
            }else
            //Timer
            if (IE & IF & 0x4){
@@ -307,7 +320,7 @@ int execute(int ncycles)
                IF&= ~(0x4);
                PUSHPC();
                PC=0x50;
-               gbcpu.halt=0;
+
            }else
            //Serial
            if (IE & IF & 0x8){
@@ -315,7 +328,7 @@ int execute(int ncycles)
                 IF&= ~(0x8);
                 PUSHPC();
                 PC=0x58;
-                gbcpu.halt=0;
+
            }else
            //Joypad
            if (IE & IF & 0x10){
@@ -323,8 +336,8 @@ int execute(int ncycles)
                 IF&= ~(0x10);
                 PUSHPC();
                 PC=0x60;
-                gbcpu.halt=0;
             }
+        }
        }
 
        if (SET_IME){
@@ -345,7 +358,7 @@ int execute(int ncycles)
 #endif
 
 	switch (OpCode)
-	{
+    {
 
         #include "Opcodes.h"
 
@@ -375,15 +388,17 @@ int execute(int ncycles)
         updateLCDStatus(usedcycles);
 
 
-        if (Counter <= 0)
+
+
+    if (Counter <= 0)
 	{
             return 0;
 	}
 
-        if (gbcpu.forcequit == 1)
-        {
-            return 0;
-        }
+    if (gbcpu.forcequit == 1)
+    {
+        return 0;
+    }
 
     }
     return 0;
@@ -399,6 +414,7 @@ void execOpcode(uint8 OpCode){
         uint8 tempbyte;
         int8 signedtempbyte;
         reg32bit opAux32;
+        uint32_t temp32;
         int usedcycles=0;
 
 	switch (OpCode)
@@ -415,21 +431,21 @@ void execOpcode(uint8 OpCode){
 INLINE void updatetimers(int cycles){
 
     //DIV
-    gbcpu.timer1 += cycles;
+    gbcpu.mem->timer1 += cycles;
 
-    if (gbcpu.timer1 >= 256 ){
-        gbcpu.timer1=0;
+    if (gbcpu.mem->timer1 >= 256 ){
+        gbcpu.mem->timer1-=256;
         DIV++;
     }
 
     //TIMA
     if (TAC & 0x4){
 
-        gbcpu.timer2 += cycles;
+        gbcpu.mem->timer2 += cycles;
 
-        if( gbcpu.timer2 >= TACCycles[TAC&0x3]){
+        while( gbcpu.mem->timer2 >= TACCycles[TAC&0x3]){
 
-            gbcpu.timer2=0;
+            gbcpu.mem->timer2-=TACCycles[TAC&0x3];
             TIMA++;
 
             //overflow

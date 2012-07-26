@@ -27,7 +27,12 @@ extern "C"
         uint8 vram[8192];
         uint8 OAM[160];
         uint8 IO[128];
-        uint8 ie;
+        uint8 rie;
+        uint8 rif;
+
+        int timer1;
+        int timer2;
+
         Cartridge * cart;
     }Memory;
 

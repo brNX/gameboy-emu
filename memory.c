@@ -52,7 +52,7 @@ void printMEMStatus(Memory * mem)
     uint8 c0,c1,c2,c3;
 
     printf("*******MEM Status*********\n");
-    byte2String(string,mem->ie,5);
+    byte2String(string,mem->rie,5);
     printf("IE: %s ",string);
     byte2String(string,mem->IO[0x0F],5);
     printf("IF: %s \n",string);
@@ -168,6 +168,17 @@ extern INLINE uint8 readMem(uint16 address,Memory * mem)
              break;
          }
 
+         //FF00-FF7F   I/O Ports
+         addr= address - 0xFF00;
+         /*FF00 <= addr <= 0xFF7F*/
+         if (addr <= 0x7F){
+             if (addr==0x0F)
+                 return mem->rif;
+             else
+                 return mem->IO[addr];
+              break;
+         }
+
          //FF80-FFFE   High RAM (HRAM)
          /*FF80 <= addr <= 0xFFFE*/
          addr= address - 0xFF80;
@@ -176,18 +187,10 @@ extern INLINE uint8 readMem(uint16 address,Memory * mem)
              break;
          }
 
-         //FF00-FF7F   I/O Ports
-         addr= address - 0xFF00;
-         /*FF90 <= addr <= 0xFF7F*/
-         if (addr <= 0x7F){
-              return mem->IO[addr];
-              break;
-         }
-
 
          //FFFF  Interrupt Enable Register
          if (address == 0xFFFF){
-             return mem->ie;
+             return mem->rie;
              break;
          }
 
@@ -469,7 +472,23 @@ INLINE void writeToIOZone(uint16 address, uint8 value,Memory * mem){
         if (addr == 0x04)
         {
             mem->IO[addr]=0;
+            mem->timer1=0;
             return;
+        }
+
+        //FF07 - TAC
+        if (addr == 0x07)
+        {
+            mem->IO[addr]=value|0xF8;
+            mem->timer2=0;
+            return;
+        }
+
+        //FF0F - IF
+        if (addr == 0x0F)
+        {
+             mem->rif=value|0xE0;
+             return;
         }
 
         //FF44 - LY - LCDC Y-Coordinate (R)
@@ -493,7 +512,7 @@ INLINE void writeToIOZone(uint16 address, uint8 value,Memory * mem){
     //FFFF  Interrupt Enable Register
     if (address == 0xFFFF)
     {
-        mem->ie=value;
+        mem->rie=value;
         return;
     }
 

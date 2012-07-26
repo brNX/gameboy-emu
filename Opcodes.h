@@ -461,6 +461,7 @@ case 0x2E: //LD L,n
     case 0xF1: //POP AF
         F=readMem(SP,gbcpu.mem);
         A=readMem(SP+1,gbcpu.mem);
+        F &= 0xF0;
         SP+=2;
         break;
 
@@ -877,10 +878,37 @@ case 0x2E: //LD L,n
 
         /*DAA */
     case 0x27:
-        //TODO: verificar valor
-        opAux.Byte.h = (F & 0x70) >> 4;
-        opAux.Byte.l = A;
-        AF= DAALookup[opAux.Word];
+        opAux.Word = A;
+
+        if (! (F & N_FLAG))
+        {
+            if ((F & H_FLAG) || (opAux.Word & 0xF) > 9)
+                opAux.Word += 0x06;
+
+            if ((F & C_FLAG) || opAux.Word > 0x9F)
+                opAux.Word += 0x60;
+        }
+        else
+        {
+            if (F & H_FLAG)
+                opAux.Word = (opAux.Word - 6) & 0xFF;
+
+            if (F & C_FLAG)
+                opAux.Word -= 0x60;
+        }
+
+        F &= ~(H_FLAG | Z_FLAG);
+
+        if ((opAux.Word & 0x100) == 0x100)
+        F |= C_FLAG;
+
+        opAux.Word &= 0xFF;
+
+        if (opAux.Word == 0)
+        F |= Z_FLAG;
+
+        A = (uint8_t)opAux.Word;
+
         break;
 
         /*CPL*/
@@ -914,6 +942,7 @@ case 0x2E: //LD L,n
         signedtempbyte = readMem(PC,gbcpu.mem);
         PC++;
         ADD_SP(signedtempbyte);
+
         break;
 
         /*INC rr*/
@@ -952,6 +981,7 @@ case 0x2E: //LD L,n
 
         /*LD HL,SP+n*/
     case 0xF8:
+
         signedtempbyte=readMem(PC,gbcpu.mem);
         LD_HLSP(signedtempbyte);
         PC++;
@@ -2193,7 +2223,7 @@ case 0x2E: //LD L,n
                 break;
 
             case 0x30://JR NC,dd
-                if (!(F & C_FLAG) ) {
+                if (!(F & C_FLAG)) {
                     signedtempbyte=readMem(PC,gbcpu.mem);
                     PC++;
                     PC+=signedtempbyte;

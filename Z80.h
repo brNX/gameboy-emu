@@ -51,8 +51,8 @@
 /*interupts registers*/
 #define IME gbcpu.ime
 #define SET_IME gbcpu.set_ime
-#define IE  gbcpu.mem->ie
-#define IF  gbcpu.mem->IO[0x0F]
+#define IE  gbcpu.mem->rie
+#define IF  gbcpu.mem->rif
 
 #define Z_FLAG	 0x80	/* Zero				Bit 7 */
 #define N_FLAG   0x40	/* Add/Substract	Bit 6 */
@@ -108,9 +108,6 @@ extern "C"
         Memory * mem;
         LCD * lcd;
         uint8 joypad;
-
-        int timer1;
-        int timer2;
 
         int forcequit;
 
