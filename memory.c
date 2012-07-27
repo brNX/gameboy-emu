@@ -94,7 +94,7 @@ void printMEMStatus(Memory * mem)
 extern INLINE uint8 readMem(uint16 address,Memory * mem)
 {
     uint8 index;
-    uint16 newaddress;
+    uint32 newaddress;
     uint16 addr;
 
     switch (address >> 12){
